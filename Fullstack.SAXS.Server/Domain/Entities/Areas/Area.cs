@@ -2,14 +2,20 @@
 using System.Numerics;
 using Fullstack.SAXS.Server.Application.Interfaces;
 using Fullstack.SAXS.Server.Domain.Entities.Particles;
+using Fullstack.SAXS.Server.Domain.Enums;
 
 namespace Fullstack.SAXS.Server.Domain.Entities.Areas
 {
     public abstract class Area
     {
-        public readonly int Series;
-        public static readonly Vector3 Center = new (0, 0, 0);
+        public static readonly Vector3 Center = new(0, 0, 0);
+
         private static readonly int _retryToFillMax = 1000;
+
+        public readonly int Series;
+
+        private IOctree<Particle> _octree;
+
         public IEnumerable<Particle> Particles 
         { 
             get
@@ -17,9 +23,20 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
                 return _octree.GetAll();
             }
         }
-        public abstract float OuterRadius { get; }
+        public ParticleTypes ParticlesType 
+        {
+            get
+            {
+                return 
+                    _octree
+                    .GetAll()
+                    .First()
+                    .ParticleType;
+            }
+        }
 
-        private IOctree<Particle> _octree;
+        public abstract float OuterRadius { get; }
+        public abstract AreaTypes AreaType { get; }
 
         protected Area(int series, IOctree<Particle> octree)
         {

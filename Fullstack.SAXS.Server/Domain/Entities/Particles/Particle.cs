@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Fullstack.SAXS.Server.Domain.Enums;
 using Fullstack.SAXS.Server.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Server.Domain.Entities.Particles
@@ -13,6 +14,7 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
         public abstract float OuterSphereRadius { get; }
         public abstract float InnerSphereRadius { get; }
         public abstract ReadOnlySpan<int[]> Faces { get; }
+        public abstract ParticleTypes ParticleType { get; }
         public abstract ReadOnlySpan<Vector3> Vertices { get; }
 
         protected Particle(float size, Vector3 center, EulerAngles rotationAngles)

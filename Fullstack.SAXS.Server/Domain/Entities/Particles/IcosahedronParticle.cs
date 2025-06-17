@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Fullstack.SAXS.Server.Domain.Enums;
 using Fullstack.SAXS.Server.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Server.Domain.Entities.Particles
@@ -12,6 +13,8 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
         public override float InnerSphereRadius => _innerR;
 
         public override ReadOnlySpan<int[]> Faces => _faces;
+
+        public override ParticleTypes ParticleType => ParticleTypes.Icosahedron;
 
         public override ReadOnlySpan<Vector3> Vertices => _vertices;
 
