@@ -4,7 +4,7 @@
     {
         void Add(T entity);
         Task AddAsync(T entity);
-        void Save();
-        Task SaveAsync();
+        void Save(Guid idUser);
+        Task SaveAsync(Guid idUser);
     }
 }
