@@ -35,8 +35,6 @@
 
   <ItemGroup>
     <Folder Include="API\Middlewares\" />
-    <Folder Include="Domain\Entities\Sp\" />
-    <Folder Include="Infastructure\Persistence\Migrations\" />
     <Folder Include="Infastructure\Persistence\IOs\" />
   </ItemGroup>
 
