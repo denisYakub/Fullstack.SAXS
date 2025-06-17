@@ -1,14 +1,16 @@
 ﻿using Fullstack.SAXS.Server.Application.Interfaces;
 using Fullstack.SAXS.Server.Domain.Commands;
 using Fullstack.SAXS.Server.Domain.Entities.Areas;
+using Fullstack.SAXS.Server.Domain.Entities.Octrees;
 using Fullstack.SAXS.Server.Domain.Entities.Particles;
+using Fullstack.SAXS.Server.Domain.Entities.Regions;
 using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Server.Infastructure.Factories
 {
-    public class SphereIcosahedronFactory(IOctree<Particle> octree) : AreaParticleFactory
+    public class SphereIcosahedronFactory : AreaParticleFactory
     {
-        public override IEnumerable<Area> GetAreas(float areaSize, int number)
+        public override IEnumerable<Area> GetAreas(float areaSize, int number, IOctree<Particle> octree)
         {
             for (int i = 0; i < number; i++) 
                 yield return new SphereArea(i, areaSize, octree);
@@ -34,9 +36,9 @@ namespace Fullstack.SAXS.Server.Infastructure.Factories
                 var b = random.GetEvenlyRandom(-betaRotation, betaRotation);
                 var g = random.GetEvenlyRandom(-gammaRotation, gammaRotation);
 
-                var x = random.GetEvenlyRandom(-minX, maxX);
-                var y = random.GetEvenlyRandom(-minY, maxY);
-                var z = random.GetEvenlyRandom(-minZ, maxZ);
+                var x = random.GetEvenlyRandom(minX, maxX);
+                var y = random.GetEvenlyRandom(minY, maxY);
+                var z = random.GetEvenlyRandom(minZ, maxZ);
 
                 yield return new IcosahedronParticle(size, new (x, y, z), new (a, b, g));
             }
