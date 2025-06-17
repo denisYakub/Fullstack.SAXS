@@ -46,7 +46,6 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Octrees
         }
 
         public readonly int MaxDepth;
-
         private readonly Node _root;
 
         public Octree(int maxDepth, Region startRegion)
@@ -55,9 +54,7 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Octrees
             _root = new Node(startRegion, 0);
         }
 
-        public bool Add(Particle particle) => Insert(particle);
-
-        private bool Insert(Particle particle)
+        public bool Add(Particle particle)
         {
             var stack = new Stack<Node>();
             stack.Push(_root);
