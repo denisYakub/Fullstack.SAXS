@@ -1,11 +1,6 @@
-﻿using Fullstack.SAXS.Server.Application.Interfaces;
-using Fullstack.SAXS.Server.Domain.Commands;
-using Fullstack.SAXS.Server.Domain.Entities.Areas;
-using Fullstack.SAXS.Server.Domain.Entities.Octrees;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
+﻿using Fullstack.SAXS.Server.Domain.Entities.Octrees;
 using Fullstack.SAXS.Server.Domain.Entities.Regions;
 using Fullstack.SAXS.Server.Infastructure.Factories;
-using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Tests
 {
@@ -28,7 +23,7 @@ namespace Fullstack.SAXS.Tests
             var octree = new Octree(startRegion.MaxDepth(3 * 5), startRegion);
             var areas = 
                 _factory
-                .GetAreas(areaR, areaNumber, octree);
+                .GetAreas(areaR, areaNumber, 5);
             //Action
             Parallel.ForEach(areas, area =>
             {

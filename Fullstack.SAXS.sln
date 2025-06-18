@@ -1,13 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35931.197 d17.13
+VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "fullstack.saxs.client", "fullstack.saxs.client\fullstack.saxs.client.esproj", "{68736825-FEB3-B5FE-8AFB-0406D1303062}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Server", "Fullstack.SAXS.Server\Fullstack.SAXS.Server.csproj", "{7CF7F2FD-A37A-40F9-8D47-7B0704ED20EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Tests", "Fullstack.SAXS.Tests\Fullstack.SAXS.Tests.csproj", "{2970D016-3A8F-49C2-9B1A-93C0F96AB2EB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Domain", "Fullstack.SAXS.Domain\Fullstack.SAXS.Domain.csproj", "{8772CE8A-F6F4-4C38-B37D-4DADD0B76E11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Infrastructure", "Fullstack.SAXS.Infrastructure\Fullstack.SAXS.Infrastructure.csproj", "{D1BB3853-9EB1-4DB4-8E84-A745A8E604CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Application", "Fullstack.SAXS.Application\Fullstack.SAXS.Application.csproj", "{E8017659-B3EA-4461-B3C5-F4E667783688}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Persistence", "Fullstack.SAXS.Persistence\Fullstack.SAXS.Persistence.csproj", "{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +31,22 @@ Global
 		{7CF7F2FD-A37A-40F9-8D47-7B0704ED20EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7CF7F2FD-A37A-40F9-8D47-7B0704ED20EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7CF7F2FD-A37A-40F9-8D47-7B0704ED20EE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2970D016-3A8F-49C2-9B1A-93C0F96AB2EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2970D016-3A8F-49C2-9B1A-93C0F96AB2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2970D016-3A8F-49C2-9B1A-93C0F96AB2EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2970D016-3A8F-49C2-9B1A-93C0F96AB2EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8772CE8A-F6F4-4C38-B37D-4DADD0B76E11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8772CE8A-F6F4-4C38-B37D-4DADD0B76E11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8772CE8A-F6F4-4C38-B37D-4DADD0B76E11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8772CE8A-F6F4-4C38-B37D-4DADD0B76E11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1BB3853-9EB1-4DB4-8E84-A745A8E604CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1BB3853-9EB1-4DB4-8E84-A745A8E604CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1BB3853-9EB1-4DB4-8E84-A745A8E604CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1BB3853-9EB1-4DB4-8E84-A745A8E604CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8017659-B3EA-4461-B3C5-F4E667783688}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8017659-B3EA-4461-B3C5-F4E667783688}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8017659-B3EA-4461-B3C5-F4E667783688}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8017659-B3EA-4461-B3C5-F4E667783688}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

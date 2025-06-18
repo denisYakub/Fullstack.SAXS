@@ -28,14 +28,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Fullstack.SAXS.Application\Fullstack.SAXS.Application.csproj" />
     <ProjectReference Include="..\fullstack.saxs.client\fullstack.saxs.client.esproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\Fullstack.SAXS.Domain\Fullstack.SAXS.Domain.csproj" />
+    <ProjectReference Include="..\Fullstack.SAXS.Infrastructure\Fullstack.SAXS.Infrastructure.csproj" />
+    <ProjectReference Include="..\Fullstack.SAXS.Persistence\Fullstack.SAXS.Persistence.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="API\Middlewares\" />
-    <Folder Include="Infastructure\Persistence\IOs\" />
+    <Folder Include="Middlewares\" />
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,9 @@
 using System.Security.Claims;
-using Fullstack.SAXS.Server.Application.Interfaces;
-using Fullstack.SAXS.Server.Domain.Entities.Areas;
-using Fullstack.SAXS.Server.Domain.Entities.Octrees;
+using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Infrastructure.DbContexts;
+using Fullstack.SAXS.Infrastructure.IO;
+using Fullstack.SAXS.Infrastructure.Repositories;
 using Fullstack.SAXS.Server.Infastructure.Factories;
-using Fullstack.SAXS.Server.Infastructure.Persistence.DbContexts;
-using Fullstack.SAXS.Server.Infastructure.Persistence.Repositories;
-using Fullstack.SAXS.Server.Infastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,9 +21,8 @@ if (!Directory.Exists(csvFolder))
     Directory.CreateDirectory(csvFolder);
 
 builder.Services
-    .AddScoped<IFileService<Area>, FileService>()
-    .AddScoped<ISysService, SysService>()
-    .AddScoped<IRepository<Area>, AreaRepository>()
+    .AddScoped<IFileService, FileService>()
+    .AddScoped<IStorage, AreaRepository>()
     .AddScoped<AreaParticleFactory, SphereIcosahedronFactory>()
     .AddSingleton<string>(csvFolder);
 
