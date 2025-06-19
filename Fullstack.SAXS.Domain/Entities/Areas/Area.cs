@@ -9,8 +9,6 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
 {
     public abstract class Area
     {
-        public static readonly Vector3 Center = new(0, 0, 0);
-
         private static readonly int _retryToFillMax = 1000;
 
         public readonly int Series;
@@ -24,15 +22,14 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
                 return _octree.GetAll();
             }
         }
-        public ParticleTypes ParticlesType 
+        public ParticleTypes? ParticlesType 
         {
             get
             {
-                return 
-                    _octree
-                    .GetAll()
-                    .First()
-                    .ParticleType;
+                if (Particles.Any())
+                    return Particles.First().ParticleType;
+                else 
+                    return null;
             }
         }
 

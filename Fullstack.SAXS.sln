@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Application"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Persistence", "Fullstack.SAXS.Persistence\Fullstack.SAXS.Persistence.csproj", "{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Persistence.Tests", "Fullstack.SAXS.Persistence.Tests\Fullstack.SAXS.Persistence.Tests.csproj", "{8D4F7BF6-3CAE-4BA4-ACAC-29B2BC0F3597}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D4F7BF6-3CAE-4BA4-ACAC-29B2BC0F3597}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D4F7BF6-3CAE-4BA4-ACAC-29B2BC0F3597}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D4F7BF6-3CAE-4BA4-ACAC-29B2BC0F3597}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D4F7BF6-3CAE-4BA4-ACAC-29B2BC0F3597}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

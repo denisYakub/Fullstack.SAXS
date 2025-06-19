@@ -12,11 +12,11 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
 
         public override float InnerSphereRadius => _innerR;
 
-        public override ReadOnlySpan<int[]> Faces => _faces;
+        protected override int[][] Faces => _faces;
+
+        protected override IReadOnlyCollection<Vector3> Vertices => _vertices;
 
         public override ParticleTypes ParticleType => ParticleTypes.Icosahedron;
-
-        public override ReadOnlySpan<Vector3> Vertices => _vertices;
 
         private readonly float _outerR;
         private readonly float _innerR;
@@ -100,7 +100,7 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
             }
 
             var edge = Vector3
-                .Distance(_vertices[_faces[0][0]], _vertices[_faces[0][1]]) * size;
+                .Distance(_vertices[_faces[0][0]], _vertices[_faces[0][1]]);
             _outerR = 0.951f * edge;
             _innerR = 0.7557f * edge;
         }

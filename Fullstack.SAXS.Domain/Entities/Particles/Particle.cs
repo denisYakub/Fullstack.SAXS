@@ -13,9 +13,9 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
         public abstract float Volume { get; }
         public abstract float OuterSphereRadius { get; }
         public abstract float InnerSphereRadius { get; }
-        public abstract ReadOnlySpan<int[]> Faces { get; }
+        protected abstract int[][] Faces { get; }
         public abstract ParticleTypes ParticleType { get; }
-        public abstract ReadOnlySpan<Vector3> Vertices { get; }
+        protected abstract IReadOnlyCollection<Vector3> Vertices { get; }
 
         protected Particle(float size, Vector3 center, EulerAngles rotationAngles)
         {
@@ -49,9 +49,9 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
 
             foreach (var face in Faces)
             {
-                Vector3 a = vertices[face[0]];
-                Vector3 b = vertices[face[1]];
-                Vector3 c = vertices[face[2]];
+                Vector3 a = vertices.ElementAt(0);
+                Vector3 b = vertices.ElementAt(1);
+                Vector3 c = vertices.ElementAt(2);
 
                 var ab = b - a;
                 var ac = c - a;
