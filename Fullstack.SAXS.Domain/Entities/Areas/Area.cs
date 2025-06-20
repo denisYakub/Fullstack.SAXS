@@ -13,22 +13,28 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
 
         public readonly int Series;
 
-        private Octree _octree;
+        private Octree? _octree;
+        private IReadOnlyCollection<Particle>? _particles;
 
         public IEnumerable<Particle> Particles 
         { 
             get
             {
-                return _octree.GetAll();
+                if (_particles != null)
+                    return _particles;
+                else
+                    return _octree.GetAll();
             }
         }
         public ParticleTypes? ParticlesType 
         {
             get
             {
-                if (Particles.Any())
+                if (_particles != null)
+                    return _particles.First().ParticleType;
+                else if (Particles.Any())
                     return Particles.First().ParticleType;
-                else 
+                else
                     return null;
             }
         }
@@ -46,10 +52,19 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
             _octree = new Octree(maxDepth, outerRegion);
         }
 
+        protected Area(int series, IReadOnlyCollection<Particle>? particles)
+        {
+            Series = series;
+            _particles = particles;
+        }
+
         public abstract bool Contains(Particle particle);
 
         public void Fill(IEnumerable<Particle> infParticles, int particleNumber)
         {
+            if (_particles != null)
+                return;
+
             var retryCount = 0;
             var particleCount = 0;
 
