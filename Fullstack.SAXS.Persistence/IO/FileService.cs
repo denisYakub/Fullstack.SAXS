@@ -1,5 +1,7 @@
 ﻿using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Server.Domain.Entities.Areas;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Text.Json;
 
@@ -19,81 +21,48 @@ namespace Fullstack.SAXS.Infrastructure.IO
 
         public string Write(Area obj, string folderPath)
         {
-            var option = new JsonSerializerOptions()
-            {
-                WriteIndented = true,
-                IncludeFields = true,
-            };
-
-            using var document = JsonSerializer.SerializeToDocument(obj, option);
-            var root = document.RootElement;
-
-            string[] areaHeaders = [
-                nameof(obj.Series),
-                nameof(obj.OuterRadius),
-                nameof(obj.AreaType),
-                nameof(obj.ParticlesType)
-            ];
-
-            var partsOfFileName = new List<string>(areaHeaders.Length);
-
-            var values = root.EnumerateObject();
-
-            for (int i = 0; i < areaHeaders.Length; i++)
-            {
-                var value = 
-                    values
-                    .First(o => areaHeaders[i] == o.Name)
-                    .Value.ToString();
-
-                if(!string.IsNullOrEmpty(value))
-                    partsOfFileName.Add($"{areaHeaders[i]}_{value}");
-            }
-
             var file = new StringBuilder();
 
-            file.AppendJoin('_', partsOfFileName);
+            file.AppendJoin('_', [
+                $"{nameof(obj.Series)}#{obj.Series}",
+                $"{nameof(obj.OuterRadius)}#{obj.OuterRadius}",
+                $"{nameof(obj.AreaType)}#{obj.AreaType}",
+                $"{nameof(obj.ParticlesType)}#{obj.ParticlesType}",
+            ]);
             file.Append(".csv");
 
             var path = Path.Combine(folderPath, file.ToString());
 
-            var particles = root.GetProperty(nameof(obj.Particles)).EnumerateArray();
+            var prtcls = obj.Particles;
 
-            var strBuilder = new StringBuilder();
+            var text = new StringBuilder();
 
-            if (particles.Any())
+            if (prtcls.Any())
             {
-                var prtcl = obj.Particles.First();
-
+                var prtclF = prtcls.First();
                 string[] headers = [
-                    nameof(prtcl.Size),
-                    nameof(prtcl.Center),
-                    nameof(prtcl.RotationAngles),
+                    nameof(prtclF.Size),
+                    nameof(prtclF.Center),
+                    nameof(prtclF.RotationAngles),
                 ];
 
-                strBuilder.AppendJoin(',', headers);
-                strBuilder.AppendLine();
+                text.AppendJoin(";", headers);
+                text.AppendLine();
 
-                var row = new string[headers.Count()];
-
-                foreach ( var particle in particles)
+                foreach ( var prtcl in prtcls)
                 {
-                    foreach ( var field in particle.EnumerateObject())
-                    {
-                        if (field.Name == headers[0])
-                            row[0] = field.Value.ToString();
-                        else if (field.Name == headers[1])
-                            row[1] = field.Value.ToString();
-                        else if (field.Name == headers[2])
-                            row[2] = field.Value.ToString();
-                    }
+                    string[] values = [
+                        prtcl.Size.ToString(),
+                        prtcl.Center.ToString(),
+                        prtcl.RotationAngles.ToString()
+                    ];
 
-                    strBuilder.AppendJoin(',', row);
-                    strBuilder.AppendLine();
+                    text.AppendJoin(";", values);
+                    text.AppendLine();
                 }
             }
 
-            File.WriteAllText(path, strBuilder.ToString(), new UTF8Encoding());
+            File.WriteAllText(path, text.ToString(), Encoding.UTF8);
 
             return path;
         }
