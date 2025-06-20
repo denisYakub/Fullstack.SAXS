@@ -33,5 +33,29 @@ namespace Fullstack.SAXS.Server.Domain.ValueObjects
 
             return rotationX * rotationY * rotationZ;
         }
+
+        public override string ToString()
+        {
+            return $"<{PraecessioAngle} {NutatioAngle} {ProperRotationAngle}>";
+        }
+
+        public static EulerAngles Parse(string s)
+        {
+            if (s[0] != '<' && s[s.Length - 1] != '>')
+                throw new ArgumentException("Bad format!");
+
+            var values = s.Substring(1, s.Length - 2);
+            var data = values.Split(' ');
+
+            if (data.Length != 3)
+                throw new ArgumentException("Bad format!");
+
+            return 
+                new EulerAngles(
+                    float.Parse(data[0]),
+                    float.Parse(data[1]),
+                    float.Parse(data[2])
+                );
+        }
     }
 }
