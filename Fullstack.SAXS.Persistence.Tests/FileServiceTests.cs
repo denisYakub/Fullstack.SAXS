@@ -47,5 +47,17 @@ namespace Fullstack.SAXS.Persistence.Tests
             Assert.Pass(resultFile1);
             Assert.Pass(resultFile2);
         }
+
+        [Test]
+        public void Test_Read_Method()
+        {
+            //Init
+            var path = @"C:\Users\denis\source\repos\Fullstack.SAXS\Fullstack.SAXS.Persistence.Tests\bin\Debug\net9.0\FileServiceTests\Series#1_OuterRadius#100_AreaType#Sphere_ParticlesType#Icosahedron.csv";
+            //Do
+            var area = _fileService.Read(path);
+            //Assert
+            Assert.That(area, Is.Not.Null);
+            Assert.That(area.Particles.Count(), Is.EqualTo(3));
+        }
     }
 }
