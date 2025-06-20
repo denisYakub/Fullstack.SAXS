@@ -42,7 +42,8 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                     new SpGeneration(
                         idUser, 
                         genNum, _areas.ElementAt(i).Series, 
-                        _areas.ElementAt(i).AreaType, _areas.ElementAt(i).ParticlesType,
+                        _areas.ElementAt(i).AreaType,
+                        _areas.ElementAt(i).ParticlesType ?? 0,
                         null, _areas.ElementAt(i).Particles.Count(), 
                         _areaPathDatas.ElementAt(i).Id
                     );
@@ -63,7 +64,8 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                     new SpGeneration(
                         idUser,
                         genNum, _areas.ElementAt(i).Series,
-                        _areas.ElementAt(i).AreaType, _areas.ElementAt(i).ParticlesType,
+                        _areas.ElementAt(i).AreaType,
+                        _areas.ElementAt(i).ParticlesType ?? 0,
                         null, _areas.ElementAt(i).Particles.Count(),
                         _areaPathDatas.ElementAt(i).Id
                     );
