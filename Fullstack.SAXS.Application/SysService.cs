@@ -1,14 +1,22 @@
-﻿using Fullstack.SAXS.Domain.Contracts;
+﻿using System.Collections.Generic;
+using System.Numerics;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Server.Domain.Commands;
 using Fullstack.SAXS.Server.Domain.Entities.Areas;
 using Fullstack.SAXS.Server.Domain.Entities.Octrees;
+using Fullstack.SAXS.Server.Domain.Entities.Particles;
 using Fullstack.SAXS.Server.Domain.Entities.Regions;
 using Fullstack.SAXS.Server.Infastructure.Factories;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Fullstack.SAXS.Server.Infastructure.Services
 {
-    public class SysService(AreaParticleFactory factory, IStorage storage)
+    public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph)
     {
         public void Create(
             string? userId,
@@ -60,22 +68,287 @@ namespace Fullstack.SAXS.Server.Infastructure.Services
             }
         }
 
-        public IHtmlContent CreateIntensOptGraf(
+        public JsonResult Get(Guid id)
+        {
+            var area = storage.GetArea(id);
+
+            var options = new JsonSerializerOptions()
+            {
+                WriteIndented = true,
+                IncludeFields = true
+            };
+
+            var json = JsonSerializer.Serialize(area, options);
+
+            return new JsonResult(json);
+        }
+
+        public async Task<IHtmlContent> CreateIntensOptGraf(
             Guid id,
             float QMin, float QMax, int QNum
         )
         {
-            throw new NotImplementedException();
+            var area = storage.GetArea(id);
+            var qs = CreateQs(QMin, QMax, QNum);
+
+            var (x, y) = CreateIntensOptCoord(area, in qs);
+
+            var html = await graph.GetHtmlPage(x, y);
+
+            return new HtmlString(html);
         }
 
-        public IHtmlContent CreatePhiGraf(Guid id, int layersNum)
+        public async Task<IHtmlContent> CreatePhiGrafAsync(Guid id, int layersNum)
         {
-            throw new NotImplementedException();
+            var area = storage.GetArea(id);
+
+            var (x, y) = await CreatePhiCoord(area, layersNum);
+
+            var html = await graph.GetHtmlPage(x, y);
+
+            return new HtmlString(html);
         }
 
-        public JsonResult Get(Guid id)
+        private static async Task<(float[] x, float[] y)> CreatePhiCoord(
+            Area area, int numberOfLayers = 5, int numberOfPoints = 1_000_000
+        )
         {
-            throw new NotImplementedException();
+            var segmentsR = CreateSegmentsRadii(area.OuterRadius, numberOfLayers + 1);
+            var points = CreateRandomPoints(area.OuterRadius, numberOfPoints);
+
+            var segmentTasks =
+                new Task<(int segmentPoint, int segmentParticlePoints)>[numberOfLayers];
+
+            for (int i = 0; i < segmentTasks.Length; i++)
+            {
+                var radiusMin = segmentsR[i];
+                var radiusMax = segmentsR[i + 1];
+
+                segmentTasks[i] =
+                    new Task<(int segmentPoint, int segmentParticlePoints)>(
+                        () => CountHits(radiusMin, radiusMax, in points, area.Particles)
+                    );
+                segmentTasks[i].Start();
+            }
+
+            var phiValues = new (float value, bool isSet)[segmentTasks.Length];
+
+            var getValues = 0;
+
+            while (true)
+            {
+                if (getValues == segmentTasks.Length)
+                    break;
+
+                for (int i = 0; i < segmentTasks.Length; i++)
+                {
+                    if (segmentTasks[i].IsCompleted && !phiValues[i].isSet)
+                    {
+                        var (segmentPoint, segmentParticlePoints) = await segmentTasks[i];
+
+                        float phi = segmentParticlePoints / (float)segmentPoint;
+
+                        phiValues[i].value = phi;
+                        getValues++;
+                    }
+                }
+            }
+
+            var result = phiValues.Select((phi, index) => (index, phi.value));
+
+            return (
+                result.Select(x => (float)x.index).ToArray(),
+                result.Select(x => x.value).ToArray()
+            );
         }
+
+        private static (float[] x, float[] y) CreateIntensOptCoord(
+            Area area, in float[] qs
+        )
+        {
+            var (localVolume, globalVolume, tmpConst) = Eval(area, qs);
+            var nC = area.Particles.Count();
+
+            var (q, I) = IntenceOpt(qs, globalVolume, tmpConst, localVolume, area);
+
+            return (q.ToArray(), I.ToArray());
+        }
+
+        private static float[] CreateQs(float QMin, float QMax, int QNum)
+        {
+            var random = new Random();
+            var qs = new float[QNum];
+
+            for (var i = 0; i < QNum; i++)
+                qs[i] = random.GetEvenlyRandom(QMin, QMax);
+
+            return qs;
+        }
+
+        private static float[] CreateSegmentsRadii(float areaOuterR, int radiiNum)
+        {
+            var radii = new float[radiiNum];
+
+            for (int i = 0; i < radiiNum; i++)
+            {
+                radii[i] = (float)Math.Pow(i * (Math.Pow(areaOuterR, 3) / radiiNum), 1.0f / 3);
+            }
+
+            radii[radiiNum] = areaOuterR;
+
+            return radii;
+        }
+
+        private static Vector3[] CreateRandomPoints(float edge, int pointsNum)
+        {
+            var random = new Random();
+            var points = new Vector3[pointsNum];
+
+            for (int i = 0; i < pointsNum; i++)
+            {
+                points[i] = new Vector3(
+                    random.GetEvenlyRandom(-edge, edge),
+                    random.GetEvenlyRandom(-edge, edge),
+                    random.GetEvenlyRandom(-edge, edge)
+                );
+            }
+
+            return points;
+        }
+
+        private static (int segmentPoint, int segmentParticlePoints) CountHits(
+            float radiusMin, float radiusMax,
+            in Vector3[] points,
+            IEnumerable<Particle> particles
+        )
+        {
+            int segmentPoint = 0;
+            int segmentParticlePoints = 0;
+
+            foreach (var point in points)
+            {
+                var sqrLength = point.LengthSquared();
+
+                if (sqrLength >= radiusMin * radiusMin &&
+                    sqrLength <= radiusMax * radiusMax
+                )
+                {
+                    segmentPoint++;
+
+                    foreach (var particle in particles)
+                        if (particle.Contains(point))
+                            segmentParticlePoints++;
+                }
+            }
+
+            return (segmentPoint, segmentParticlePoints);
+        }
+
+        private static (
+            IEnumerable<float> localVolume,
+            IEnumerable<float> globalVolume,
+            IEnumerable<float> tmpConst
+        ) Eval(Area area, in float[] qs)
+        {
+            var vConst = 4 / 3 * MathF.PI;
+
+            var outerSphereVolume = vConst * MathF.Pow(area.OuterRadius, 3);
+
+            var localVolume = area.Particles
+                .Select(fullerene => vConst * MathF.Pow(fullerene.OuterSphereRadius, 3));
+
+            var globalVolume = qs.Select(qI => outerSphereVolume * Factor(area.OuterRadius * qI));
+
+            var tmpConst = area.Particles
+                .Select(fullerene => fullerene.Center.Length());
+
+            return (localVolume, globalVolume, tmpConst);
+        }
+
+        private static float Factor(float x)
+            => 3 * (MathF.Sin(x) - x * MathF.Cos(x)) / MathF.Pow(x, 3);
+
+        private static (IEnumerable<float> q, IEnumerable<float> I) IntenceOpt(
+            IEnumerable<float> qs,
+            IEnumerable<float> globalVolume,
+            IEnumerable<float> tmpConst,
+            IEnumerable<float> localVolume,
+            Area area)
+        {
+            int qNum = qs.Count();
+            int fullereneNum = area.Particles.Count();
+
+            Span<float> localVolumeSqr = localVolume.Select(v => MathF.Pow(v, 2)).ToArray();
+
+            var qR = new FloatMatrix(new float[qNum * fullereneNum], fullereneNum);
+            var factorConst = new FloatMatrix(new float[qNum * fullereneNum], fullereneNum);
+            var factorSqr = new FloatMatrix(new float[qNum * fullereneNum], fullereneNum);
+
+            for (int i = 0; i < qNum; i++)
+                for (int j = 0; j < fullereneNum; j++)
+                {
+                    qR[i, j] = qs.ElementAt(i) * area.Particles.ElementAt(j).OuterSphereRadius;
+                    factorConst[i, j] = Factor(qR[i, j]);
+                    factorSqr[i, j] = factorConst[i, j] * factorConst[i, j];
+                }
+
+            Span<float> s2 = new float[qNum];
+            Span<float> spFirstSummand = new float[qNum];
+
+            for (int i = 0; i < qNum; i++)
+                for (int j = 0; j < fullereneNum; j++)
+                {
+                    s2[i] += factorSqr[i, j] * localVolumeSqr[j];
+                    spFirstSummand[i] += localVolume.ElementAt(j) * factorConst[i, j] * Sinc(qs.ElementAt(i) * tmpConst.ElementAt(j));
+                }
+
+            Span<float> spFactors = new float[qNum];
+
+            for (int i = 0; i < fullereneNum; i++)
+                for (int j = i + 1; j < fullereneNum; j++)
+                {
+                    var dist = Vector3.Distance(area.Particles.ElementAt(i).Center, area.Particles.ElementAt(j).Center);
+                    var vol = localVolume.ElementAt(j) * localVolume.ElementAt(i);
+
+                    for (int k = 0; k < qNum; k++)
+                        spFactors[k] += factorConst[k, i] * factorConst[k, j] * Sinc(qs.ElementAt(k) * dist) * vol;
+                }
+
+            Span<float> spGlobalArray = globalVolume.ToArray();
+
+            var I = new float[qNum];
+
+            for (int k = 0; k < qNum; k++)
+            {
+                var spG = spGlobalArray[k];
+                I[k] = s2[k]
+                     + 2 * spFactors[k]
+                     + fullereneNum * fullereneNum * spG * spG
+                     - 2 * fullereneNum * spFirstSummand[k] * spG;
+            }
+
+            return (qs, I);
+        }
+
+        private ref struct FloatMatrix
+        {
+            private readonly Span<float> _data;
+            private readonly int _cols;
+
+            public FloatMatrix(Span<float> data, int cols)
+            {
+                _data = data;
+                _cols = cols;
+            }
+
+            public ref float this[int row, int col]
+                => ref _data[row * _cols + col];
+
+            public int Rows => _data.Length / _cols;
+            public int Columns => _cols;
+        }
+
+        private static float Sinc(float x)
+            => MathF.Sin(x) / x;
     }
 }

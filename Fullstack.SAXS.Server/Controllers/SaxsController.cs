@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Threading.Tasks;
 using Fullstack.SAXS.Server.Contracts;
 using Fullstack.SAXS.Server.Infastructure.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -46,9 +47,9 @@ namespace Fullstack.SAXS.Server.Controllers
         }
 
         [HttpPost("sys/create/phi/graf")]
-        public IActionResult CreateSysPhiGraf([FromQuery] Guid id, [FromQuery] int layersNum)
+        public async Task<IActionResult> CreateSysPhiGraf([FromQuery] Guid id, [FromQuery] int layersNum)
         {
-            var html = sysService.CreatePhiGraf(id, layersNum);
+            var html = await sysService.CreatePhiGrafAsync(id, layersNum);
 
             return new OkObjectResult(html);
         }
