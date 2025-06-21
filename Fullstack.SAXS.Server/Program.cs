@@ -1,30 +1,21 @@
 using System.Security.Claims;
+using Fullstack.SAXS.Application;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Infrastructure.DbContexts;
 using Fullstack.SAXS.Infrastructure.IO;
 using Fullstack.SAXS.Infrastructure.Repositories;
+using Fullstack.SAXS.Persistence.Contracts;
 using Fullstack.SAXS.Server.Infastructure.Factories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var csvFolder = 
-    builder.Configuration["FilesFolder:CsvFolder"]
-    ?? 
-    Path.Combine(
-        AppContext.BaseDirectory,
-        "CsvResults"
-    );
-
-if (!Directory.Exists(csvFolder))
-    Directory.CreateDirectory(csvFolder);
-
 builder.Services
     .AddScoped<IFileService, FileService>()
     .AddScoped<IStorage, AreaRepository>()
     .AddScoped<AreaParticleFactory, SphereIcosahedronFactory>()
-    .AddSingleton<string>(csvFolder);
+    .AddSingleton<IStringService, StringService>();
 
 builder.Services
     .AddControllers()

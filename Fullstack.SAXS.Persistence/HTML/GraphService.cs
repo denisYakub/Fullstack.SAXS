@@ -5,10 +5,11 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Persistence.Contracts;
 
 namespace Fullstack.SAXS.Persistence.HTML
 {
-    public class GraphService(string uri) : IGraphService
+    public class GraphService(IStringService @string) : IGraphService
     {
         public async Task<string> GetHtmlPage(float[] x, float[] y)
         {
@@ -23,7 +24,7 @@ namespace Fullstack.SAXS.Persistence.HTML
                 "application/json"
             );
 
-            var response = await client.PostAsync(uri, content);
+            var response = await client.PostAsync(@string.GetGraphUriPath(), content);
 
             var html = await response.Content.ReadAsStringAsync();
 

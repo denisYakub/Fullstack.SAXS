@@ -1,4 +1,5 @@
 ﻿using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Persistence.Contracts;
 using Fullstack.SAXS.Server.Domain.Entities.Areas;
 using Fullstack.SAXS.Server.Domain.Entities.Particles;
 using Fullstack.SAXS.Server.Domain.Enums;
@@ -8,7 +9,7 @@ using System.Text;
 
 namespace Fullstack.SAXS.Infrastructure.IO
 {
-    public class FileService : IFileService
+    public class FileService(IStringService @string) : IFileService
     {
         public Area Read(string filePath)
         {
@@ -130,7 +131,7 @@ namespace Fullstack.SAXS.Infrastructure.IO
                 return new SphereArea(series, r, particles);
         }
 
-        public string Write(Area obj, string folderPath)
+        public string Write(Area obj)
         {
             var file = new StringBuilder();
 
@@ -142,7 +143,7 @@ namespace Fullstack.SAXS.Infrastructure.IO
             ]);
             file.Append(".csv");
 
-            var path = Path.Combine(folderPath, file.ToString());
+            var path = Path.Combine(@string.GetCsvFolder(), file.ToString());
 
             var prtcls = obj.Particles;
 
@@ -178,7 +179,7 @@ namespace Fullstack.SAXS.Infrastructure.IO
             return path;
         }
 
-        public async Task<string> WriteAsync(Area obj, string folderPath)
+        public async Task<string> WriteAsync(Area obj)
         {
             var file = new StringBuilder();
 
@@ -190,7 +191,7 @@ namespace Fullstack.SAXS.Infrastructure.IO
             ]);
             file.Append(".csv");
 
-            var path = Path.Combine(folderPath, file.ToString());
+            var path = Path.Combine(@string.GetCsvFolder(), file.ToString());
 
             var prtcls = obj.Particles;
 

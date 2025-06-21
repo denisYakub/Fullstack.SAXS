@@ -8,5 +8,7 @@ namespace Fullstack.SAXS.Domain.Contracts
         Task AddAsync(Area entity);
         void Save(Guid idUser);
         Task SaveAsync(Guid idUser);
+        Area GetArea(Guid id);
+        Task<Area> GetAreaAsync(Guid id);
     }
 }
