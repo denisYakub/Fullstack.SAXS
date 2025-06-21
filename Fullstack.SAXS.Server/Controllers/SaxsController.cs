@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using Fullstack.SAXS.Application;
+using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Server.Contracts;
-using Fullstack.SAXS.Server.Infastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,16 +53,16 @@ namespace Fullstack.SAXS.Server.Controllers
         {
             var html = await sysService.CreatePhiGrafAsync(id, layersNum);
 
-            return new OkObjectResult(html);
+            return new ContentResult() { Content = html, ContentType = "text/html" };
         }
 
         [HttpPost("sys/create/intens/opt/graf")]
-        public IActionResult CreateSysIntensOptGraf([FromQuery] Guid id, [FromBody] CreateIntensOptRequest request)
+        public async Task<IActionResult> CreateSysIntensOptGraf([FromQuery] Guid id, [FromBody] CreateIntensOptRequest request)
         {
             if (!request.isLegit)
                 throw new BadHttpRequestException("Request is not correct!");
 
-            var html = 
+            var html = await
                 sysService
                 .CreateIntensOptGraf(
                     id,
@@ -68,7 +70,7 @@ namespace Fullstack.SAXS.Server.Controllers
                     request.QNum
                 );
 
-            return new OkObjectResult(html);
+            return new ContentResult() { Content = html, ContentType = "text/html" };
         }
     }
 }

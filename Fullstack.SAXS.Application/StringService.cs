@@ -16,7 +16,7 @@ namespace Fullstack.SAXS.Application
 
         public string GetGraphUriPath()
         {
-            throw new NotImplementedException();
+            return "http://localhost:5001";
         }
     }
 }

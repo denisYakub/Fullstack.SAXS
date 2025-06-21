@@ -12,9 +12,8 @@ using Fullstack.SAXS.Server.Domain.Entities.Regions;
 using Fullstack.SAXS.Server.Infastructure.Factories;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Fullstack.SAXS.Server.Infastructure.Services
+namespace Fullstack.SAXS.Application
 {
     public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph)
     {
@@ -83,7 +82,7 @@ namespace Fullstack.SAXS.Server.Infastructure.Services
             return new JsonResult(json);
         }
 
-        public async Task<IHtmlContent> CreateIntensOptGraf(
+        public async Task<string> CreateIntensOptGraf(
             Guid id,
             float QMin, float QMax, int QNum
         )
@@ -93,20 +92,16 @@ namespace Fullstack.SAXS.Server.Infastructure.Services
 
             var (x, y) = CreateIntensOptCoord(area, in qs);
 
-            var html = await graph.GetHtmlPage(x, y);
-
-            return new HtmlString(html);
+            return await graph.GetHtmlPage(x, y);
         }
 
-        public async Task<IHtmlContent> CreatePhiGrafAsync(Guid id, int layersNum)
+        public async Task<string> CreatePhiGrafAsync(Guid id, int layersNum)
         {
             var area = storage.GetArea(id);
 
             var (x, y) = await CreatePhiCoord(area, layersNum);
 
-            var html = await graph.GetHtmlPage(x, y);
-
-            return new HtmlString(html);
+            return await graph.GetHtmlPage(x, y);
         }
 
         private static async Task<(float[] x, float[] y)> CreatePhiCoord(
