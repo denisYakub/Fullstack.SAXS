@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Persistence.Contracts;
 
@@ -13,18 +9,18 @@ namespace Fullstack.SAXS.Persistence.HTML
     {
         public async Task<string> GetHtmlPage(float[] x, float[] y)
         {
-            var request = new { x, y };
-            var json = JsonSerializer.Serialize(request);
-
-            using var client = new HttpClient();
-
-            var content = new StringContent(
-                json, 
-                Encoding.UTF8, 
+            var client = new HttpClient()
+            {
+                BaseAddress = new Uri(@string.GetGraphUriPath())
+            };
+            using var jsonContent = new StringContent(
+                JsonSerializer.Serialize(new { x, y }),
+                Encoding.UTF8,
                 "application/json"
             );
+            using var response = await client.PostAsync("/plot", jsonContent);
 
-            var response = await client.PostAsync(@string.GetGraphUriPath(), content);
+            response.EnsureSuccessStatusCode();
 
             var html = await response.Content.ReadAsStringAsync();
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fullstack.SAXS.Persistence.Contracts;
+﻿using Fullstack.SAXS.Persistence.Contracts;
 
 namespace Fullstack.SAXS.Persistence.Tests.Mocks
 {

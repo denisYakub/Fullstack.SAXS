@@ -5,6 +5,7 @@ using Fullstack.SAXS.Infrastructure.DbContexts;
 using Fullstack.SAXS.Infrastructure.IO;
 using Fullstack.SAXS.Infrastructure.Repositories;
 using Fullstack.SAXS.Persistence.Contracts;
+using Fullstack.SAXS.Persistence.HTML;
 using Fullstack.SAXS.Server.Infastructure.Factories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddScoped<IFileService, FileService>()
     .AddScoped<IStorage, AreaRepository>()
+    .AddScoped<SysService>()
     .AddScoped<AreaParticleFactory, SphereIcosahedronFactory>()
+    .AddScoped<IGraphService, GraphService>()
     .AddSingleton<IStringService, StringService>();
 
 builder.Services

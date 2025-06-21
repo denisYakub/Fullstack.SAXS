@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Persistence"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Persistence.Tests", "Fullstack.SAXS.Persistence.Tests\Fullstack.SAXS.Persistence.Tests.csproj", "{8D4F7BF6-3CAE-4BA4-ACAC-29B2BC0F3597}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Fullstack.SAXS.Api", "Fullstack.SAXS.Api\Fullstack.SAXS.Api.pyproj", "{7CA84180-B6E1-49D8-873A-CCB6E1363CC2}"
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Fullstack.SAXS.Api", "Fullstack.SAXS.Api\Fullstack.SAXS.api.pyproj", "{7CA84180-B6E1-49D8-873A-CCB6E1363CC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
