@@ -25,9 +25,9 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Sp
         public float? Phi { get; private set; }
         [Column("particle_number")]
         public int ParticleNum { get; private set; }
-        [ForeignKey("sp_data")]
         [Column("id_sp_data")]
         public Guid IdSpData { get; private set; }
+        [ForeignKey(nameof(IdSpData))]
         public SpData? SpData { get; private set; }
 
         public SpGeneration()

@@ -2,12 +2,11 @@
 using Fullstack.SAXS.Infrastructure.DbContexts;
 using Fullstack.SAXS.Server.Domain.Entities.Areas;
 using Fullstack.SAXS.Server.Domain.Entities.Sp;
+using Microsoft.EntityFrameworkCore;
 
 namespace Fullstack.SAXS.Infrastructure.Repositories
 {
-    public class AreaRepository(
-        IFileService file, PosgresDbContext postgres, string folderPath
-    ) : IStorage
+    public class AreaRepository(IFileService file, PosgresDbContext postgres) : IStorage
     {
         private ICollection<Area> _areas = new List<Area>(10);
         private ICollection<SpData> _areaPathDatas = new List<SpData>(10);
@@ -16,7 +15,7 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
         {
             _areas.Add(entity);
 
-            var path = file.Write(entity, folderPath);
+            var path = file.Write(entity);
 
             _areaPathDatas.Add(new(path));
         }
@@ -25,9 +24,29 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
         {
             _areas.Add(entity);
 
-            var path = await file.WriteAsync(entity, folderPath);
+            var path = await file.WriteAsync(entity);
 
             _areaPathDatas.Add(new (path));
+        }
+
+        public Area GetArea(Guid id)
+        {
+            var path = postgres.Datas.FirstOrDefault(d => d.Id == id);
+
+            if (path == null)
+                throw new ArgumentException($"No data with this id {id}");
+
+            return file.Read(path.Path);
+        }
+
+        public async Task<Area> GetAreaAsync(Guid id)
+        {
+            var path = await postgres.Datas.FirstOrDefaultAsync(d => d.Id == id);
+
+            if (path == null)
+                throw new ArgumentException($"No data with this id {id}");
+
+            return await file.ReadAsync(path.Path);
         }
 
         public void Save(Guid idUser)
