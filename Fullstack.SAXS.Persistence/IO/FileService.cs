@@ -7,7 +7,7 @@ using Fullstack.SAXS.Server.Domain.ValueObjects;
 using System.Numerics;
 using System.Text;
 
-namespace Fullstack.SAXS.Infrastructure.IO
+namespace Fullstack.SAXS.Persistence.IO
 {
     public class FileService(IStringService @string) : IFileService
     {
@@ -38,6 +38,10 @@ namespace Fullstack.SAXS.Infrastructure.IO
             }
 
             var lines = File.ReadLines(filePath, Encoding.UTF8);
+
+            if (lines.Count() <= 1)
+                return new SphereArea(series, r, null);
+
             List<Particle> particles = new(lines.Count() - 1);
 
             foreach ( var line in lines.Skip(1) )
@@ -63,10 +67,7 @@ namespace Fullstack.SAXS.Infrastructure.IO
                 particles.Add(particle);
             }
 
-            if (particleType == null)
-                return new SphereArea(series, r, null);
-            else
-                return new SphereArea(series, r, particles);
+            return new SphereArea(series, r, particles);
         }
 
         public async Task<Area> ReadAsync(string filePath)

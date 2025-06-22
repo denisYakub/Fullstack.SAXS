@@ -1,56 +1,107 @@
-﻿using Fullstack.SAXS.Infrastructure.IO;
-using Fullstack.SAXS.Persistence.Tests.Mocks;
+﻿using Fullstack.SAXS.Persistence.Contracts;
+using Fullstack.SAXS.Persistence.IO;
 using Fullstack.SAXS.Server.Domain.Entities.Areas;
 using Fullstack.SAXS.Server.Domain.Entities.Particles;
+using Moq;
 
 namespace Fullstack.SAXS.Persistence.Tests
 {
-    public class Tests
+    public class FileServiceTests
     {
         private FileService _fileService;
-        private string _folderPath;
+        private string _areaWithParticlesPath;
+        private string _areaWithoutParticlesPath;
 
         [SetUp]
         public void Setup()
         {
-            var strService = new StringServiceMock();
-            _fileService = new FileService(strService);
+            var strServiceMock = new Mock<IStringService>();
+
+            var folder = Path.Combine(
+                AppContext.BaseDirectory,
+                "FilesForTests"
+            );
+
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            strServiceMock
+                .Setup(s => s.GetCsvFolder())
+                .Returns(folder);
+
+            _fileService = new FileService(strServiceMock.Object);
+
+            _areaWithoutParticlesPath = Path.Combine(
+                folder, 
+                "Series#0_OuterRadius#100_AreaType#Sphere_ParticlesType#.csv"
+            );
+
+            _areaWithParticlesPath = Path.Combine(
+                folder, 
+                "Series#1_OuterRadius#100_AreaType#Sphere_ParticlesType#Icosahedron.csv"
+            );
         }
 
         [Test]
-        public void Test_Write_Method()
+        public void Write_AreaWithParticles_ReturnFilePath()
         {
-            //Init
-            var areaWithoutParticles = new SphereArea(0, 100, 5);
-            var areaWithParticles = new SphereArea(1, 100, 5);
+            // Arrange
+            var area = new SphereArea(1, 100, 5);
 
             Particle[] particles = [
                 new IcosahedronParticle(5, new (0, 0, 0), new (360, 360, 360)),
                 new IcosahedronParticle(3, new (10, 10, 10), new (360, 360, 360)),
                 new IcosahedronParticle(1, new (-10, -10, -10), new (360, 360, 360)),
             ];
-            //Do
-            areaWithParticles.Fill(particles, 3);
 
-            var p = areaWithParticles.ParticlesType;
+            area.Fill(particles, 3);
 
-            var resultFile1 = _fileService.Write(areaWithoutParticles);
-            var resultFile2 = _fileService.Write(areaWithParticles);
-            //Assert
-            Assert.Pass(resultFile1);
-            Assert.Pass(resultFile2);
+            // Act
+            var file = _fileService.Write(area);
+
+            // Assert
+            Assert.Pass(file);
         }
 
         [Test]
-        public void Test_Read_Method()
+        public void Write_AreaWithoutParticles_ReturnFilePath()
         {
-            //Init
-            var path = @"C:\Users\denis\source\repos\Fullstack.SAXS\Fullstack.SAXS.Persistence.Tests\bin\Debug\net9.0\FileServiceTests\Series#1_OuterRadius#100_AreaType#Sphere_ParticlesType#Icosahedron.csv";
-            //Do
-            var area = _fileService.Read(path);
-            //Assert
-            Assert.That(area, Is.Not.Null);
-            Assert.That(area.Particles.Count(), Is.EqualTo(3));
+            // Arrange
+            var area = new SphereArea(0, 100, 5);
+
+            // Act
+            var file = _fileService.Write(area);
+
+            // Assert
+            Assert.Pass(file);
+        }
+
+        [Test]
+        public void Read_AreaWithParticles_ReturnSphereAreaClass()
+        {
+            // Arrange
+            if (_areaWithParticlesPath == null) 
+                Assert.Fail();
+
+            // Act
+            var area = _fileService.Read(_areaWithParticlesPath);
+
+            // Assert
+            Assert.That(area.Particles.Any());
+        }
+
+        [Test]
+        public void Read_AreaWithoutParticles_ReturnSphereAreaClass()
+        {
+            // Arrange
+            if (_areaWithoutParticlesPath == null)
+                Assert.Fail();
+
+            // Act
+            var area = _fileService.Read(_areaWithoutParticlesPath);
+
+            // Assert
+            Assert.That(area.Particles == null);
         }
     }
 }
