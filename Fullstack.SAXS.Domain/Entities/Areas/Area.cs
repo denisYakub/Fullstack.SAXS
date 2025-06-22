@@ -9,21 +9,23 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
 {
     public abstract class Area
     {
-        private static readonly int _retryToFillMax = 1000;
-
         public readonly int Series;
 
-        private Octree? _octree;
+        private static readonly int _retryToFillMax = 1_000;
+
         private IReadOnlyCollection<Particle>? _particles;
 
-        public IEnumerable<Particle> Particles 
+        public IEnumerable<Particle>? Particles 
         { 
             get
             {
                 if (_particles != null)
                     return _particles;
-                else
-                    return _octree.GetAll();
+
+                if (Octree != null)
+                    return Octree.GetAll();
+
+                return null;
             }
         }
         public ParticleTypes? ParticlesType 
@@ -32,24 +34,21 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
             {
                 if (_particles != null)
                     return _particles.First().ParticleType;
-                else if (Particles.Any())
-                    return Particles.First().ParticleType;
-                else
-                    return null;
+
+                if (Octree != null)
+                    return Octree.GetAll().First().ParticleType;
+
+                return null;
             }
         }
 
         public abstract float OuterRadius { get; }
         public abstract AreaTypes AreaType { get; }
+        protected abstract Octree? Octree { get; }
 
-        protected Area(int series, float maxParticleSize)
+        protected Area(int series)
         {
             Series = series;
-
-            var outerRegion = new Region(new (0, 0, 0), OuterRadius * 2);
-            var maxDepth = outerRegion.MaxDepth(3 * maxParticleSize);
-
-            _octree = new Octree(maxDepth, outerRegion);
         }
 
         protected Area(int series, IReadOnlyCollection<Particle>? particles)
@@ -62,7 +61,7 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
 
         public void Fill(IEnumerable<Particle> infParticles, int particleNumber)
         {
-            if (_particles != null)
+            if (_particles != null && Octree == null)
                 return;
 
             var retryCount = 0;
@@ -76,7 +75,7 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
 
                 var particle = particleGenerator.Current;
 
-                if (Contains(particle) && _octree.Add(particle))
+                if (Contains(particle) && Octree.Add(particle))
                 {
                     particleCount++;
                     retryCount = 0;
