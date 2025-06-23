@@ -63,7 +63,7 @@ namespace Fullstack.SAXS.Application.Tests
 
         private Area CreateSomeArea(int particleNum)
         {
-            var areaRadius = 3000;
+            var areaRadius = 100;
             var maxParticleSize = 5;
 
             var area = new SphereArea(0, areaRadius, maxParticleSize);

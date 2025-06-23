@@ -47,14 +47,13 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
 
         public bool Contains(Vector3 point)
         {
-            var centerF = Center;
-            var vertices = Vertices;
-
-            if (FiguresCollision.Pointinside(in centerF, InnerSphereRadius, in point))
+            if (Vector3.DistanceSquared(point, Center) <= InnerSphereRadius * InnerSphereRadius)
                 return true;
 
-            if (!FiguresCollision.Pointinside(in centerF, OuterSphereRadius, in point))
+            if (Vector3.DistanceSquared(point, Center) > OuterSphereRadius * OuterSphereRadius)
                 return false;
+
+            var vertices = Vertices;
 
             foreach (var face in Faces)
             {
