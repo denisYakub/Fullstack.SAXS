@@ -67,22 +67,22 @@ namespace Fullstack.SAXS.Application
             }
         }
 
-        public JsonResult Get(Guid id)
+        public string Get(Guid id)
         {
             var area = storage.GetArea(id);
 
             var options = new JsonSerializerOptions()
             {
                 WriteIndented = true,
-                IncludeFields = true
+                IncludeFields = true,
             };
 
             var json = JsonSerializer.Serialize(area, options);
 
-            return new JsonResult(json);
+            return json;
         }
 
-        public async Task<string> CreateIntensOptGraf(
+        public async Task<string> CreateIntensOptGrafAsync(
             Guid id,
             float QMin, float QMax, int QNum
         )
@@ -92,23 +92,23 @@ namespace Fullstack.SAXS.Application
 
             var (x, y) = CreateIntensOptCoord(area, in qs);
 
-            return await graph.GetHtmlPage(x, y);
+            return await graph.GetHtmlPageAsync(x, y);
         }
 
         public async Task<string> CreatePhiGrafAsync(Guid id, int layersNum)
         {
-            var area = storage.GetArea(id);
+            var area = await storage.GetAreaAsync(id);
 
-            var (x, y) = await CreatePhiCoord(area, layersNum);
+            var (x, y) = await CreatePhiCoordAsync(area, layersNum);
 
-            return await graph.GetHtmlPage(x, y);
+            return await graph.GetHtmlPageAsync(x, y);
         }
 
-        private static async Task<(float[] x, float[] y)> CreatePhiCoord(
-            Area area, int numberOfLayers = 5, int numberOfPoints = 1_000_000
+        private static async Task<(float[] x, float[] y)> CreatePhiCoordAsync(
+            Area area, int numberOfLayers = 5, int numberOfPoints = 100_000
         )
         {
-            var segmentsR = CreateSegmentsRadii(area.OuterRadius, numberOfLayers + 1);
+            var segmentsR = CreateSegmentsRadii(area.OuterRadius, numberOfLayers);
             var points = CreateRandomPoints(area.OuterRadius, numberOfPoints);
 
             var segmentTasks =
@@ -128,25 +128,13 @@ namespace Fullstack.SAXS.Application
 
             var phiValues = new (float value, bool isSet)[segmentTasks.Length];
 
-            var getValues = 0;
-
-            while (true)
+            for (int i = 0; i < segmentTasks.Length; i++)
             {
-                if (getValues == segmentTasks.Length)
-                    break;
+                var (segmentPoint, segmentParticlePoints) = await segmentTasks[i];
 
-                for (int i = 0; i < segmentTasks.Length; i++)
-                {
-                    if (segmentTasks[i].IsCompleted && !phiValues[i].isSet)
-                    {
-                        var (segmentPoint, segmentParticlePoints) = await segmentTasks[i];
+                float phi = segmentParticlePoints / (float)segmentPoint;
 
-                        float phi = segmentParticlePoints / (float)segmentPoint;
-
-                        phiValues[i].value = phi;
-                        getValues++;
-                    }
-                }
+                phiValues[i].value = phi;
             }
 
             var result = phiValues.Select((phi, index) => (index, phi.value));
@@ -182,7 +170,7 @@ namespace Fullstack.SAXS.Application
 
         private static float[] CreateSegmentsRadii(float areaOuterR, int radiiNum)
         {
-            var radii = new float[radiiNum];
+            var radii = new float[radiiNum + 1];
 
             for (int i = 0; i < radiiNum; i++)
             {
@@ -222,11 +210,9 @@ namespace Fullstack.SAXS.Application
 
             foreach (var point in points)
             {
-                var sqrLength = point.LengthSquared();
+                var distance = Vector3.Distance(new (0, 0, 0), point);
 
-                if (sqrLength >= radiusMin * radiusMin &&
-                    sqrLength <= radiusMax * radiusMax
-                )
+                if (distance >= radiusMin && distance <= radiusMax)
                 {
                     segmentPoint++;
 

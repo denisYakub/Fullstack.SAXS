@@ -4,6 +4,7 @@ using Fullstack.SAXS.Server.Domain.Entities.Areas;
 using Fullstack.SAXS.Server.Domain.Entities.Particles;
 using Fullstack.SAXS.Server.Domain.Enums;
 using Fullstack.SAXS.Server.Domain.ValueObjects;
+using System.Globalization;
 using System.Numerics;
 using System.Text;
 
@@ -50,16 +51,28 @@ namespace Fullstack.SAXS.Persistence.IO
                 var center = line.Split(';')[1];
                 var rotationAngles = line.Split(';')[2];
 
-                var x = center.Split(' ')[0];
-                var y = center.Split(' ')[1];
-                var z = center.Split(' ')[2];
+                var x = center
+                    .Split(' ')[0][1..]
+                    .Replace(',', '.')
+                    .Replace("\u00A0", "")
+                    .Trim();
+                var y = center
+                    .Split(' ')[1]
+                    .Replace(',', '.')
+                    .Replace("\u00A0", "")
+                    .Trim();
+                var z = center
+                    .Split(' ')[2][..^1]
+                    .Replace(',', '.')
+                    .Replace("\u00A0", "")
+                    .Trim();
 
                 var particle = new IcosahedronParticle(
                     float.Parse(size), 
                     new Vector3(
-                        float.Parse(x.Substring(1)),
-                        float.Parse(y),
-                        float.Parse(z.Substring(0, z.Length - 1))
+                        float.Parse(x, CultureInfo.InvariantCulture),
+                        float.Parse(y, CultureInfo.InvariantCulture),
+                        float.Parse(z, CultureInfo.InvariantCulture)
                     ), 
                     EulerAngles.Parse(rotationAngles)
                 );
