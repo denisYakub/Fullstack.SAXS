@@ -50,6 +50,10 @@ export default defineConfig({
             '^/api': {
                 target,
                 secure: false
+            },
+            '^/ping-auth': {
+                target,
+                secure: false
             }
         },
         port: parseInt(env.DEV_SERVER_PORT || '55959'),
