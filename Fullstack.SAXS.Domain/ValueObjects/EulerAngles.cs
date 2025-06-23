@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Globalization;
+using System.Numerics;
 
 namespace Fullstack.SAXS.Server.Domain.ValueObjects
 {
@@ -52,9 +53,18 @@ namespace Fullstack.SAXS.Server.Domain.ValueObjects
 
             return 
                 new EulerAngles(
-                    float.Parse(data[0]),
-                    float.Parse(data[1]),
-                    float.Parse(data[2])
+                    float.Parse(
+                        data[0].Replace(',', '.'), 
+                        CultureInfo.InvariantCulture
+                    ),
+                    float.Parse(
+                        data[1].Replace(',', '.'), 
+                        CultureInfo.InvariantCulture
+                    ),
+                    float.Parse(
+                        data[2].Replace(',', '.'), 
+                        CultureInfo.InvariantCulture
+                    )
                 );
         }
     }

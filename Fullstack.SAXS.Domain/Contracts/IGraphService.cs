@@ -8,6 +8,6 @@ namespace Fullstack.SAXS.Domain.Contracts
 {
     public interface IGraphService
     {
-        Task<string> GetHtmlPage(float[] x, float[] y);
+        Task<string> GetHtmlPageAsync(float[] x, float[] y);
     }
 }

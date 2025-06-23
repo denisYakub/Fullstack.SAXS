@@ -91,6 +91,8 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
 
                 await postgres.Generations.AddAsync(gen);
             }
+
+            postgres.SaveChanges();
         }
 
         private long GetGenNum()

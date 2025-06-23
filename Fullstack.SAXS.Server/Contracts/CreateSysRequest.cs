@@ -14,7 +14,7 @@
         {
             get
             {
-                if (!AreaRadius.HasValue || !Nc.HasValue)
+                if (!AreaRadius.HasValue && !Nc.HasValue)
                     return false;
 
                 if (ParticleMinSize > ParticleMaxSize)

@@ -21,7 +21,7 @@ builder.Services
     .AddSingleton<IStringService, StringService>();
 
 builder.Services
-    .AddControllers()
+    .AddControllersWithViews()
     .AddNewtonsoftJson(options => 
         options
         .SerializerSettings
@@ -40,7 +40,7 @@ builder.Services
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 
-/*builder.Services.ConfigureApplicationCookie(options =>
+builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Identity/Account/Login";
     options.LogoutPath = "/Identity/Account/Logout";
@@ -48,10 +48,7 @@ builder.Services
 
     options.Events.OnRedirectToLogin = context =>
     {
-        if (context.Request.Path.StartsWithSegments("/ping-auth")
-            && context.Request.Path.StartsWithSegments("/api/Main")
-            && context.Request.Path.StartsWithSegments("/swagger/index.html")
-            && context.Response.StatusCode == 200)
+        if (context.Request.Path.StartsWithSegments("/ping-auth") && context.Response.StatusCode == 200)
         {
             context.Response.StatusCode = 401;
             return Task.CompletedTask;
@@ -60,7 +57,7 @@ builder.Services
         context.Response.Redirect(context.RedirectUri);
         return Task.CompletedTask;
     };
-});*/
+});
 
 builder.Services.AddAuthorization();
 

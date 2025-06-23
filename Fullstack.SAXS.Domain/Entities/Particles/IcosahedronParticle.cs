@@ -6,15 +6,16 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
 {
     public class IcosahedronParticle : Particle
     {
-        public override float Volume => GenerateVolume();
 
         public override float OuterSphereRadius => _outerR;
 
         public override float InnerSphereRadius => _innerR;
 
+        protected override float Volume => GenerateVolume();
+
         protected override int[][] Faces => _faces;
 
-        protected override IReadOnlyCollection<Vector3> Vertices => _vertices;
+        public override IReadOnlyCollection<Vector3> Vertices => _vertices;
 
         public override ParticleTypes ParticleType => ParticleTypes.Icosahedron;
 
@@ -47,24 +48,24 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
         public IcosahedronParticle(float size, Vector3 center, EulerAngles rotationAngles)
             : base(size, center, rotationAngles)
         {
-            var _phi = (1 + MathF.Sqrt(5)) / 2;
+            var phi = (1 + MathF.Sqrt(5)) / 2;
 
             _vertices = new Vector3[42];
 
-            _vertices[0] = new Vector3(-1, _phi, 0) * size;
-            _vertices[1] = new Vector3(1, _phi, 0) * size;
-            _vertices[2] = new Vector3(-1, -_phi, 0) * size;
-            _vertices[3] = new Vector3(1, -_phi, 0) * size;
+            _vertices[0] = new Vector3(-1, phi, 0) * size;
+            _vertices[1] = new Vector3(1, phi, 0) * size;
+            _vertices[2] = new Vector3(-1, -phi, 0) * size;
+            _vertices[3] = new Vector3(1, -phi, 0) * size;
 
-            _vertices[4] = new Vector3(0, -1, _phi) * size;
-            _vertices[5] = new Vector3(0, 1, _phi) * size;
-            _vertices[6] = new Vector3(0, -1, -_phi) * size;
-            _vertices[7] = new Vector3(0, 1, -_phi) * size;
+            _vertices[4] = new Vector3(0, -1, phi) * size;
+            _vertices[5] = new Vector3(0, 1, phi) * size;
+            _vertices[6] = new Vector3(0, -1, -phi) * size;
+            _vertices[7] = new Vector3(0, 1, -phi) * size;
 
-            _vertices[8] = new Vector3(_phi, 0, -1) * size;
-            _vertices[9] = new Vector3(_phi, 0, 1) * size;
-            _vertices[10] = new Vector3(-_phi, 0, -1) * size;
-            _vertices[11] = new Vector3(-_phi, 0, 1) * size;
+            _vertices[8] = new Vector3(phi, 0, -1) * size;
+            _vertices[9] = new Vector3(phi, 0, 1) * size;
+            _vertices[10] = new Vector3(-phi, 0, -1) * size;
+            _vertices[11] = new Vector3(-phi, 0, 1) * size;
 
             var edgeSet = new HashSet<int>();
 
@@ -101,6 +102,7 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Particles
 
             var edge = Vector3
                 .Distance(_vertices[_faces[0][0]], _vertices[_faces[0][1]]);
+
             _outerR = 0.951f * edge;
             _innerR = 0.7557f * edge;
         }

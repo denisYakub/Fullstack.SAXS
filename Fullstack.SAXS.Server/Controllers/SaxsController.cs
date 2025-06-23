@@ -64,7 +64,7 @@ namespace Fullstack.SAXS.Server.Controllers
 
             var html = await
                 sysService
-                .CreateIntensOptGraf(
+                .CreateIntensOptGrafAsync(
                     id,
                     request.QMin, request.QMax,
                     request.QNum

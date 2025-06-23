@@ -1,9 +1,8 @@
-﻿using System.Numerics;
+﻿using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Server.Domain.Entities.Octrees;
 using Fullstack.SAXS.Server.Domain.Entities.Particles;
 using Fullstack.SAXS.Server.Domain.Entities.Regions;
 using Fullstack.SAXS.Server.Domain.Enums;
-using MathNet.Numerics;
 
 namespace Fullstack.SAXS.Server.Domain.Entities.Areas
 {
@@ -37,6 +36,6 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
             var rDiff = _radius - particle.OuterSphereRadius;
 
             return particle.Center.LengthSquared() <= rDiff * rDiff;
-         }
+        }
     }
 }

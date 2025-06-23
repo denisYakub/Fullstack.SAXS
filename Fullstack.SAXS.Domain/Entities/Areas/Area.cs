@@ -1,8 +1,5 @@
-﻿using System.Data;
-using System.Numerics;
-using Fullstack.SAXS.Server.Domain.Entities.Octrees;
+﻿using Fullstack.SAXS.Server.Domain.Entities.Octrees;
 using Fullstack.SAXS.Server.Domain.Entities.Particles;
-using Fullstack.SAXS.Server.Domain.Entities.Regions;
 using Fullstack.SAXS.Server.Domain.Enums;
 
 namespace Fullstack.SAXS.Server.Domain.Entities.Areas
