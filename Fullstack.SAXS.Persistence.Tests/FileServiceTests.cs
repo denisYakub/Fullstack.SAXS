@@ -103,5 +103,30 @@ namespace Fullstack.SAXS.Persistence.Tests
             // Assert
             Assert.That(area.Particles == null);
         }
+
+        [Test]
+        public void Custom_Test_Read_Check_Particle_Collision()
+        {
+            // Arrange
+            var area = _fileService.Read(
+                "C:\\Users\\denis\\source\\repos\\denisYakub\\Fullerenes\\" +
+                "Fullerenes.Server\\CsvResults\\Generation_14\\" +
+                "Series#0_OuterRadius#100_AreaType#Sphere_ParticlesType#Icosahedron.csv"
+            );
+
+            var countOfCollision = 0;
+            var particles = area.Particles.ToArray();
+
+            // Act
+            foreach (var particle in particles)
+            {
+                if (particles.AsParallel().Any(particle.Intersect))
+                    countOfCollision++;
+            }
+            
+
+            // Assert
+            Assert.That(countOfCollision - particles.Length == 0);
+        }
     }
 }
