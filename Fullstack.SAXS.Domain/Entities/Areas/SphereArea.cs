@@ -1,6 +1,5 @@
 ﻿using Fullstack.SAXS.Domain.Entities.Octrees;
 using Fullstack.SAXS.Domain.Entities.Particles;
-using Fullstack.SAXS.Domain.Entities.Regions;
 using Fullstack.SAXS.Domain.Enums;
 
 namespace Fullstack.SAXS.Domain.Entities.Areas
@@ -17,11 +16,8 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
         public SphereArea(int series, float radius, float maxParticleSize) 
             : base(series)
         {
-            var outerRegion = new Region(new(0, 0, 0), radius * 2);
-            var maxDepth = outerRegion.MaxDepth(3 * maxParticleSize);
-
             _radius = radius; 
-            _octree = new Octree(maxDepth, outerRegion);
+            _octree = new Octree(radius);
         }
 
         public SphereArea(int series, float radius, IReadOnlyCollection<Particle>? particles)

@@ -61,8 +61,6 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
             if (_particles != null && Octree == null)
                 return;
 
-            var particles = new List<Particle>(particleNumber);
-
             var retryCount = 0;
             var particleCount = 0;
 
@@ -74,9 +72,8 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
 
                 var particle = particleGenerator.Current;
 
-                if (Contains(particle) && !particles.AsParallel().Any(particle.Intersect))//Octree.Add(particle))
+                if (Contains(particle) && Octree.Add(particle))
                 {
-                    particles.Add(particle);
                     particleCount++;
                     retryCount = 0;
                 }
@@ -85,8 +82,6 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
                     retryCount++;
                 }
             }
-
-            _particles = particles;
         }
     }
 }

@@ -3,9 +3,7 @@ using System.Text.Json;
 using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
-using Fullstack.SAXS.Domain.Entities.Octrees;
 using Fullstack.SAXS.Domain.Entities.Particles;
-using Fullstack.SAXS.Domain.Entities.Regions;
 
 namespace Fullstack.SAXS.Application
 {
@@ -24,9 +22,6 @@ namespace Fullstack.SAXS.Application
             try
             {
                 var idUser = Guid.Parse(userId);
-
-                var startRegion = new Region(new(0, 0, 0), AreaSize * 2);
-                var octree = new Octree(startRegion.MaxDepth(3 * ParticleMaxSize), startRegion);
 
                 var areas = factory.GetAreas(AreaSize, AreaNumber, ParticleMaxSize);
 

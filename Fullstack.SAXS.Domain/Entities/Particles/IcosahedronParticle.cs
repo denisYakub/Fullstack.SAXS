@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Fullstack.SAXS.Domain.Entities.Octrees;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
 
@@ -6,7 +7,6 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 {
     public class IcosahedronParticle : Particle
     {
-
         public override float OuterSphereRadius => _outerR;
 
         public override float InnerSphereRadius => _innerR;
@@ -18,6 +18,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
         public override IReadOnlyCollection<Vector3> Vertices => _vertices;
 
         public override ParticleTypes ParticleType => ParticleTypes.Icosahedron;
+
 
         private readonly float _outerR;
         private readonly float _innerR;
@@ -50,7 +51,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
         {
             var phi = (1 + MathF.Sqrt(5)) / 2;
 
-            _vertices = new Vector3[42];
+            _vertices = new Vector3[12];
 
             _vertices[0] = new Vector3(-1, phi, 0) * size;
             _vertices[1] = new Vector3(1, phi, 0) * size;
@@ -67,10 +68,10 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
             _vertices[10] = new Vector3(-phi, 0, -1) * size;
             _vertices[11] = new Vector3(-phi, 0, 1) * size;
 
-            var edgeSet = new HashSet<int>();
 
             int index = 12;
 
+            var edgeSet = new HashSet<int>();
             static int EncodeEdge(int a, int b) => Math.Min(a, b) << 10 | Math.Max(a, b);
 
             foreach (var face in _faces)

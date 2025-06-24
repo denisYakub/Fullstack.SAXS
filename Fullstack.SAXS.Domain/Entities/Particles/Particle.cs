@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Fullstack.SAXS.Domain.Entities.Octrees;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
 
@@ -26,15 +27,15 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
         public bool Intersect(Particle other)
         {
-            var innerRSum = InnerSphereRadius + other.InnerSphereRadius;
-
-            if (Vector3.DistanceSquared(Center, other.Center) <= innerRSum * innerRSum)
-                return true;
-
             var outerRSum = OuterSphereRadius + other.OuterSphereRadius;
 
             if (Vector3.DistanceSquared(Center, other.Center) > outerRSum * outerRSum)
                 return false;
+
+            var innerRSum = InnerSphereRadius + other.InnerSphereRadius;
+
+            if (Vector3.DistanceSquared(Center, other.Center) <= innerRSum * innerRSum)
+                return true;
 
             foreach (var vertex in other.Vertices)
                 if (Contains(vertex))
@@ -45,11 +46,11 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
         public bool Contains(Vector3 point)
         {
-            if (Vector3.DistanceSquared(point, Center) <= InnerSphereRadius * InnerSphereRadius)
-                return true;
-
             if (Vector3.DistanceSquared(point, Center) > OuterSphereRadius * OuterSphereRadius)
                 return false;
+
+            if (Vector3.DistanceSquared(point, Center) <= InnerSphereRadius * InnerSphereRadius)
+                return true;
 
             var vertices = Vertices;
 

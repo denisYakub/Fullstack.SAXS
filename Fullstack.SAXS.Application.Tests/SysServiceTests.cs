@@ -22,7 +22,7 @@ namespace Fullstack.SAXS.Application.Tests
             storageMock
                 .Setup(s => s.GetAreaAsync(It.IsAny<Guid>()))
                 .Returns<Guid>(
-                    (id) => Task.FromResult(CreateSomeArea(1000)
+                    (id) => Task.FromResult(CreateSomeArea(100000)
                 ));
 
             graphMock
