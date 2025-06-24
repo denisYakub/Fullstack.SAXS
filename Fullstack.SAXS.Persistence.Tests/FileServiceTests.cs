@@ -1,7 +1,7 @@
-﻿using Fullstack.SAXS.Persistence.Contracts;
+﻿using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Domain.Entities.Areas;
+using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Persistence.IO;
-using Fullstack.SAXS.Server.Domain.Entities.Areas;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
 using Moq;
 
 namespace Fullstack.SAXS.Persistence.Tests

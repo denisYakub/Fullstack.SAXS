@@ -1,10 +1,8 @@
 ﻿using System.Text;
-using System.Threading.Tasks;
+using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
-using Fullstack.SAXS.Server.Domain.Commands;
-using Fullstack.SAXS.Server.Domain.Entities.Areas;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
-using Fullstack.SAXS.Server.Infastructure.Factories;
+using Fullstack.SAXS.Domain.Entities.Areas;
+using Fullstack.SAXS.Domain.Entities.Particles;
 using MathNet.Numerics.Distributions;
 using Moq;
 
