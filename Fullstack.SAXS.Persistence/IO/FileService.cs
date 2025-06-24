@@ -144,7 +144,7 @@ namespace Fullstack.SAXS.Persistence.IO
                 return new SphereArea(series, r, particles);
         }
 
-        public string Write(Area obj)
+        public string Write(Area obj, long GenerationNum)
         {
             var file = new StringBuilder();
 
@@ -156,7 +156,15 @@ namespace Fullstack.SAXS.Persistence.IO
             ]);
             file.Append(".csv");
 
-            var path = Path.Combine(@string.GetCsvFolder(), file.ToString());
+            var mainFolder = @string.GetCsvFolder();
+            var subFolder = $"Generation_{GenerationNum}";
+
+            var folder = Path.Combine(mainFolder, subFolder);
+
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            var path = Path.Combine(folder, file.ToString());
 
             var prtcls = obj.Particles;
 
@@ -192,7 +200,7 @@ namespace Fullstack.SAXS.Persistence.IO
             return path;
         }
 
-        public async Task<string> WriteAsync(Area obj)
+        public async Task<string> WriteAsync(Area obj, long GenerationNum)
         {
             var file = new StringBuilder();
 
@@ -204,7 +212,15 @@ namespace Fullstack.SAXS.Persistence.IO
             ]);
             file.Append(".csv");
 
-            var path = Path.Combine(@string.GetCsvFolder(), file.ToString());
+            var mainFolder = @string.GetCsvFolder();
+            var subFolder = $"Generation_{GenerationNum}";
+
+            var folder = Path.Combine(mainFolder, subFolder);
+
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            var path = Path.Combine(folder, file.ToString());
 
             var prtcls = obj.Particles;
 

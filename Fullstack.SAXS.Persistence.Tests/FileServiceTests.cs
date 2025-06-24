@@ -57,7 +57,7 @@ namespace Fullstack.SAXS.Persistence.Tests
             area.Fill(particles, 3);
 
             // Act
-            var file = _fileService.Write(area);
+            var file = _fileService.Write(area, 0);
 
             // Assert
             Assert.Pass(file);
@@ -70,7 +70,7 @@ namespace Fullstack.SAXS.Persistence.Tests
             var area = new SphereArea(0, 100, 5);
 
             // Act
-            var file = _fileService.Write(area);
+            var file = _fileService.Write(area, 0);
 
             // Assert
             Assert.Pass(file);

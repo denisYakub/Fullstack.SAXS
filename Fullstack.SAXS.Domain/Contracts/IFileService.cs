@@ -4,9 +4,9 @@ namespace Fullstack.SAXS.Domain.Contracts
 {
     public interface IFileService
     {
-        string Write(Area obj);
+        string Write(Area obj, long GenerationNum);
         Area Read(string filePath);
-        Task<string> WriteAsync(Area obj);
+        Task<string> WriteAsync(Area obj, long GenerationNum);
         Task<Area> ReadAsync(string filePath);
     }
 }

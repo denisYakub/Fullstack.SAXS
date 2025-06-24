@@ -2,6 +2,7 @@
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Sp;
 using Fullstack.SAXS.Infrastructure.DbContexts;
+using MathNet.Numerics.Statistics.Mcmc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fullstack.SAXS.Infrastructure.Repositories
@@ -9,24 +10,10 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
     public class AreaRepository(IFileService file, PosgresDbContext postgres) : IStorage
     {
         private ICollection<Area> _areas = new List<Area>(10);
-        private ICollection<SpData> _areaPathDatas = new List<SpData>(10);
 
         public void Add(Area entity)
         {
             _areas.Add(entity);
-
-            var path = file.Write(entity);
-
-            _areaPathDatas.Add(new(path));
-        }
-
-        public async Task AddAsync(Area entity)
-        {
-            _areas.Add(entity);
-
-            var path = await file.WriteAsync(entity);
-
-            _areaPathDatas.Add(new (path));
         }
 
         public Area GetArea(Guid id)
@@ -51,34 +38,43 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
 
         public void Save(Guid idUser)
         {
-            postgres.Datas.AddRange(_areaPathDatas);
-
             var genNum = GetGenNum();
 
             for (var i = 0; i < _areas.Count; i++)
             {
+                var path = file.Write(_areas.ElementAt(i), genNum);
+
+                var data = new SpData(path);
+
                 var gen = 
                     new SpGeneration(
                         idUser, 
                         genNum, _areas.ElementAt(i).Series, 
                         _areas.ElementAt(i).AreaType,
                         _areas.ElementAt(i).ParticlesType ?? 0,
-                        null, _areas.ElementAt(i).Particles.Count(), 
-                        _areaPathDatas.ElementAt(i).Id
+                        null, _areas.ElementAt(i).Particles.Count(),
+                        data.Id
                     );
 
+                postgres.Datas.Add(data);
                 postgres.Generations.Add(gen);
+
             }
+
+
+            postgres.SaveChanges();
         }
 
         public async Task SaveAsync(Guid idUser)
         {
-            await postgres.Datas.AddRangeAsync(_areaPathDatas);
-
             var genNum = GetGenNum();
 
             for (var i = 0; i < _areas.Count; i++)
             {
+                var path = await file.WriteAsync(_areas.ElementAt(i), genNum);
+
+                var data = new SpData(path);
+
                 var gen =
                     new SpGeneration(
                         idUser,
@@ -86,13 +82,16 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                         _areas.ElementAt(i).AreaType,
                         _areas.ElementAt(i).ParticlesType ?? 0,
                         null, _areas.ElementAt(i).Particles.Count(),
-                        _areaPathDatas.ElementAt(i).Id
+                        data.Id
                     );
 
+                await postgres.Datas.AddAsync(data);
                 await postgres.Generations.AddAsync(gen);
+
             }
 
-            postgres.SaveChanges();
+
+            await postgres.SaveChangesAsync();
         }
 
         private long GetGenNum()

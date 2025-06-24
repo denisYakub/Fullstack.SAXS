@@ -46,10 +46,10 @@ namespace Fullstack.SAXS.Application
 
                     area.Fill(infParticles, ParticleNumber);
 
-                    storage.AddAsync(area);
+                    storage.Add(area);
                 });
 
-                storage.SaveAsync(idUser);
+                storage.SaveAsync(idUser).Wait();
             }
             catch (ArgumentNullException)
             {

@@ -88,3 +88,4 @@ namespace Fullstack.SAXS.Domain.Tests
             Assert.That(result);
         }
     }
+}
