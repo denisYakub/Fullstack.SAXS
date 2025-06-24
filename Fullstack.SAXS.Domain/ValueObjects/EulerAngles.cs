@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Numerics;
 
-namespace Fullstack.SAXS.Server.Domain.ValueObjects
+namespace Fullstack.SAXS.Domain.ValueObjects
 {
     /// <summary>
     /// Rotation angles:

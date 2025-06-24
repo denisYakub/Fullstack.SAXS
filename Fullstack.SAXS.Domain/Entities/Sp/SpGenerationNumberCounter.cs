@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Fullstack.SAXS.Server.Domain.Entities.Sp
+namespace Fullstack.SAXS.Domain.Entities.Sp
 {
     [Table("sp_generation_number_counter")]
     public class SpGenerationNumberCounter

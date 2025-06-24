@@ -1,8 +1,8 @@
-﻿using Fullstack.SAXS.Server.Domain.Entities.Octrees;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
-using Fullstack.SAXS.Server.Domain.Enums;
+﻿using Fullstack.SAXS.Domain.Entities.Octrees;
+using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Enums;
 
-namespace Fullstack.SAXS.Server.Domain.Entities.Areas
+namespace Fullstack.SAXS.Domain.Entities.Areas
 {
     public abstract class Area
     {
@@ -61,6 +61,8 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
             if (_particles != null && Octree == null)
                 return;
 
+            var particles = new List<Particle>(particleNumber);
+
             var retryCount = 0;
             var particleCount = 0;
 
@@ -72,8 +74,9 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
 
                 var particle = particleGenerator.Current;
 
-                if (Contains(particle) && Octree.Add(particle))
+                if (Contains(particle) && !particles.AsParallel().Any(particle.Intersect))//Octree.Add(particle))
                 {
+                    particles.Add(particle);
                     particleCount++;
                     retryCount = 0;
                 }
@@ -82,6 +85,8 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Areas
                     retryCount++;
                 }
             }
+
+            _particles = particles;
         }
     }
 }

@@ -1,10 +1,9 @@
-﻿using Fullstack.SAXS.Domain.Commands;
-using Fullstack.SAXS.Server.Domain.Entities.Octrees;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
-using Fullstack.SAXS.Server.Domain.Entities.Regions;
-using Fullstack.SAXS.Server.Domain.Enums;
+﻿using Fullstack.SAXS.Domain.Entities.Octrees;
+using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Entities.Regions;
+using Fullstack.SAXS.Domain.Enums;
 
-namespace Fullstack.SAXS.Server.Domain.Entities.Areas
+namespace Fullstack.SAXS.Domain.Entities.Areas
 {
     public class SphereArea : Area
     {

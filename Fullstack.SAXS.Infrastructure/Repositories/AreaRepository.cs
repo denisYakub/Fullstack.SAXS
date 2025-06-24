@@ -1,7 +1,7 @@
 ﻿using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Domain.Entities.Areas;
+using Fullstack.SAXS.Domain.Entities.Sp;
 using Fullstack.SAXS.Infrastructure.DbContexts;
-using Fullstack.SAXS.Server.Domain.Entities.Areas;
-using Fullstack.SAXS.Server.Domain.Entities.Sp;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fullstack.SAXS.Infrastructure.Repositories

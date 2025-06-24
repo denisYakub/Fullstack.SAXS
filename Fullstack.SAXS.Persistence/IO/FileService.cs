@@ -1,9 +1,8 @@
 ﻿using Fullstack.SAXS.Domain.Contracts;
-using Fullstack.SAXS.Persistence.Contracts;
-using Fullstack.SAXS.Server.Domain.Entities.Areas;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
-using Fullstack.SAXS.Server.Domain.Enums;
-using Fullstack.SAXS.Server.Domain.ValueObjects;
+using Fullstack.SAXS.Domain.Entities.Areas;
+using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Enums;
+using Fullstack.SAXS.Domain.ValueObjects;
 using System.Globalization;
 using System.Numerics;
 using System.Text;

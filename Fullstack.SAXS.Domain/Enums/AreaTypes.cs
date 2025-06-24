@@ -1,4 +1,4 @@
-﻿namespace Fullstack.SAXS.Server.Domain.Enums
+﻿namespace Fullstack.SAXS.Domain.Enums
 {
     public enum AreaTypes
     {

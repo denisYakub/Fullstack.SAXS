@@ -1,4 +1,4 @@
-﻿using Fullstack.SAXS.Server.Domain.Entities.Areas;
+﻿using Fullstack.SAXS.Domain.Entities.Areas;
 
 namespace Fullstack.SAXS.Domain.Contracts
 {

@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
-using Fullstack.SAXS.Server.Domain.Enums;
+using Fullstack.SAXS.Domain.Enums;
 
-namespace Fullstack.SAXS.Server.Domain.Entities.Sp
+namespace Fullstack.SAXS.Domain.Entities.Sp
 {
     [Table("sp_generation")]
     public class SpGeneration

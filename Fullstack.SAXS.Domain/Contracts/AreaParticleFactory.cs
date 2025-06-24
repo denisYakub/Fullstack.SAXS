@@ -1,8 +1,7 @@
-﻿using Fullstack.SAXS.Server.Domain.Entities.Areas;
-using Fullstack.SAXS.Server.Domain.Entities.Octrees;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
+﻿using Fullstack.SAXS.Domain.Entities.Areas;
+using Fullstack.SAXS.Domain.Entities.Particles;
 
-namespace Fullstack.SAXS.Server.Infastructure.Factories
+namespace Fullstack.SAXS.Domain.Contracts
 {
     public abstract class AreaParticleFactory
     {

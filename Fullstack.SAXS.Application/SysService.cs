@@ -1,17 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Numerics;
-using System.Text;
+﻿using System.Numerics;
 using System.Text.Json;
-using System.Threading.Tasks;
+using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
-using Fullstack.SAXS.Server.Domain.Commands;
-using Fullstack.SAXS.Server.Domain.Entities.Areas;
-using Fullstack.SAXS.Server.Domain.Entities.Octrees;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
-using Fullstack.SAXS.Server.Domain.Entities.Regions;
-using Fullstack.SAXS.Server.Infastructure.Factories;
-using Microsoft.AspNetCore.Html;
-using Microsoft.AspNetCore.Mvc;
+using Fullstack.SAXS.Domain.Entities.Areas;
+using Fullstack.SAXS.Domain.Entities.Octrees;
+using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Entities.Regions;
 
 namespace Fullstack.SAXS.Application
 {

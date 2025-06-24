@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Entities.Particles;
 
-namespace Fullstack.SAXS.Server.Domain.Entities.Regions
+namespace Fullstack.SAXS.Domain.Entities.Regions
 {
     public class Region
     {
@@ -16,12 +16,12 @@ namespace Fullstack.SAXS.Server.Domain.Entities.Regions
             var fullereneR = particle.OuterSphereRadius;
 
             return
-                (_center.X - _edge / 2) + fullereneR <= particle.Center.X &&
-                particle.Center.X <= (_center.X + _edge / 2) - fullereneR &&
-                (_center.Y - _edge / 2) + fullereneR <= particle.Center.Y &&
-                particle.Center.Y <= (_center.Y + _edge / 2) - fullereneR &&
-                (_center.Z - _edge / 2) + fullereneR <= particle.Center.Z &&
-                particle.Center.Z <= (_center.Z + _edge / 2) - fullereneR;
+                _center.X - _edge / 2 + fullereneR <= particle.Center.X &&
+                particle.Center.X <= _center.X + _edge / 2 - fullereneR &&
+                _center.Y - _edge / 2 + fullereneR <= particle.Center.Y &&
+                particle.Center.Y <= _center.Y + _edge / 2 - fullereneR &&
+                _center.Z - _edge / 2 + fullereneR <= particle.Center.Z &&
+                particle.Center.Z <= _center.Z + _edge / 2 - fullereneR;
         }
 
         public int MaxDepth(float maxSize)

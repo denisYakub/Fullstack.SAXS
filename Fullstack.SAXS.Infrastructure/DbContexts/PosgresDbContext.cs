@@ -1,4 +1,4 @@
-﻿using Fullstack.SAXS.Server.Domain.Entities.Sp;
+﻿using Fullstack.SAXS.Domain.Entities.Sp;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

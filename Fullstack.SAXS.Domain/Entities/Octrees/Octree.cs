@@ -1,7 +1,7 @@
-﻿using Fullstack.SAXS.Server.Domain.Entities.Particles;
-using Fullstack.SAXS.Server.Domain.Entities.Regions;
+﻿using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Entities.Regions;
 
-namespace Fullstack.SAXS.Server.Domain.Entities.Octrees
+namespace Fullstack.SAXS.Domain.Entities.Octrees
 {
     public class Octree
     {

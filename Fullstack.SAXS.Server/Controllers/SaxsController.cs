@@ -1,8 +1,5 @@
 ﻿using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using Fullstack.SAXS.Application;
-using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Server.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

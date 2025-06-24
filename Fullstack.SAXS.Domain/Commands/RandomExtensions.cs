@@ -1,4 +1,4 @@
-﻿namespace Fullstack.SAXS.Server.Domain.Commands
+﻿namespace Fullstack.SAXS.Domain.Commands
 {
     public static class RandomExtensions
     {

@@ -1,10 +1,8 @@
 ﻿using System.Numerics;
-using System.Text;
-using Fullstack.SAXS.Domain.Commands;
-using Fullstack.SAXS.Server.Domain.Enums;
-using Fullstack.SAXS.Server.Domain.ValueObjects;
+using Fullstack.SAXS.Domain.Enums;
+using Fullstack.SAXS.Domain.ValueObjects;
 
-namespace Fullstack.SAXS.Server.Domain.Entities.Particles
+namespace Fullstack.SAXS.Domain.Entities.Particles
 {
     public abstract class Particle
     {

@@ -1,10 +1,10 @@
-﻿using Fullstack.SAXS.Server.Domain.Commands;
-using Fullstack.SAXS.Server.Domain.Entities.Areas;
-using Fullstack.SAXS.Server.Domain.Entities.Octrees;
-using Fullstack.SAXS.Server.Domain.Entities.Particles;
+﻿using Fullstack.SAXS.Domain.Commands;
+using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Domain.Entities.Areas;
+using Fullstack.SAXS.Domain.Entities.Particles;
 using MathNet.Numerics.Distributions;
 
-namespace Fullstack.SAXS.Server.Infastructure.Factories
+namespace Fullstack.SAXS.Infrastructure.Factories
 {
     public class SphereIcosahedronFactory : AreaParticleFactory
     {

@@ -1,4 +1,4 @@
-﻿using Fullstack.SAXS.Persistence.Contracts;
+﻿using Fullstack.SAXS.Domain.Contracts;
 
 namespace Fullstack.SAXS.Application
 {

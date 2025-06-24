@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
 using Fullstack.SAXS.Domain.Contracts;
-using Fullstack.SAXS.Persistence.Contracts;
 
 namespace Fullstack.SAXS.Persistence.HTML
 {
