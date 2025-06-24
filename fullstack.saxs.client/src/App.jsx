@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import './App.css';
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+    Navigate
+} from "react-router-dom";
 import CreateSysForm from "./CreateSysForm";
-import SysView from "./SysView";
+import DrawSysForm from "./DrawSysForm";
+import Draw2Particles from "./Draw2Particles";
 
 function App() {
-    const [systemId, setSystemId] = useState("");
-    const [inputId, setInputId] = useState("");
-    const [data, setData] = useState(null);
-
     useEffect(() => {
         fetch("/ping-auth", {
             credentials: "include",
@@ -18,38 +22,20 @@ function App() {
         });
     }, []);
 
-    const handleLoadSystem = () => {
-        if (!inputId) return;
-        fetch(`/api/saxs/sys/get/${inputId}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setSystemId(inputId);
-                setData(data);
-            })
-            .catch(console.error);
-    };
-
     return (
-        <div>
-            <CreateSysForm />
-
-            <div style={{ margin: '1rem' }}>
-                <input
-                    type="text"
-                    placeholder="Put SYSTEM_ID"
-                    value={inputId}
-                    onChange={(e) => setInputId(e.target.value)}
-                    style={{ padding: '0.5rem', marginRight: '0.5rem' }}
-                />
-                <button onClick={handleLoadSystem}>Load</button>
-            </div>
-
-            {data && (
-                <div style={{ height: '100vh' }}>
-                    <SysView data={data} />
-                </div>
-            )}
-        </div>
+        <Router>
+            <nav style={{ marginBottom: "20px" }}>
+                <Link to="/create" style={{ marginRight: "10px" }}>Create system</Link>
+                <Link to="/draw" style={{ marginRight: "10px" }}>Draw system</Link>
+                <Link to="/test2Particles" style={{ marginRight: "10px" }}>Draw 2 particle to test</Link>
+            </nav>
+            <Routes>
+                <Route path="/" element={<Navigate to="/create" />} />
+                <Route path="/create" element={<CreateSysForm />} />
+                <Route path="/draw" element={<DrawSysForm />} />
+                <Route path="/test2Particles" element={<Draw2Particles /> } />
+            </Routes>
+        </Router>
     );
 }
 

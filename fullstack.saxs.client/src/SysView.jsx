@@ -6,7 +6,7 @@ import Icosahedron from './Icosahedron';
 export default function SysView({ data }) {
     const outerRadius = data.OuterRadius;
 
-    return (
+    return (<div style={{ top: 0, left: 0, width: '100vw', height: '100vh' }}>
         <Canvas camera={{ position: [0, 0, outerRadius * 1.2], fov: 60 }}>
             <ambientLight />
             <pointLight position={[outerRadius, outerRadius, outerRadius]} />
@@ -14,12 +14,13 @@ export default function SysView({ data }) {
                 {data.Particles.map((particle, index) => (
                     <Icosahedron
                         key={index}
-                        vertices={particle.Vertices}
-                        center={particle.Center}
+                        particle={particle}
                     />
                 ))}
             </Suspense>
             <OrbitControls />
         </Canvas>
+        </div>
+        
     );
 }
