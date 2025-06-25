@@ -1,4 +1,5 @@
-﻿using Fullstack.SAXS.Domain.Entities.Particles;
+﻿using System.Drawing;
+using Fullstack.SAXS.Domain.Entities.Particles;
 
 namespace Fullstack.SAXS.Domain.Tests
 {
@@ -70,15 +71,15 @@ namespace Fullstack.SAXS.Domain.Tests
         {
             // Arrenge
             var particle1 = new IcosahedronParticle(
-                3.0210254f,
-                new(-2.4270363f, 6.009531f, 12.535042f),
-                new(180.69635f, 352.37677f, 186.3266f)
+                1.19701672f,
+                new(21.6355362f, 7.062855f, 6.27528763f),
+                new(-137.3036f, 21.9578857f, 40.6453857f)
             );
 
             var particle2 = new IcosahedronParticle(
-                1.8071625f,
-                new(-3.560812f, 3.9010715f, 13.0229225f),
-                new(-149.30103f, -117.1031f, 87.887665f)
+                1.26716781f,
+                new(22.3404388f, 11.0143967f, 7.742401f),
+                new(105.304993f , -259.407867f, -335.019257f)
             );
 
             // Act
