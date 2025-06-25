@@ -9,7 +9,7 @@ namespace Fullstack.SAXS.Domain.Tests
     {
         private IEnumerable<Particle> _infParticles;
         private float _maxParticleSize = 5;
-        private float _areaRadius = 100;
+        private float _areaRadius = 1000;
 
         [SetUp]
         public void Setup()
@@ -39,7 +39,7 @@ namespace Fullstack.SAXS.Domain.Tests
             var area = new SphereArea(0, _areaRadius, _maxParticleSize);
 
             // Act
-            area.Fill(_infParticles, 500_000);
+            area.Fill(_infParticles, 1_000_000);
 
             // Assert
             Console.WriteLine(area.Particles.Count());

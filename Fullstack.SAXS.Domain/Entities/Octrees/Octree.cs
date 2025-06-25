@@ -14,7 +14,7 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
 
         public IReadOnlyCollection<Particle> GetAll()
         {
-            return [.. _root.PullOut()];
+            throw new NotImplementedException();
         }
     }
 }

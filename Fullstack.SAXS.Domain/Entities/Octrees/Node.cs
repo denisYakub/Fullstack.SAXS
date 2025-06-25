@@ -36,16 +36,22 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
                         return false;
                     }
                 }
+
                 SubDivide();
             }
 
-            foreach (var child in _children)
-            {
-                if (child.Clashes(particle))
-                    return child.Insert(particle, depth + 1);
-            }
+            bool inserted = false;
 
-            return false;
+            var targetChildren = _children.Where(child => child.Clashes(particle)).ToList();
+
+            foreach (var child in targetChildren) 
+                if (child._particles.AsParallel().Any(particle.Intersect))
+                    return false;
+
+            foreach (var child in targetChildren)
+                child.Insert(particle, depth + 1);
+
+            return true;
         }
 
         public IEnumerable<Particle> PullOut()

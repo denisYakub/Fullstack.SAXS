@@ -20,7 +20,7 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
             _octree = new Octree(radius);
         }
 
-        public SphereArea(int series, float radius, IReadOnlyCollection<Particle>? particles)
+        public SphereArea(int series, float radius, ICollection<Particle>? particles)
             : base(series, particles)
         {
             _radius = radius;

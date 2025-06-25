@@ -105,7 +105,7 @@ namespace Fullstack.SAXS.Persistence.Tests
         }
 
         [Test]
-        public void Custom_Test_Read_Check_Particle_Collision_List()
+        public void Read_AreaWasGeneratedUsingList_DontIntersect()
         {
             // Arrange
             var area = _fileService.Read(
@@ -115,15 +115,17 @@ namespace Fullstack.SAXS.Persistence.Tests
             );
 
             var countOfCollision = 0;
-            var particles = area.Particles.ToArray();
+            var particles = area.Particles;
 
             // Act
-            for (int i = 0; i < particles.Length - 1; i++)
-                Parallel.For(i + 1, particles.Length, j =>
+            for (int i = 0; i < particles.Count(); i++)
+            {
+                for (int j = i + 1; j < particles.Count(); j++)
                 {
-                    if (particles[i].Intersect(particles[j]))
-                        Interlocked.Increment(ref countOfCollision);
-                });
+                    if (particles.ElementAt(i).Intersect(particles.ElementAt(j)))
+                        countOfCollision++;
+                }
+            }
 
 
             // Assert
@@ -131,12 +133,12 @@ namespace Fullstack.SAXS.Persistence.Tests
         }
 
         [Test]
-        public void Custom_Test_Read_Check_Particle_Collision_Octree()
+        public void Read_AreaWasGeneratedUsingOctree_DontIntersect()
         {
             // Arrange
             var area = _fileService.Read(
                 "C:\\Users\\denis\\source\\repos\\denisYakub\\Fullerenes\\" +
-                "Fullerenes.Server\\CsvResults\\Generation_1\\" +
+                "Fullerenes.Server\\CsvResults\\Generation_2\\" +
                 "Series#0_OuterRadius#30_AreaType#Sphere_ParticlesType#Icosahedron.csv"
             );
 
@@ -144,12 +146,14 @@ namespace Fullstack.SAXS.Persistence.Tests
             var particles = area.Particles.ToArray();
 
             // Act
-            for (int i = 0; i < particles.Length - 1; i++)
-                Parallel.For(i + 1, particles.Length, j =>
+            for (int i = 0; i < particles.Count(); i++)
+            {
+                for (int j = i + 1; j < particles.Count(); j++)
                 {
-                    if (particles[i].Intersect(particles[j]))
-                        Interlocked.Increment(ref countOfCollision);
-                });
+                    if (particles.ElementAt(i).Intersect(particles.ElementAt(j)))
+                        countOfCollision++;
+                }
+            }
 
 
             // Assert

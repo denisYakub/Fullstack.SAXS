@@ -10,7 +10,7 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
 
         private static readonly int _retryToFillMax = 1_000;
 
-        private IReadOnlyCollection<Particle>? _particles;
+        private ICollection<Particle>? _particles;
 
         public IEnumerable<Particle>? Particles 
         { 
@@ -48,7 +48,7 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
             Series = series;
         }
 
-        protected Area(int series, IReadOnlyCollection<Particle>? particles)
+        protected Area(int series, ICollection<Particle>? particles)
         {
             Series = series;
             _particles = particles;
@@ -60,6 +60,8 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
         {
             if (_particles != null && Octree == null)
                 return;
+
+            _particles = new List<Particle>(particleNumber);
 
             var retryCount = 0;
             var particleCount = 0;
@@ -74,6 +76,8 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
 
                 if (Contains(particle) && Octree.Add(particle))
                 {
+                    _particles.Add(particle);
+
                     particleCount++;
                     retryCount = 0;
                 }

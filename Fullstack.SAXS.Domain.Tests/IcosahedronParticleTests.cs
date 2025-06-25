@@ -71,15 +71,15 @@ namespace Fullstack.SAXS.Domain.Tests
         {
             // Arrenge
             var particle1 = new IcosahedronParticle(
-                1.19701672f,
-                new(21.6355362f, 7.062855f, 6.27528763f),
-                new(-137.3036f, 21.9578857f, 40.6453857f)
+                1.2671678f,
+                new(22.340439f, 11.014397f, 7.742401f),
+                new(105.30499f, -259.40787f, -335.01926f)
             );
 
             var particle2 = new IcosahedronParticle(
-                1.26716781f,
-                new(22.3404388f, 11.0143967f, 7.742401f),
-                new(105.304993f , -259.407867f, -335.019257f)
+                1.1011182f,
+                new(22.984737f, 13.697884f, 5.453148f),
+                new(208.80225f, -299.3264f, -204.04727f)
             );
 
             // Act
