@@ -31,49 +31,68 @@ namespace Fullstack.SAXS.Domain.ValueObjects
 
         public double Length()
         {
-            throw new NotImplementedException();
+            return Math.Sqrt(LengthSquared());
         }
 
         public double LengthSquared()
         {
-            throw new NotImplementedException();
+            return x * x + y * y + z * z;
         }
 
         public static Vector3D operator +(Vector3D a, Vector3D b)
-        => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+            => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
 
         public static Vector3D operator -(Vector3D a, Vector3D b)
             => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 
-        public static Vector3D operator *(Vector3D v, double scalar) =>
-        new Vector3D(v.X * scalar, v.Y * scalar, v.Z * scalar);
+        public static Vector3D operator *(Vector3D v, double scalar)
+            => new(v.X * scalar, v.Y * scalar, v.Z * scalar);
 
-        public static Vector3D operator *(double scalar, Vector3D v) =>
-            v * scalar;
+        public static Vector3D operator *(double scalar, Vector3D v)
+            => v * scalar;
 
         public static Vector3D Transform(Vector3D vector, Matrix4x4D matrix)
         {
-            throw new NotImplementedException();
+            double x = vector.X * matrix.M11 + vector.Y * matrix.M21 + vector.Z * matrix.M31 + matrix.M41;
+            double y = vector.X * matrix.M12 + vector.Y * matrix.M22 + vector.Z * matrix.M32 + matrix.M42;
+            double z = vector.X * matrix.M13 + vector.Y * matrix.M23 + vector.Z * matrix.M33 + matrix.M43;
+            double w = vector.X * matrix.M14 + vector.Y * matrix.M24 + vector.Z * matrix.M34 + matrix.M44;
+
+            if (Math.Abs(w) > double.Epsilon && w != 1.0)
+            {
+                x /= w;
+                y /= w;
+                z /= w;
+            }
+
+            return new Vector3D(x, y, z);
         }
 
         public static double Distance(Vector3D vector1, Vector3D vector2)
         {
-            throw new NotImplementedException();
+            return Math.Sqrt(DistanceSquared(vector1, vector2));
         }
 
         public static double DistanceSquared(Vector3D vector1, Vector3D vector2)
         {
-            throw new NotImplementedException();
+            double dx = vector1.X - vector2.X;
+            double dy = vector1.Y - vector2.Y;
+            double dz = vector1.Z - vector2.Z;
+            return dx * dx + dy * dy + dz * dz;
         }
 
         public static Vector3D Cross(Vector3D vector1, Vector3D vector2)
         {
-            throw new NotImplementedException();
+            return new Vector3D(
+                vector1.Y * vector2.Z - vector1.Z * vector2.Y,
+                vector1.Z * vector2.X - vector1.X * vector2.Z,
+                vector1.X * vector2.Y - vector1.Y * vector2.X
+            );
         }
 
         public static double Dot(Vector3D vector1, Vector3D vector2)
         {
-            throw new NotImplementedException();
+            return vector1.X * vector2.X + vector1.Y * vector2.Y + vector1.Z * vector2.Z;
         }
 
         public override string ToString()
@@ -81,4 +100,5 @@ namespace Fullstack.SAXS.Domain.ValueObjects
             return $"<{x} {y} {z}>";
         }
     }
+
 }
