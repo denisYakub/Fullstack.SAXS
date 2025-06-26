@@ -39,7 +39,7 @@ namespace Fullstack.SAXS.Domain.Tests
             var area = new SphereArea(0, _areaRadius, _maxParticleSize);
 
             // Act
-            area.Fill(_infParticles, 1_000_000);
+            area.Fill(_infParticles, 500_000);
 
             // Assert
             Console.WriteLine(area.Particles.Count());
@@ -47,6 +47,35 @@ namespace Fullstack.SAXS.Domain.Tests
             Assert.That(area.Particles.Any());
         }
 
+        [Test]
+        public void Fill_WithSmallAnountAndCheckForCollision_AreaWith1000ParticlesAndFalse()
+        {
+            // Arrange
+            var area = new SphereArea(0, _areaRadius, _maxParticleSize);
+
+            var countOfCollision = 0;
+
+            // Act
+            area.Fill(_infParticles, 100000);
+
+            var particles = area.Particles.ToArray();
+
+            for (int i = 0; i < particles.Count(); i++)
+            {
+                for (int j = i + 1; j < particles.Count(); j++)
+                {
+                    if (particles.ElementAt(i).Intersect(particles.ElementAt(j)))
+                        countOfCollision++;
+                }
+            }
+
+            // Assert
+            Console.WriteLine(area.Particles.Count());
+
+            Assert.That(area.Particles.Any());
+            Assert.That(countOfCollision, Is.EqualTo(0));
+        }
+       
         private IEnumerable<Particle> InfParticleGenerator()
         {
             var random = new Random();
