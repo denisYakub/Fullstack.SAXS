@@ -4,13 +4,13 @@ namespace Fullstack.SAXS.Domain.Commands
 {
     public static class GammaExtensions
     {
-        public static float GetGammaRandom(this Gamma gamma, float min, float max)
+        public static double GetGammaRandom(this Gamma gamma, double min, double max)
         {
-            float randValue = (float)gamma.Sample();
+            var randValue = gamma.Sample();
 
             while (randValue <= min || randValue >= max)
             {
-                randValue = (float)gamma.Sample();
+                randValue = gamma.Sample();
             }
 
             return randValue;

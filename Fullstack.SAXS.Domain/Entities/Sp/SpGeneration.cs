@@ -21,7 +21,7 @@ namespace Fullstack.SAXS.Domain.Entities.Sp
         [Column("particle_type")]
         public string ParticleType { get; private set; }
         [Column("phi")]
-        public float? Phi { get; private set; }
+        public double? Phi { get; private set; }
         [Column("particle_number")]
         public int ParticleNum { get; private set; }
         [Column("id_sp_data")]
@@ -46,7 +46,7 @@ namespace Fullstack.SAXS.Domain.Entities.Sp
             Guid idUser,
             long genNum, int seriesNum, 
             AreaTypes areaType, ParticleTypes particleType,
-            float? phi, int particleNum,
+            double? phi, int particleNum,
             Guid idSpData
         )
         {
@@ -65,7 +65,7 @@ namespace Fullstack.SAXS.Domain.Entities.Sp
             Guid id, Guid idUser,
             long genNum, int seriesNum,
             string areaType, string particleType,
-            float? phi, int particleNum,
+            double? phi, int particleNum,
             Guid idSpData
         )
         {

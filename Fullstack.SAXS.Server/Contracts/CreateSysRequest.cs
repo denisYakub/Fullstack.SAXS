@@ -1,12 +1,12 @@
 ﻿namespace Fullstack.SAXS.Server.Contracts
 {
     public record struct CreateSysRequest(
-        float? AreaRadius, float? Nc,
-        float ParticleMinSize, float ParticleMaxSize,
-        float ParticleAlphaRotation,
-        float ParticleBetaRotation,
-        float ParticleGammaRotation,
-        float ParticleSizeShape, float ParticleSizeScale,
+        double? AreaRadius, double? Nc,
+        double ParticleMinSize, double ParticleMaxSize,
+        double ParticleAlphaRotation,
+        double ParticleBetaRotation,
+        double ParticleGammaRotation,
+        double ParticleSizeShape, double ParticleSizeScale,
         int ParticleNumber, int AreaNumber
     )
     {
@@ -27,7 +27,7 @@
             }
         }
 
-        public readonly float AreaSize
+        public readonly double AreaSize
         {
             get
             {

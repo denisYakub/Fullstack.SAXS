@@ -1,14 +1,15 @@
 ﻿using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.ValueObjects;
 using System.Numerics;
 
 namespace Fullstack.SAXS.Domain.Entities.Octrees
 {
     public class BoundingBox
     {
-        public float Edge {  get; init; }
-        public Vector3 Center { get; init; }
+        public double Edge {  get; init; }
+        public Vector3D Center { get; init; }
 
-        public BoundingBox(float edge, Vector3 center)
+        public BoundingBox(double edge, Vector3D center)
         {
             Edge = edge;
             Center = center;
@@ -31,9 +32,9 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
             ];
         }
 
-        public bool Contains(Vector3 point)
+        public bool Contains(Vector3D point)
         {
-            var half = new Vector3(Edge / 2);
+            var half = new Vector3D(Edge / 2);
             var min = Center - half;
             var max = Center + half;
 
@@ -57,14 +58,14 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
 
         public bool Clashes(Particle particle)
         {
-            Vector3 cubeMin = Center - new Vector3(Edge / 2);
-            Vector3 cubeMax = Center + new Vector3(Edge / 2);
+            var cubeMin = Center - new Vector3D(Edge / 2);
+            var cubeMax = Center + new Vector3D(Edge / 2);
 
-            float x = MathF.Max(cubeMin.X, MathF.Min(particle.Center.X, cubeMax.X));
-            float y = MathF.Max(cubeMin.Y, MathF.Min(particle.Center.Y, cubeMax.Y));
-            float z = MathF.Max(cubeMin.Z, MathF.Min(particle.Center.Z, cubeMax.Z));
+            var x = Math.Max(cubeMin.X, Math.Min(particle.Center.X, cubeMax.X));
+            var y = Math.Max(cubeMin.Y, Math.Min(particle.Center.Y, cubeMax.Y));
+            var z = Math.Max(cubeMin.Z, Math.Min(particle.Center.Z, cubeMax.Z));
 
-            float distanceSquared = (particle.Center - new Vector3(x, y, z)).LengthSquared();
+            var distanceSquared = (particle.Center - new Vector3D(x, y, z)).LengthSquared();
 
             if (distanceSquared > particle.OuterSphereRadius * particle.OuterSphereRadius)
                 return false;

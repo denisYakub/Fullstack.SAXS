@@ -6,7 +6,7 @@ namespace Fullstack.SAXS.Persistence.HTML
 {
     public class GraphService(IStringService @string) : IGraphService
     {
-        public async Task<string> GetHtmlPageAsync(float[] x, float[] y)
+        public async Task<string> GetHtmlPageAsync(double[] x, double[] y)
         {
             var client = new HttpClient()
             {

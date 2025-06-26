@@ -7,20 +7,20 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
     public class SphereArea : Area
     {
         private readonly IOctree? _octree;
-        private readonly float _radius;
+        private readonly double _radius;
 
-        public override float OuterRadius => _radius;
+        public override double OuterRadius => _radius;
         public override AreaTypes AreaType => AreaTypes.Sphere;
         protected override IOctree? Octree => _octree;
 
-        public SphereArea(int series, float radius, float maxParticleSize) 
+        public SphereArea(int series, double radius, double maxParticleSize) 
             : base(series)
         {
             _radius = radius; 
-            _octree = new OctreeWithClashingBoxes(radius);
+            _octree = new OctreeWithList(radius);
         }
 
-        public SphereArea(int series, float radius, ICollection<Particle>? particles)
+        public SphereArea(int series, double radius, ICollection<Particle>? particles)
             : base(series, particles)
         {
             _radius = radius;

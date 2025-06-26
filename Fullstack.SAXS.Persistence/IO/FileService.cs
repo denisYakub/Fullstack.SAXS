@@ -17,8 +17,8 @@ namespace Fullstack.SAXS.Persistence.IO
 
             var areaData = fileName.Split('_');
 
-            int series = 0;
-            float r = 0;
+            var series = 0;
+            var r = 0.0;
             AreaTypes areaType;
             ParticleTypes? particleType = null;
 
@@ -30,7 +30,7 @@ namespace Fullstack.SAXS.Persistence.IO
                 if (name == "Series")
                     series = int.Parse(value);
                 else if (name == "OuterRadius")
-                    r = float.Parse(value);
+                    r = double.Parse(value);
                 else if (name == "AreaType")
                     areaType = AreaTypes.Sphere;
                 else if (name == "ParticlesType")
@@ -67,11 +67,11 @@ namespace Fullstack.SAXS.Persistence.IO
                     .Trim();
 
                 var particle = new IcosahedronParticle(
-                    float.Parse(size), 
-                    new Vector3(
-                        float.Parse(x, CultureInfo.InvariantCulture),
-                        float.Parse(y, CultureInfo.InvariantCulture),
-                        float.Parse(z, CultureInfo.InvariantCulture)
+                    double.Parse(size), 
+                    new Vector3D(
+                        double.Parse(x, CultureInfo.InvariantCulture),
+                        double.Parse(y, CultureInfo.InvariantCulture),
+                        double.Parse(z, CultureInfo.InvariantCulture)
                     ), 
                     EulerAngles.Parse(rotationAngles)
                 );
@@ -89,7 +89,7 @@ namespace Fullstack.SAXS.Persistence.IO
             var areaData = fileName.Split('_');
 
             int series = 0;
-            float r = 0;
+            var r = 0.0;
             AreaTypes areaType;
             ParticleTypes? particleType = null;
 
@@ -101,7 +101,7 @@ namespace Fullstack.SAXS.Persistence.IO
                 if (name == "Series")
                     series = int.Parse(value);
                 else if (name == "OuterRadius")
-                    r = float.Parse(value);
+                    r = double.Parse(value);
                 else if (name == "AreaType")
                     areaType = AreaTypes.Sphere;
                 else if (name == "ParticlesType")
@@ -126,11 +126,11 @@ namespace Fullstack.SAXS.Persistence.IO
                     var z = center.Split(' ')[2];
 
                     var particle = new IcosahedronParticle(
-                        float.Parse(size),
-                        new Vector3(
-                            float.Parse(x.Substring(1)),
-                            float.Parse(y),
-                            float.Parse(z.Substring(0, z.Length - 1))
+                        double.Parse(size),
+                        new Vector3D(
+                            double.Parse(x.Substring(1)),
+                            double.Parse(y),
+                            double.Parse(z.Substring(0, z.Length - 1))
                         ),
                         EulerAngles.Parse(rotationAngles)
                     );

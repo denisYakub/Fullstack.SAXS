@@ -1,7 +1,7 @@
 ﻿namespace Fullstack.SAXS.Server.Contracts
 {
     public record struct CreateIntensOptRequest(
-        float QMin, float QMax, int QNum
+        double QMin, double QMax, int QNum
     )
     {
         public readonly bool isLegit

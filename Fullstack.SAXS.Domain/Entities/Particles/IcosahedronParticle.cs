@@ -7,22 +7,22 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 {
     public class IcosahedronParticle : Particle
     {
-        public override float OuterSphereRadius => _outerR;
+        public override double OuterSphereRadius => _outerR;
 
-        public override float InnerSphereRadius => _innerR;
+        public override double InnerSphereRadius => _innerR;
 
-        protected override float Volume => GenerateVolume();
+        protected override double Volume => GenerateVolume();
 
         protected override int[][] Faces => _faces;
 
-        public override IReadOnlyCollection<Vector3> Vertices => _vertices;
+        public override IReadOnlyCollection<Vector3D> Vertices => _vertices;
 
         public override ParticleTypes ParticleType => ParticleTypes.Icosahedron;
 
 
-        private readonly float _outerR;
-        private readonly float _innerR;
-        private Vector3[] _vertices;
+        private readonly double _outerR;
+        private readonly double _innerR;
+        private Vector3D[] _vertices;
         private static readonly int[][] _faces = [
             [0, 11, 5],
             [0, 5, 1],
@@ -46,27 +46,27 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
             [9, 8, 1]
         ];
 
-        public IcosahedronParticle(float size, Vector3 center, EulerAngles rotationAngles)
+        public IcosahedronParticle(double size, Vector3D center, EulerAngles rotationAngles)
             : base(size, center, rotationAngles)
         {
             var phi = (1 + MathF.Sqrt(5)) / 2;
 
-            _vertices = new Vector3[12];
+            _vertices = new Vector3D[12];
 
-            _vertices[0] = new Vector3(-1, phi, 0) * size;
-            _vertices[1] = new Vector3(1, phi, 0) * size;
-            _vertices[2] = new Vector3(-1, -phi, 0) * size;
-            _vertices[3] = new Vector3(1, -phi, 0) * size;
+            _vertices[0] = new Vector3D(-1, phi, 0) * size;
+            _vertices[1] = new Vector3D(1, phi, 0) * size;
+            _vertices[2] = new Vector3D(-1, -phi, 0) * size;
+            _vertices[3] = new Vector3D(1, -phi, 0) * size;
 
-            _vertices[4] = new Vector3(0, -1, phi) * size;
-            _vertices[5] = new Vector3(0, 1, phi) * size;
-            _vertices[6] = new Vector3(0, -1, -phi) * size;
-            _vertices[7] = new Vector3(0, 1, -phi) * size;
+            _vertices[4] = new Vector3D(0, -1, phi) * size;
+            _vertices[5] = new Vector3D(0, 1, phi) * size;
+            _vertices[6] = new Vector3D(0, -1, -phi) * size;
+            _vertices[7] = new Vector3D(0, 1, -phi) * size;
 
-            _vertices[8] = new Vector3(phi, 0, -1) * size;
-            _vertices[9] = new Vector3(phi, 0, 1) * size;
-            _vertices[10] = new Vector3(-phi, 0, -1) * size;
-            _vertices[11] = new Vector3(-phi, 0, 1) * size;
+            _vertices[8] = new Vector3D(phi, 0, -1) * size;
+            _vertices[9] = new Vector3D(phi, 0, 1) * size;
+            _vertices[10] = new Vector3D(-phi, 0, -1) * size;
+            _vertices[11] = new Vector3D(-phi, 0, 1) * size;
 
 
             int index = 12;
@@ -93,7 +93,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
             for (int i = 0; i < index; i++)
             {
-                _vertices[i] = Vector3
+                _vertices[i] = Vector3D
                     .Transform(
                         _vertices[i], 
                         rotationAngles.CreateRotationMatrix()
@@ -101,32 +101,32 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
                 _vertices[i] += center;
             }
 
-            var edge = Vector3
+            var edge = Vector3D
                 .Distance(_vertices[_faces[0][0]], _vertices[_faces[0][1]]);
 
-            _outerR = 0.951f * edge;
-            _innerR = 0.7557f * edge;
+            _outerR = 0.951 * edge;
+            _innerR = 0.7557 * edge;
         }
 
-        public float GenerateVolume()
+        public double GenerateVolume()
         {
-            int numberOfDotsInsideFullerene = 0;
-            int samples = 1_000_000;
-            float radius = _outerR;
+            var numberOfDotsInsideFullerene = 0;
+            var samples = 1_000_000;
+            var radius = _outerR;
 
             var random = new Random();
 
             for (int i = 0; i < samples; i++)
             {
-                Vector3 dot;
+                Vector3D dot;
 
                 do
                 {
-                    float x = (float)(random.NextDouble() * 2 - 1);
-                    float y = (float)(random.NextDouble() * 2 - 1);
-                    float z = (float)(random.NextDouble() * 2 - 1);
+                    var x = (random.NextDouble() * 2 - 1);
+                    var y = (random.NextDouble() * 2 - 1);
+                    var z = (random.NextDouble() * 2 - 1);
 
-                    dot = new Vector3(x, y, z);
+                    dot = new Vector3D(x, y, z);
                 }
                 while (dot.LengthSquared() > 1);
 
@@ -136,7 +136,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
                     numberOfDotsInsideFullerene++;
             }
 
-            float outerSphereVolume = 4f / 3f * MathF.PI * MathF.Pow(radius, 3);
+            var outerSphereVolume = 4f / 3f * Math.PI * Math.Pow(radius, 3);
 
             return outerSphereVolume * numberOfDotsInsideFullerene / samples;
         }

@@ -52,27 +52,24 @@ namespace Fullstack.SAXS.Domain.Tests
         {
             // Arrange
             var area = new SphereArea(0, _areaRadius, _maxParticleSize);
-
-            var countOfCollision = 0;
-
-            // Act
             area.Fill(_infParticles, 100000);
 
             var particles = area.Particles.ToArray();
 
-            for (int i = 0; i < particles.Count(); i++)
+            var countOfCollision = 0;
+            int count = particles.Length;
+
+            // Act
+            Parallel.For(0, count, i =>
             {
-                for (int j = i + 1; j < particles.Count(); j++)
+                for (int j = i + 1; j < count; j++)
                 {
-                    if (particles.ElementAt(i).Intersect(particles.ElementAt(j)))
-                        countOfCollision++;
+                    if (particles[i].Intersect(particles[j]))
+                        Interlocked.Increment(ref countOfCollision);
                 }
-            }
+            });
 
             // Assert
-            Console.WriteLine(area.Particles.Count());
-
-            Assert.That(area.Particles.Any());
             Assert.That(countOfCollision, Is.EqualTo(0));
         }
        

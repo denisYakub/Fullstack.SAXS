@@ -2,7 +2,6 @@
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Sp;
 using Fullstack.SAXS.Infrastructure.DbContexts;
-using MathNet.Numerics.Statistics.Mcmc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fullstack.SAXS.Infrastructure.Repositories

@@ -2,7 +2,7 @@
 
 namespace Fullstack.SAXS.Domain.Entities.Octrees
 {
-    public class OctreeWithClashingBoxes(float sphereRadius) : IOctree
+    public class OctreeWithClashingBoxes(double sphereRadius) : IOctree
     {
         class Node
         {

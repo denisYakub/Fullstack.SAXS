@@ -6,18 +6,18 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 {
     public abstract class Particle
     {
-        public readonly float Size;
-        public readonly Vector3 Center;
+        public readonly double Size;
+        public readonly Vector3D Center;
         public readonly EulerAngles RotationAngles;
 
-        public abstract float OuterSphereRadius { get; }
-        public abstract float InnerSphereRadius { get; }
-        public abstract IReadOnlyCollection<Vector3> Vertices { get; }
+        public abstract double OuterSphereRadius { get; }
+        public abstract double InnerSphereRadius { get; }
+        public abstract IReadOnlyCollection<Vector3D> Vertices { get; }
         public abstract ParticleTypes ParticleType { get; }
         protected abstract int[][] Faces { get; }
-        protected abstract float Volume { get; }
+        protected abstract double Volume { get; }
 
-        protected Particle(float size, Vector3 center, EulerAngles rotationAngles)
+        protected Particle(double size, Vector3D center, EulerAngles rotationAngles)
         {
             Size = size;
             Center = center;
@@ -28,12 +28,12 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
         {
             var outerRSum = OuterSphereRadius + other.OuterSphereRadius;
 
-            if (Vector3.DistanceSquared(Center, other.Center) > outerRSum * outerRSum)
+            if (Vector3D.DistanceSquared(Center, other.Center) > outerRSum * outerRSum)
                 return false;
 
             var innerRSum = InnerSphereRadius + other.InnerSphereRadius;
 
-            if (Vector3.DistanceSquared(Center, other.Center) <= innerRSum * innerRSum)
+            if (Vector3D.DistanceSquared(Center, other.Center) <= innerRSum * innerRSum)
                 return true;
 
             foreach (var vertex in other.Vertices)
@@ -43,27 +43,27 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
             return false;
         }
 
-        public bool Contains(Vector3 point)
+        public bool Contains(Vector3D point)
         {
-            if (Vector3.DistanceSquared(point, Center) > OuterSphereRadius * OuterSphereRadius)
+            if (Vector3D.DistanceSquared(point, Center) > OuterSphereRadius * OuterSphereRadius)
                 return false;
 
-            if (Vector3.DistanceSquared(point, Center) <= InnerSphereRadius * InnerSphereRadius)
+            if (Vector3D.DistanceSquared(point, Center) <= InnerSphereRadius * InnerSphereRadius)
                 return true;
 
             var vertices = Vertices;
 
             foreach (var face in Faces)
             {
-                Vector3 a = vertices.ElementAt(face[0]);
-                Vector3 b = vertices.ElementAt(face[1]);
-                Vector3 c = vertices.ElementAt(face[2]);
+                var a = vertices.ElementAt(face[0]);
+                var b = vertices.ElementAt(face[1]);
+                var c = vertices.ElementAt(face[2]);
 
-                Vector3 normal = Vector3.Cross(b - a, c - a);
+                var normal = Vector3D.Cross(b - a, c - a);
 
-                float dotProduct = Vector3.Dot(normal, point - a);
+                var dotProduct = Vector3D.Dot(normal, point - a);
 
-                if (dotProduct > 0.0f)
+                if (dotProduct > 0.0)
                 {
                     return false;
                 }

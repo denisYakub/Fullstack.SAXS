@@ -2,9 +2,9 @@
 {
     public static class RandomExtensions
     {
-        public static float GetEvenlyRandom(this Random random, float min, float max)
+        public static double GetEvenlyRandom(this Random random, double min, double max)
         {
-            return min + (max - min) * (float)random.NextDouble();
+            return min + (max - min) * random.NextDouble();
         }
     }
 }

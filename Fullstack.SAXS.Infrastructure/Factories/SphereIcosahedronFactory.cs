@@ -8,19 +8,19 @@ namespace Fullstack.SAXS.Infrastructure.Factories
 {
     public class SphereIcosahedronFactory : AreaParticleFactory
     {
-        public override IEnumerable<Area> GetAreas(float areaSize, int number, float maxParticleSize)
+        public override IEnumerable<Area> GetAreas(double areaSize, int number, double maxParticleSize)
         {
             for (int i = 0; i < number; i++) 
                 yield return new SphereArea(i, areaSize, maxParticleSize);
         }
 
         public override IEnumerable<Particle> GetInfParticles(
-            float minSize, float maxSize, 
-            float sizeShape, float sizeScale, 
-            float alphaRotation, float betaRotation, float gammaRotation,
-            float minX, float maxX,
-            float minY, float maxY,
-            float minZ, float maxZ
+            double minSize, double maxSize,
+            double sizeShape, double sizeScale,
+            double alphaRotation, double betaRotation, double gammaRotation,
+            double minX, double maxX,
+            double minY, double maxY,
+            double minZ, double maxZ
         )
         {
             var random = new Random();

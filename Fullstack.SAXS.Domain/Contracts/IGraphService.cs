@@ -2,6 +2,6 @@
 {
     public interface IGraphService
     {
-        Task<string> GetHtmlPageAsync(float[] x, float[] y);
+        Task<string> GetHtmlPageAsync(double[] x, double[] y);
     }
 }

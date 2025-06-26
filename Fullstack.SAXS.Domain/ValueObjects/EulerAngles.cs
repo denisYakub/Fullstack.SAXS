@@ -11,26 +11,26 @@ namespace Fullstack.SAXS.Domain.ValueObjects
     /// </summary>
     public readonly struct EulerAngles
     {
-        public readonly float PraecessioAngle;
-        public readonly float NutatioAngle;
-        public readonly float ProperRotationAngle;
+        public readonly double PraecessioAngle;
+        public readonly double NutatioAngle;
+        public readonly double ProperRotationAngle;
 
-        public EulerAngles(float alpha, float betta, float gamma)
+        public EulerAngles(double alpha, double betta, double gamma)
         {
             PraecessioAngle = alpha;
             NutatioAngle = betta;
             ProperRotationAngle = gamma;
         }
 
-        public Matrix4x4 CreateRotationMatrix()
+        public Matrix4x4D CreateRotationMatrix()
         {
-            float alpha = MathF.PI * PraecessioAngle / 180.0f;
-            float beta = MathF.PI * NutatioAngle / 180.0f;
-            float gamma = MathF.PI * ProperRotationAngle / 180.0f;
+            var alpha = Math.PI * PraecessioAngle / 180.0;
+            var beta = Math.PI * NutatioAngle / 180.0;
+            var gamma = Math.PI * ProperRotationAngle / 180.0;
 
-            var rotationX = Matrix4x4.CreateRotationX(alpha);
-            var rotationY = Matrix4x4.CreateRotationY(beta);
-            var rotationZ = Matrix4x4.CreateRotationZ(gamma);
+            var rotationX = Matrix4x4D.CreateRotationX(alpha);
+            var rotationY = Matrix4x4D.CreateRotationY(beta);
+            var rotationZ = Matrix4x4D.CreateRotationZ(gamma);
 
             return rotationX * rotationY * rotationZ;
         }
@@ -53,15 +53,15 @@ namespace Fullstack.SAXS.Domain.ValueObjects
 
             return 
                 new EulerAngles(
-                    float.Parse(
+                    double.Parse(
                         data[0].Replace(',', '.'), 
                         CultureInfo.InvariantCulture
                     ),
-                    float.Parse(
+                    double.Parse(
                         data[1].Replace(',', '.'), 
                         CultureInfo.InvariantCulture
                     ),
-                    float.Parse(
+                    double.Parse(
                         data[2].Replace(',', '.'), 
                         CultureInfo.InvariantCulture
                     )

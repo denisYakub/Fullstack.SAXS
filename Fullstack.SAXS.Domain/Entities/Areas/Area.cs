@@ -39,7 +39,7 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
             }
         }
 
-        public abstract float OuterRadius { get; }
+        public abstract double OuterRadius { get; }
         public abstract AreaTypes AreaType { get; }
         protected abstract IOctree? Octree { get; }
 

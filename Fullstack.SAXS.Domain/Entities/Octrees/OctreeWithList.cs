@@ -2,7 +2,7 @@
 
 namespace Fullstack.SAXS.Domain.Entities.Octrees
 {
-    public class OctreeWithList : IOctree
+    public class OctreeWithList(double outerRadius) : IOctree
     {
         private List<Particle> _particles = new (10000);
         public bool Add(Particle particle)

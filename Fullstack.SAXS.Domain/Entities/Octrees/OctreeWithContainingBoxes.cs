@@ -13,7 +13,7 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
         private Node[] _children;
         private ICollection<(Particle particle, List<Guid> boxs)> _objects;
 
-        public OctreeWithContainingBoxes(float outerRadius)
+        public OctreeWithContainingBoxes(double outerRadius)
         {
             _children = SubDivide(new(outerRadius * 2, new(0, 0, 0)));
             _objects = new List<(Particle, List<Guid>)>(10000);

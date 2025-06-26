@@ -4,6 +4,7 @@ using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Application
 {
@@ -11,12 +12,12 @@ namespace Fullstack.SAXS.Application
     {
         public void Create(
             string? userId,
-            float AreaSize, int AreaNumber, int ParticleNumber,
-            float ParticleMinSize, float ParticleMaxSize,
-            float ParticleSizeShape, float ParticleSizeScale,
-            float ParticleAlphaRotation,
-            float ParticleBetaRotation,
-            float ParticleGammaRotation
+            double AreaSize, int AreaNumber, int ParticleNumber,
+            double ParticleMinSize, double ParticleMaxSize,
+            double ParticleSizeShape, double ParticleSizeScale,
+            double ParticleAlphaRotation,
+            double ParticleBetaRotation,
+            double ParticleGammaRotation
         )
         {
             try
@@ -73,7 +74,7 @@ namespace Fullstack.SAXS.Application
 
         public async Task<string> CreateIntensOptGrafAsync(
             Guid id,
-            float QMin, float QMax, int QNum
+            double QMin, double QMax, int QNum
         )
         {
             var area = storage.GetArea(id);
@@ -93,7 +94,7 @@ namespace Fullstack.SAXS.Application
             return await graph.GetHtmlPageAsync(x, y);
         }
 
-        private static async Task<(float[] x, float[] y)> CreatePhiCoordAsync(
+        private static async Task<(double[] x, double[] y)> CreatePhiCoordAsync(
             Area area, int numberOfLayers = 5, int numberOfPoints = 100_000
         )
         {
@@ -115,13 +116,13 @@ namespace Fullstack.SAXS.Application
                 segmentTasks[i].Start();
             }
 
-            var phiValues = new (float value, bool isSet)[segmentTasks.Length];
+            var phiValues = new (double value, bool isSet)[segmentTasks.Length];
 
             for (int i = 0; i < segmentTasks.Length; i++)
             {
                 var (segmentPoint, segmentParticlePoints) = await segmentTasks[i];
 
-                float phi = segmentParticlePoints / (float)segmentPoint;
+                double phi = segmentParticlePoints / (double)segmentPoint;
 
                 phiValues[i].value = phi;
             }
@@ -129,13 +130,13 @@ namespace Fullstack.SAXS.Application
             var result = phiValues.Select((phi, index) => (index, phi.value));
 
             return (
-                result.Select(x => (float)x.index).ToArray(),
+                result.Select(x => (double)x.index).ToArray(),
                 result.Select(x => x.value).ToArray()
             );
         }
 
-        private static (float[] x, float[] y) CreateIntensOptCoord(
-            Area area, in float[] qs
+        private static (double[] x, double[] y) CreateIntensOptCoord(
+            Area area, in double[] qs
         )
         {
             var (localVolume, globalVolume, tmpConst) = Eval(area, qs);
@@ -146,10 +147,10 @@ namespace Fullstack.SAXS.Application
             return (q.ToArray(), I.ToArray());
         }
 
-        private static float[] CreateQs(float QMin, float QMax, int QNum)
+        private static double[] CreateQs(double QMin, double QMax, int QNum)
         {
             var random = new Random();
-            var qs = new float[QNum];
+            var qs = new double[QNum];
 
             for (var i = 0; i < QNum; i++)
                 qs[i] = random.GetEvenlyRandom(QMin, QMax);
@@ -157,13 +158,13 @@ namespace Fullstack.SAXS.Application
             return qs;
         }
 
-        private static float[] CreateSegmentsRadii(float areaOuterR, int radiiNum)
+        private static double[] CreateSegmentsRadii(double areaOuterR, int radiiNum)
         {
-            var radii = new float[radiiNum + 1];
+            var radii = new double[radiiNum + 1];
 
             for (int i = 0; i < radiiNum; i++)
             {
-                radii[i] = (float)Math.Pow(i * (Math.Pow(areaOuterR, 3) / radiiNum), 1.0f / 3);
+                radii[i] = Math.Pow(i * (Math.Pow(areaOuterR, 3) / radiiNum), 1.0f / 3);
             }
 
             radii[radiiNum] = areaOuterR;
@@ -171,14 +172,14 @@ namespace Fullstack.SAXS.Application
             return radii;
         }
 
-        private static Vector3[] CreateRandomPoints(float edge, int pointsNum)
+        private static Vector3D[] CreateRandomPoints(double edge, int pointsNum)
         {
             var random = new Random();
-            var points = new Vector3[pointsNum];
+            var points = new Vector3D[pointsNum];
 
             for (int i = 0; i < pointsNum; i++)
             {
-                points[i] = new Vector3(
+                points[i] = new Vector3D(
                     random.GetEvenlyRandom(-edge, edge),
                     random.GetEvenlyRandom(-edge, edge),
                     random.GetEvenlyRandom(-edge, edge)
@@ -189,8 +190,8 @@ namespace Fullstack.SAXS.Application
         }
 
         private static (int segmentPoint, int segmentParticlePoints) CountHits(
-            float radiusMin, float radiusMax,
-            in Vector3[] points,
+            double radiusMin, double radiusMax,
+            in Vector3D[] points,
             IEnumerable<Particle> particles
         )
         {
@@ -199,7 +200,7 @@ namespace Fullstack.SAXS.Application
 
             foreach (var point in points)
             {
-                var distance = Vector3.Distance(new (0, 0, 0), point);
+                var distance = Vector3D.Distance(new (0, 0, 0), point);
 
                 if (distance >= radiusMin && distance <= radiusMax)
                 {
@@ -215,17 +216,17 @@ namespace Fullstack.SAXS.Application
         }
 
         private static (
-            IEnumerable<float> localVolume,
-            IEnumerable<float> globalVolume,
-            IEnumerable<float> tmpConst
-        ) Eval(Area area, in float[] qs)
+            IEnumerable<double> localVolume,
+            IEnumerable<double> globalVolume,
+            IEnumerable<double> tmpConst
+        ) Eval(Area area, in double[] qs)
         {
-            var vConst = 4 / 3 * MathF.PI;
+            var vConst = 4 / 3 * Math.PI;
 
-            var outerSphereVolume = vConst * MathF.Pow(area.OuterRadius, 3);
+            var outerSphereVolume = vConst * Math.Pow(area.OuterRadius, 3);
 
             var localVolume = area.Particles
-                .Select(fullerene => vConst * MathF.Pow(fullerene.OuterSphereRadius, 3));
+                .Select(fullerene => vConst * Math.Pow(fullerene.OuterSphereRadius, 3));
 
             var globalVolume = qs.Select(qI => outerSphereVolume * Factor(area.OuterRadius * qI));
 
@@ -235,24 +236,24 @@ namespace Fullstack.SAXS.Application
             return (localVolume, globalVolume, tmpConst);
         }
 
-        private static float Factor(float x)
-            => 3 * (MathF.Sin(x) - x * MathF.Cos(x)) / MathF.Pow(x, 3);
+        private static double Factor(double x)
+            => 3 * (Math.Sin(x) - x * Math.Cos(x)) / Math.Pow(x, 3);
 
-        private static (IEnumerable<float> q, IEnumerable<float> I) IntenceOpt(
-            IEnumerable<float> qs,
-            IEnumerable<float> globalVolume,
-            IEnumerable<float> tmpConst,
-            IEnumerable<float> localVolume,
+        private static (IEnumerable<double> q, IEnumerable<double> I) IntenceOpt(
+            IEnumerable<double> qs,
+            IEnumerable<double> globalVolume,
+            IEnumerable<double> tmpConst,
+            IEnumerable<double> localVolume,
             Area area)
         {
             int qNum = qs.Count();
             int fullereneNum = area.Particles.Count();
 
-            Span<float> localVolumeSqr = localVolume.Select(v => MathF.Pow(v, 2)).ToArray();
+            Span<double> localVolumeSqr = localVolume.Select(v => Math.Pow(v, 2)).ToArray();
 
-            var qR = new FloatMatrix(new float[qNum * fullereneNum], fullereneNum);
-            var factorConst = new FloatMatrix(new float[qNum * fullereneNum], fullereneNum);
-            var factorSqr = new FloatMatrix(new float[qNum * fullereneNum], fullereneNum);
+            var qR = new FloatMatrix(new double[qNum * fullereneNum], fullereneNum);
+            var factorConst = new FloatMatrix(new double[qNum * fullereneNum], fullereneNum);
+            var factorSqr = new FloatMatrix(new double[qNum * fullereneNum], fullereneNum);
 
             for (int i = 0; i < qNum; i++)
                 for (int j = 0; j < fullereneNum; j++)
@@ -262,8 +263,8 @@ namespace Fullstack.SAXS.Application
                     factorSqr[i, j] = factorConst[i, j] * factorConst[i, j];
                 }
 
-            Span<float> s2 = new float[qNum];
-            Span<float> spFirstSummand = new float[qNum];
+            Span<double> s2 = new double[qNum];
+            Span<double> spFirstSummand = new double[qNum];
 
             for (int i = 0; i < qNum; i++)
                 for (int j = 0; j < fullereneNum; j++)
@@ -272,21 +273,21 @@ namespace Fullstack.SAXS.Application
                     spFirstSummand[i] += localVolume.ElementAt(j) * factorConst[i, j] * Sinc(qs.ElementAt(i) * tmpConst.ElementAt(j));
                 }
 
-            Span<float> spFactors = new float[qNum];
+            Span<double> spFactors = new double[qNum];
 
             for (int i = 0; i < fullereneNum; i++)
                 for (int j = i + 1; j < fullereneNum; j++)
                 {
-                    var dist = Vector3.Distance(area.Particles.ElementAt(i).Center, area.Particles.ElementAt(j).Center);
+                    var dist = Vector3D.Distance(area.Particles.ElementAt(i).Center, area.Particles.ElementAt(j).Center);
                     var vol = localVolume.ElementAt(j) * localVolume.ElementAt(i);
 
                     for (int k = 0; k < qNum; k++)
                         spFactors[k] += factorConst[k, i] * factorConst[k, j] * Sinc(qs.ElementAt(k) * dist) * vol;
                 }
 
-            Span<float> spGlobalArray = globalVolume.ToArray();
+            Span<double> spGlobalArray = globalVolume.ToArray();
 
-            var I = new float[qNum];
+            var I = new double[qNum];
 
             for (int k = 0; k < qNum; k++)
             {
@@ -302,23 +303,23 @@ namespace Fullstack.SAXS.Application
 
         private ref struct FloatMatrix
         {
-            private readonly Span<float> _data;
+            private readonly Span<double> _data;
             private readonly int _cols;
 
-            public FloatMatrix(Span<float> data, int cols)
+            public FloatMatrix(Span<double> data, int cols)
             {
                 _data = data;
                 _cols = cols;
             }
 
-            public ref float this[int row, int col]
+            public ref double this[int row, int col]
                 => ref _data[row * _cols + col];
 
             public int Rows => _data.Length / _cols;
             public int Columns => _cols;
         }
 
-        private static float Sinc(float x)
-            => MathF.Sin(x) / x;
+        private static double Sinc(double x)
+            => Math.Sin(x) / x;
     }
 }
