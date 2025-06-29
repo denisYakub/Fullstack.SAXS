@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace Fullstack.SAXS.Domain.ValueObjects
 {
-    public struct Vector3D
+    public readonly struct Vector3D
     {
         private readonly double x, y, z;
 
@@ -33,10 +28,33 @@ namespace Fullstack.SAXS.Domain.ValueObjects
         {
             return Math.Sqrt(LengthSquared());
         }
-
+        public double LengthQ()
+        {
+            return FastSqrt(LengthSquared());
+        }
         public double LengthSquared()
         {
             return x * x + y * y + z * z;
+        }
+
+        public static double FastSqrt(double number)
+        {
+            return number * FastInvSqrt(number);
+        }
+
+        public static double FastInvSqrt(double number)
+        {
+            double x2 = number * 0.5;
+            double y = number;
+
+            long i = BitConverter.DoubleToInt64Bits(y);
+            i = 0x5fe6eb50c7b537a9 - (i >> 1); // магическая константа для double
+            y = BitConverter.Int64BitsToDouble(i);
+
+            y = y * (1.5 - x2 * y * y); // 1 итерация Ньютона
+            y = y * (1.5 - x2 * y * y); // 2 итерация Ньютона
+
+            return y;
         }
 
         public static Vector3D operator +(Vector3D a, Vector3D b)
@@ -98,6 +116,34 @@ namespace Fullstack.SAXS.Domain.ValueObjects
         public override string ToString()
         {
             return $"<{x} {y} {z}>";
+        }
+
+        public static Vector3D Parse(string s)
+        {
+            if (s[0] != '<' && s[s.Length - 1] != '>')
+                throw new ArgumentException("Bad format!");
+
+            var values = s.Substring(1, s.Length - 2);
+            var data = values.Split(' ');
+
+            if (data.Length != 3)
+                throw new ArgumentException("Bad format!");
+
+            return
+                new Vector3D(
+                    double.Parse(
+                        data[0].Replace(',', '.'),
+                        CultureInfo.InvariantCulture
+                    ),
+                    double.Parse(
+                        data[1].Replace(',', '.'),
+                        CultureInfo.InvariantCulture
+                    ),
+                    double.Parse(
+                        data[2].Replace(',', '.'),
+                        CultureInfo.InvariantCulture
+                    )
+                );
         }
     }
 

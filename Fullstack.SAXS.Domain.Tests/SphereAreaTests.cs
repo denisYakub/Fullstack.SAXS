@@ -18,13 +18,13 @@ namespace Fullstack.SAXS.Domain.Tests
         }
 
         [Test]
-        public void Fill_WithSmallAnount_AreaWith100Particles()
+        public void Fill_WithAvgAnount_AreaWith100000Particles()
         {
             // Arrange
             var area = new SphereArea(0, _areaRadius, _maxParticleSize);
 
             // Act
-            area.Fill(_infParticles, 100);
+            area.Fill(_infParticles, 100_000);
 
             // Assert
             Console.WriteLine(area.Particles.Count());
@@ -48,11 +48,11 @@ namespace Fullstack.SAXS.Domain.Tests
         }
 
         [Test]
-        public void Fill_WithSmallAnountAndCheckForCollision_AreaWith1000ParticlesAndFalse()
+        public void Fill_CheckForCollision_AreaWithParticlesAndFalse()
         {
             // Arrange
             var area = new SphereArea(0, _areaRadius, _maxParticleSize);
-            area.Fill(_infParticles, 100000);
+            area.Fill(_infParticles, 100_000);
 
             var particles = area.Particles.ToArray();
 
