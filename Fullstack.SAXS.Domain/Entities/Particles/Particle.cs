@@ -15,7 +15,6 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
         public abstract IReadOnlyCollection<Vector3D> Vertices { get; }
         public abstract ParticleTypes ParticleType { get; }
         protected abstract int[][] Faces { get; }
-        protected abstract double Volume { get; }
 
         protected Particle(double size, Vector3D center, EulerAngles rotationAngles)
         {
@@ -38,6 +37,10 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
             foreach (var vertex in other.Vertices)
                 if (Contains(vertex))
+                    return true;
+
+            foreach (var vertex in Vertices)
+                if (other.Contains(vertex))
                     return true;
 
             return false;
@@ -63,7 +66,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
                 var dotProduct = Vector3D.Dot(normal, point - a);
 
-                if (dotProduct > 0.0)
+                if (dotProduct > 1e-6)
                 {
                     return false;
                 }

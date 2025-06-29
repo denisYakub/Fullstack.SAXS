@@ -17,7 +17,7 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
             : base(series)
         {
             _radius = radius; 
-            _octree = new OctreeWithList(radius);
+            _octree = new OctreeWithContainingBoxes(radius);
         }
 
         public SphereArea(int series, double radius, ICollection<Particle>? particles)

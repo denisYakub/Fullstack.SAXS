@@ -1,4 +1,7 @@
-﻿namespace Fullstack.SAXS.Server.Contracts
+﻿using Fullstack.SAXS.Domain.Commands;
+using MathNet.Numerics.Distributions;
+
+namespace Fullstack.SAXS.Server.Contracts
 {
     public record struct CreateSysRequest(
         double? AreaRadius, double? Nc,
@@ -31,10 +34,37 @@
         {
             get
             {
+                // If Area is shpere and particle is icosahedron
                 if (Nc.HasValue)
-                    throw new NotImplementedException();
+                {
+                    var particleConst = (5.0 / 12.0) * (3.0 + Math.Sqrt(5.0));
+                    var areaConst = (4.0 / 3.0) * Math.PI;
 
-                return AreaRadius.Value;
+                    var gamma = new Gamma(ParticleSizeShape, ParticleSizeScale);
+
+                    var particleVolumeSum = 
+                        Enumerable
+                        .Repeat(
+                            particleConst * Math.Pow(
+                                gamma.GetGammaRandom(ParticleMinSize, ParticleMaxSize), 
+                                3
+                            ), 
+                            ParticleNumber
+                        )
+                        .Sum();
+
+                    var R3 = particleVolumeSum / (Nc.Value * areaConst);
+
+                    return Math.Pow(R3, 1.0 / 3.0);
+                }
+                else if (AreaRadius.HasValue)
+                {
+                    return AreaRadius.Value;
+                }
+                else
+                {
+                    throw new BadHttpRequestException("AreaRadius and Nc can not be null!");
+                }
             }
         }
     }

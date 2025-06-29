@@ -17,8 +17,8 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
 
         public BoundingBox[] OctoSplit()
         {
-            var halfEdge = Edge / 2;
-            var dCoord = Edge / 4;
+            var halfEdge = Edge / 1;
+            var dCoord = Edge / 2;
 
             return [
                 new (halfEdge, new (Center.X - dCoord, Center.Y - dCoord, Center.Z - dCoord)),

@@ -50,29 +50,9 @@ namespace Fullstack.SAXS.Persistence.IO
                 var center = line.Split(';')[1];
                 var rotationAngles = line.Split(';')[2];
 
-                var x = center
-                    .Split(' ')[0][1..]
-                    .Replace(',', '.')
-                    .Replace("\u00A0", "")
-                    .Trim();
-                var y = center
-                    .Split(' ')[1]
-                    .Replace(',', '.')
-                    .Replace("\u00A0", "")
-                    .Trim();
-                var z = center
-                    .Split(' ')[2][..^1]
-                    .Replace(',', '.')
-                    .Replace("\u00A0", "")
-                    .Trim();
-
                 var particle = new IcosahedronParticle(
-                    double.Parse(size), 
-                    new Vector3D(
-                        double.Parse(x, CultureInfo.InvariantCulture),
-                        double.Parse(y, CultureInfo.InvariantCulture),
-                        double.Parse(z, CultureInfo.InvariantCulture)
-                    ), 
+                    double.Parse(size),
+                    Vector3D.Parse(center), 
                     EulerAngles.Parse(rotationAngles)
                 );
 
@@ -121,17 +101,9 @@ namespace Fullstack.SAXS.Persistence.IO
                     var center = data[1];
                     var rotationAngles = data[2];
 
-                    var x = center.Split(' ')[0];
-                    var y = center.Split(' ')[1];
-                    var z = center.Split(' ')[2];
-
                     var particle = new IcosahedronParticle(
                         double.Parse(size),
-                        new Vector3D(
-                            double.Parse(x.Substring(1)),
-                            double.Parse(y),
-                            double.Parse(z.Substring(0, z.Length - 1))
-                        ),
+                        Vector3D.Parse(center),
                         EulerAngles.Parse(rotationAngles)
                     );
 
