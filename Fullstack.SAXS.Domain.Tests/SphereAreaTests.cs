@@ -1,4 +1,6 @@
-﻿using Fullstack.SAXS.Domain.Commands;
+﻿using System.Globalization;
+using System.IO;
+using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using MathNet.Numerics.Distributions;
@@ -72,7 +74,43 @@ namespace Fullstack.SAXS.Domain.Tests
             // Assert
             Assert.That(countOfCollision, Is.EqualTo(0));
         }
-       
+
+        [Test]
+        public void Fill_AreaWithPatricles_TxtFilesForMathcad()
+        {
+            // Arrange
+            var area = new SphereArea(0, 200, _maxParticleSize);
+            area.Fill(_infParticles, 10_000);
+
+            var particles = area.Particles.ToArray();
+
+            var pathParticlesCoord = "C:\\Users\\denis\\Documents\\Интенсивность Артем\\1MBN_coordinates_of_atoms.txt";
+            var pathParticlesNel = "C:\\Users\\denis\\Documents\\Интенсивность Артем\\1MBN_Nel_in_atoms.txt";
+
+            // Act
+            using (var writer = new StreamWriter(pathParticlesCoord))
+            {
+                foreach (var particle in particles)
+                {
+
+                    var c = particle.Center;
+                    string line = string.Format(CultureInfo.InvariantCulture, "{0:F6} {1:F6} {2:F6}", c.X, c.Y, c.Z);
+                    writer.WriteLine(line);
+                }
+            }
+
+            using (var writer = new StreamWriter(pathParticlesNel))
+            {
+                for (int i = 1; i <= particles.Length; i++)
+                {
+                    writer.WriteLine(i);
+                }
+            }
+
+            // Assert
+            Assert.Pass(pathParticlesCoord);
+        }
+
         private IEnumerable<Particle> InfParticleGenerator()
         {
             var random = new Random();

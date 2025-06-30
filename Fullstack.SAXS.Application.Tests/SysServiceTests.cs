@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Castle.Components.DictionaryAdapter.Xml;
 using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
@@ -57,6 +58,29 @@ namespace Fullstack.SAXS.Application.Tests
 
             // Assert
             Assert.Pass(phis);
+        }
+
+        [Test]
+        public async Task CreateQs_BasicQs_TxtFileWithQs()
+        {
+            // Arrange
+            var minQ = 0.02;
+            var maxQ = 5.0;
+            var numQ = 150;
+
+            var pathQs = "C:\\Users\\denis\\Documents\\Интенсивность Артем\\QI.txt";
+
+            // Act
+            var qs = SysService.CreateQs(minQ, maxQ, numQ);
+
+            using (var writer = new StreamWriter(pathQs))
+            {
+                foreach (var q in qs)
+                    writer.WriteLine(q);
+            }
+
+            // Assert
+            Assert.Pass(string.Concat(qs));
         }
 
         private Area CreateSomeArea(int particleNum)

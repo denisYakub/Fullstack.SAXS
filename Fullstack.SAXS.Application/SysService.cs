@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
@@ -147,7 +146,7 @@ namespace Fullstack.SAXS.Application
             return (q.ToArray(), I.ToArray());
         }
 
-        private static double[] CreateQs(double QMin, double QMax, int QNum)
+        public static double[] CreateQs(double QMin, double QMax, int QNum)
         {
             var random = new Random();
             var qs = new double[QNum];
