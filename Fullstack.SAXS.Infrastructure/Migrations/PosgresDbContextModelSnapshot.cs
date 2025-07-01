@@ -22,7 +22,7 @@ namespace Fullstack.SAXS.Server.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Fullstack.SAXS.Server.Domain.Entities.Sp.SpData", b =>
+            modelBuilder.Entity("Fullstack.SAXS.Domain.Entities.Sp.SpData", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -39,7 +39,7 @@ namespace Fullstack.SAXS.Server.Migrations
                     b.ToTable("sp_data");
                 });
 
-            modelBuilder.Entity("Fullstack.SAXS.Server.Domain.Entities.Sp.SpGeneration", b =>
+            modelBuilder.Entity("Fullstack.SAXS.Domain.Entities.Sp.SpGeneration", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,8 +72,8 @@ namespace Fullstack.SAXS.Server.Migrations
                         .HasColumnType("text")
                         .HasColumnName("particle_type");
 
-                    b.Property<float?>("Phi")
-                        .HasColumnType("real")
+                    b.Property<double?>("Phi")
+                        .HasColumnType("double precision")
                         .HasColumnName("phi");
 
                     b.Property<int>("SeriesNum")
@@ -88,7 +88,7 @@ namespace Fullstack.SAXS.Server.Migrations
                     b.ToTable("sp_generation");
                 });
 
-            modelBuilder.Entity("Fullstack.SAXS.Server.Domain.Entities.Sp.SpGenerationNumberCounter", b =>
+            modelBuilder.Entity("Fullstack.SAXS.Domain.Entities.Sp.SpGenerationNumberCounter", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -306,11 +306,11 @@ namespace Fullstack.SAXS.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Fullstack.SAXS.Server.Domain.Entities.Sp.SpGeneration", b =>
+            modelBuilder.Entity("Fullstack.SAXS.Domain.Entities.Sp.SpGeneration", b =>
                 {
-                    b.HasOne("Fullstack.SAXS.Server.Domain.Entities.Sp.SpData", "SpData")
+                    b.HasOne("Fullstack.SAXS.Domain.Entities.Sp.SpData", "SpData")
                         .WithOne("SpGeneration")
-                        .HasForeignKey("Fullstack.SAXS.Server.Domain.Entities.Sp.SpGeneration", "IdSpData")
+                        .HasForeignKey("Fullstack.SAXS.Domain.Entities.Sp.SpGeneration", "IdSpData")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -368,7 +368,7 @@ namespace Fullstack.SAXS.Server.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Fullstack.SAXS.Server.Domain.Entities.Sp.SpData", b =>
+            modelBuilder.Entity("Fullstack.SAXS.Domain.Entities.Sp.SpData", b =>
                 {
                     b.Navigation("SpGeneration")
                         .IsRequired();

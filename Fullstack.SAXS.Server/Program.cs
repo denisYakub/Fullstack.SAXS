@@ -14,12 +14,20 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddScoped<ISysService, SysService>()
-    .AddScoped<IFileService, FileService>()
     .AddScoped<IStorage, AreaRepository>()
+    .AddScoped<IFileService, FileService>()
     .AddScoped<SysService>()
     .AddScoped<AreaParticleFactory, SphereIcosahedronFactory>()
     .AddScoped<IGraphService, GraphService>()
     .AddSingleton<IStringService, StringService>();
+
+builder.Services
+    .AddDbContext<PosgresDbContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")))
+    .AddDefaultIdentity<IdentityUser>()
+    .AddEntityFrameworkStores<PosgresDbContext>()
+    .AddDefaultUI()
+    .AddDefaultTokenProviders();
 
 builder.Services
     .AddControllersWithViews()
@@ -30,16 +38,6 @@ builder.Services
     );
 
 builder.Services.AddRazorPages();
-
-builder.Services
-    .AddDbContext<PosgresDbContext>(options => 
-        options
-        .UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"))
-    )
-    .AddDefaultIdentity<IdentityUser>()
-    .AddEntityFrameworkStores<PosgresDbContext>()
-    .AddDefaultUI()
-    .AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
