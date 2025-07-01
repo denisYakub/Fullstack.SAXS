@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
@@ -7,7 +8,7 @@ using Fullstack.SAXS.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Application
 {
-    public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph)
+    public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph) : ISysService
     {
         public void Create(
             string? userId,

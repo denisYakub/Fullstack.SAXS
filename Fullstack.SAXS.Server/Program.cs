@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Fullstack.SAXS.Application;
+using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Infrastructure.DbContexts;
 using Fullstack.SAXS.Infrastructure.Factories;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddScoped<ISysService, SysService>()
     .AddScoped<IFileService, FileService>()
     .AddScoped<IStorage, AreaRepository>()
     .AddScoped<SysService>()
