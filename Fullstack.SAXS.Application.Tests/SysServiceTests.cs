@@ -68,7 +68,9 @@ namespace Fullstack.SAXS.Application.Tests
             var maxQ = 5.0;
             var numQ = 150;
 
-            var pathQs = "C:\\Users\\denis\\Documents\\Интенсивность Артем\\QI.txt";
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            string pathQs = Path.Combine(documentsPath, "QI.txt");
 
             // Act
             var qs = SysService.CreateQs(minQ, maxQ, numQ);

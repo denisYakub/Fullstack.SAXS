@@ -10,18 +10,21 @@ public class EulerAnglesTests
     }
 
     [Test]
-    public void Parse_FromTo_Equal()
+    public void Parse_ToStringAndBack_Equal()
     {
         // Arrange
         var angles = new EulerAngles(5, 10, 15);
-        var anglesStr = angles.ToString();
 
         // Act
+        var anglesStr = angles.ToString();
         var anglesBack = EulerAngles.Parse(anglesStr);
 
         // Assert
-        Assert.That(anglesBack.PraecessioAngle, Is.EqualTo(angles.PraecessioAngle));
-        Assert.That(anglesBack.NutatioAngle, Is.EqualTo(angles.NutatioAngle));
-        Assert.That(anglesBack.ProperRotationAngle, Is.EqualTo(angles.ProperRotationAngle));
+        Assert.Multiple(() =>
+        {
+            Assert.That(anglesBack.PraecessioAngle, Is.EqualTo(angles.PraecessioAngle));
+            Assert.That(anglesBack.NutatioAngle, Is.EqualTo(angles.NutatioAngle));
+            Assert.That(anglesBack.ProperRotationAngle, Is.EqualTo(angles.ProperRotationAngle));
+        });
     }
 }

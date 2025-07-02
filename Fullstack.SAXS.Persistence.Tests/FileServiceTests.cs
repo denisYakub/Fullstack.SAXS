@@ -77,7 +77,7 @@ namespace Fullstack.SAXS.Persistence.Tests
         }
 
         [Test]
-        public void Read_AreaWithParticles_ReturnSphereAreaClass()
+        public void Read_AreaWithParticles_ContainsParticles()
         {
             // Arrange
             if (_areaWithParticlesPath == null) 
@@ -91,7 +91,7 @@ namespace Fullstack.SAXS.Persistence.Tests
         }
 
         [Test]
-        public void Read_AreaWithoutParticles_ReturnSphereAreaClass()
+        public void Read_AreaWithoutParticles_DoesntContainsParticles()
         {
             // Arrange
             if (_areaWithoutParticlesPath == null)

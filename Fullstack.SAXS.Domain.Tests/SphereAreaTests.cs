@@ -20,7 +20,7 @@ namespace Fullstack.SAXS.Domain.Tests
         }
 
         [Test]
-        public void Fill_WithAvgAnount_AreaWith100000Particles()
+        public void Fill_With100KParticles_Pass()
         {
             // Arrange
             var area = new SphereArea(0, _areaRadius, _maxParticleSize);
@@ -29,13 +29,11 @@ namespace Fullstack.SAXS.Domain.Tests
             area.Fill(_infParticles, 100_000);
 
             // Assert
-            Console.WriteLine(area.Particles.Count());
-
             Assert.That(area.Particles.Any());
         }
 
         [Test]
-        public void Fill_WithBigAnount_AreaWith500000Particles()
+        public void Fill_With500KParticles_Pass()
         {
             // Arrange
             var area = new SphereArea(0, _areaRadius, _maxParticleSize);
@@ -44,24 +42,23 @@ namespace Fullstack.SAXS.Domain.Tests
             area.Fill(_infParticles, 500_000);
 
             // Assert
-            Console.WriteLine(area.Particles.Count());
-
             Assert.That(area.Particles.Any());
         }
 
         [Test]
-        public void Fill_CheckForCollision_AreaWithParticlesAndFalse()
+        public void Fill_With100KParticlesAndCheckCollision_NoCollision()
         {
             // Arrange
             var area = new SphereArea(0, _areaRadius, _maxParticleSize);
+
+            var countOfCollision = 0;
+
+            // Act
             area.Fill(_infParticles, 100_000);
 
             var particles = area.Particles.ToArray();
+            var count = particles.Length;
 
-            var countOfCollision = 0;
-            int count = particles.Length;
-
-            // Act
             Parallel.For(0, count, i =>
             {
                 for (int j = i + 1; j < count; j++)
@@ -76,18 +73,21 @@ namespace Fullstack.SAXS.Domain.Tests
         }
 
         [Test]
-        public void Fill_AreaWithPatricles_TxtFilesForMathcad()
+        public void Fill_With10KParticlesAndSaveСoordinatesToDocuments_Pass()
         {
             // Arrange
             var area = new SphereArea(0, 200, _maxParticleSize);
+
+            string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            string pathParticlesCoord = Path.Combine(documentsPath, "1MBN_coordinates_of_atoms.txt");
+            string pathParticlesNel = Path.Combine(documentsPath, "1MBN_Nel_in_atoms.txt");
+
+            // Act
             area.Fill(_infParticles, 10_000);
 
             var particles = area.Particles.ToArray();
 
-            var pathParticlesCoord = "C:\\Users\\denis\\Documents\\Интенсивность Артем\\1MBN_coordinates_of_atoms.txt";
-            var pathParticlesNel = "C:\\Users\\denis\\Documents\\Интенсивность Артем\\1MBN_Nel_in_atoms.txt";
-
-            // Act
             using (var writer = new StreamWriter(pathParticlesCoord))
             {
                 foreach (var particle in particles)
