@@ -20,41 +20,30 @@ namespace Fullstack.SAXS.Application
             double ParticleGammaRotation
         )
         {
-            try
-            {
-                var idUser = Guid.Parse(userId);
+            var idUser = Guid.Parse(userId);
 
-                var areas = factory.GetAreas(AreaSize, AreaNumber, ParticleMaxSize);
+            var areas = factory.GetAreas(AreaSize, AreaNumber, ParticleMaxSize);
 
-                Parallel.ForEach(areas, area => {
-                    var infParticles =
-                        factory
-                        .GetInfParticles(
-                            ParticleMinSize, ParticleMaxSize,
-                            ParticleSizeShape, ParticleSizeScale,
-                            ParticleAlphaRotation,
-                            ParticleBetaRotation,
-                            ParticleGammaRotation,
-                            -AreaSize, AreaSize,
-                            -AreaSize, AreaSize,
-                            -AreaSize, AreaSize
-                        );
+            Parallel.ForEach(areas, area => {
+                var infParticles =
+                    factory
+                    .GetInfParticles(
+                        ParticleMinSize, ParticleMaxSize,
+                        ParticleSizeShape, ParticleSizeScale,
+                        ParticleAlphaRotation,
+                        ParticleBetaRotation,
+                        ParticleGammaRotation,
+                        -AreaSize, AreaSize,
+                        -AreaSize, AreaSize,
+                        -AreaSize, AreaSize
+                    );
 
-                    area.Fill(infParticles, ParticleNumber);
+                area.Fill(infParticles, ParticleNumber);
 
-                    storage.Add(area);
-                });
+                storage.Add(area);
+            });
 
-                storage.SaveAsync(idUser).Wait();
-            }
-            catch (ArgumentNullException)
-            {
-                throw new UnauthorizedAccessException("userId is null");
-            }
-            catch (FormatException)
-            {
-                throw new UnauthorizedAccessException("userId is not Guid");
-            }
+            storage.SaveAsync(idUser).Wait();
         }
 
         public string Get(Guid id)
