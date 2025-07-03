@@ -12,10 +12,12 @@
             double ParticleGammaRotation
         );
         string Get(Guid id);
+        byte[] GetAtoms(Guid id);
         Task<string> CreateIntensOptGrafAsync(
+            string? userId,
             Guid id,
             double QMin, double QMax, int QNum
         );
-        Task<string> CreatePhiGrafAsync(Guid id, int layersNum);
+        Task<string> CreatePhiGrafAsync(string? userId, Guid id, int layersNum);
     }
 }

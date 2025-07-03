@@ -8,7 +8,7 @@ export default function DrawSysForm() {
 
     const handleLoadSystem = () => {
         if (!inputId) return;
-        fetch(`/api/saxs/sys/get/${inputId}`)
+        fetch(`/api/saxs/sys/${inputId}`)
             .then((res) => res.json())
             .then((data) => {
                 setSystemId(inputId);

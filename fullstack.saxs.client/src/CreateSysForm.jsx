@@ -41,7 +41,7 @@ const CreateSysForm = () => {
         };
 
         try {
-            const res = await fetch("/api/saxs/sys/create", {
+            const res = await fetch("/api/saxs/sys", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

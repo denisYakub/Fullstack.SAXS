@@ -229,5 +229,23 @@ namespace Fullstack.SAXS.Persistence.IO
 
             return path;
         }
+
+        public byte[] GetCSVAtoms(Area area)
+        {
+            var csvLines = new List<string>() { "X,Y,Z" };
+
+            csvLines.AddRange(
+                area
+                .Particles
+                .SelectMany(p => p.Vertices)
+                .Select(v => v.ToString())
+            );
+
+            var csvContent = string.Join("\n", csvLines);
+
+            var bytes = System.Text.Encoding.UTF8.GetBytes(csvContent);
+
+            return bytes;
+        }
     }
 }

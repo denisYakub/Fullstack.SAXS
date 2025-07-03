@@ -8,5 +8,6 @@ namespace Fullstack.SAXS.Domain.Contracts
         Area Read(string filePath);
         Task<string> WriteAsync(Area obj, long GenerationNum);
         Task<Area> ReadAsync(string filePath);
+        byte[] GetCSVAtoms(Area area);
     }
 }

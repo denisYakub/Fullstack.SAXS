@@ -8,7 +8,7 @@ using Fullstack.SAXS.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Application
 {
-    public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph) : ISysService
+    public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph, IFileService file) : ISysService
     {
         public void Create(
             string? userId,
@@ -72,11 +72,21 @@ namespace Fullstack.SAXS.Application
             return json;
         }
 
+        public byte[] GetAtoms(Guid id)
+        {
+            var area = storage.GetArea(id);
+
+            return file.GetCSVAtoms(area);
+        }
+
         public async Task<string> CreateIntensOptGrafAsync(
+            string? userId,
             Guid id,
             double QMin, double QMax, int QNum
         )
         {
+            var idUser = Guid.Parse(userId);
+
             var area = storage.GetArea(id);
             var qs = CreateQs(QMin, QMax, QNum);
 
@@ -85,8 +95,10 @@ namespace Fullstack.SAXS.Application
             return await graph.GetHtmlPageAsync(x, y);
         }
 
-        public async Task<string> CreatePhiGrafAsync(Guid id, int layersNum)
+        public async Task<string> CreatePhiGrafAsync(string? userId, Guid id, int layersNum)
         {
+            var idUser = Guid.Parse(userId);
+
             var area = await storage.GetAreaAsync(id);
 
             var (x, y) = await CreatePhiCoordAsync(area, layersNum);
