@@ -7,6 +7,7 @@ using Fullstack.SAXS.Infrastructure.Factories;
 using Fullstack.SAXS.Infrastructure.Repositories;
 using Fullstack.SAXS.Persistence.HTML;
 using Fullstack.SAXS.Persistence.IO;
+using Fullstack.SAXS.Server.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,6 +69,8 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 //app.MapStaticAssets();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.UseRouting();
 

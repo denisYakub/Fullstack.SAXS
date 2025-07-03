@@ -44,8 +44,4 @@
     <ProjectReference Include="..\Fullstack.SAXS.Persistence\Fullstack.SAXS.Persistence.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Middlewares\" />
-  </ItemGroup>
-
 </Project>
