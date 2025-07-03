@@ -1,4 +1,5 @@
-﻿using Fullstack.SAXS.Domain.Contracts;
+﻿using System.Text.Json;
+using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Sp;
 using Fullstack.SAXS.Infrastructure.DbContexts;
@@ -13,6 +14,23 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
         public void Add(Area entity)
         {
             _areas.Add(entity);
+        }
+
+        public string GetAllGenerations()
+        {
+            var gens = postgres.Generations
+                .Select(g => new
+                {
+                    g.GenNum,
+                    g.SeriesNum,
+                    g.AreaType,
+                    g.ParticleType,
+                    g.Phi,
+                    g.ParticleNum,
+                    g.IdSpData
+                });
+
+            return JsonSerializer.Serialize(gens);
         }
 
         public Area GetArea(Guid id)
@@ -33,6 +51,24 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                 throw new ArgumentException($"No data with this id {id}");
 
             return await file.ReadAsync(path.Path);
+        }
+
+        public string GetGenerations(Guid idUser)
+        {
+            var gens = postgres.Generations
+                .Where(g => g.IdUser == idUser)
+                .Select(g => new
+                {
+                    g.GenNum,
+                    g.SeriesNum,
+                    g.AreaType,
+                    g.ParticleType,
+                    g.Phi,
+                    g.ParticleNum,
+                    g.IdSpData
+                });
+
+            return JsonSerializer.Serialize(gens);
         }
 
         public void Save(Guid idUser)
@@ -89,6 +125,17 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
 
             }
 
+
+            await postgres.SaveChangesAsync();
+        }
+
+        public async Task SaveAvgPhiAsync(Guid idUser, Guid id, double phi)
+        {
+            var generation = await postgres
+                .Generations
+                .FirstAsync(g => g.IdSpData == id && g.IdUser == idUser);
+
+            generation.ChangePhi(phi);
 
             await postgres.SaveChangesAsync();
         }

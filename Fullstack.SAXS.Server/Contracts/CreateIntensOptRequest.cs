@@ -1,7 +1,9 @@
-﻿namespace Fullstack.SAXS.Server.Contracts
+﻿using Fullstack.SAXS.Domain.Enums;
+
+namespace Fullstack.SAXS.Server.Contracts
 {
     public record struct CreateIntensOptRequest(
-        double QMin, double QMax, int QNum
+        double QMin, double QMax, int QNum, StepTypes StepType
     )
     {
         public readonly bool isLegit

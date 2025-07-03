@@ -79,5 +79,10 @@ namespace Fullstack.SAXS.Domain.Entities.Sp
             ParticleNum = particleNum;
             IdSpData = idSpData;
         }
+
+        public void ChangePhi(double phi)
+        {
+            Phi = phi;
+        }
     }
 }

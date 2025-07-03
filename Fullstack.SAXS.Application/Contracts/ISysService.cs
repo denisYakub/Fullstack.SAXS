@@ -1,4 +1,8 @@
-﻿namespace Fullstack.SAXS.Application.Contracts
+﻿using Fullstack.SAXS.Domain.Commands;
+using Fullstack.SAXS.Domain.Entities.Areas;
+using Fullstack.SAXS.Domain.Enums;
+
+namespace Fullstack.SAXS.Application.Contracts
 {
     public interface ISysService
     {
@@ -11,13 +15,33 @@
             double ParticleBetaRotation,
             double ParticleGammaRotation
         );
-        string Get(Guid id);
-        byte[] GetAtoms(Guid id);
         Task<string> CreateIntensOptGrafAsync(
-            string? userId,
             Guid id,
-            double QMin, double QMax, int QNum
+            double QMin, double QMax, int QNum, StepTypes StepType
         );
         Task<string> CreatePhiGrafAsync(string? userId, Guid id, int layersNum);
+        public static double[] CreateQs(double QMin, double QMax, int QNum, StepTypes StepType = StepTypes.Linear)
+        {
+            double[] result = new double[QNum];
+
+            switch (StepType)
+            {
+                case StepTypes.Linear:
+                    for (int i = 0; i < QNum; i++)
+                        result[i] = QMin + i * ((QMax - QMin) / QNum - 1);
+                    break;
+                case StepTypes.Logarithmic:
+                    for (int i = 0; i < QNum; i++)
+                    {
+                        var logMin = Math.Log(QMin);
+                        var logMax = Math.Log(QMax);
+                        var t = (double)i / (QNum - 1);
+                        result[i] = Math.Exp(logMin + t * (logMax - logMin));
+                    }
+                    break;
+            }
+
+            return result;
+        }
     }
 }

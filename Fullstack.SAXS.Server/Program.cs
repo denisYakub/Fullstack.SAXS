@@ -15,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
     .AddScoped<ISysService, SysService>()
+    .AddScoped<ISpService, SpService>()
     .AddScoped<IStorage, AreaRepository>()
     .AddScoped<IFileService, FileService>()
     .AddScoped<SysService>()
@@ -42,15 +43,23 @@ builder.Services.AddRazorPages();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Identity/Account/Login";
-    options.LogoutPath = "/Identity/Account/Logout";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-
     options.Events.OnRedirectToLogin = context =>
     {
-        if (context.Request.Path.StartsWithSegments("/ping-auth") && context.Response.StatusCode == 200)
+        if (context.Request.Path.StartsWithSegments("/api"))
         {
-            context.Response.StatusCode = 401;
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        }
+
+        context.Response.Redirect(context.RedirectUri);
+        return Task.CompletedTask;
+    };
+
+    options.Events.OnRedirectToAccessDenied = context =>
+    {
+        if (context.Request.Path.StartsWithSegments("/api"))
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
             return Task.CompletedTask;
         }
 
@@ -61,14 +70,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddAuthorization();
 
-//builder.Services.AddOpenApi();
-
 var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
-
-//app.MapStaticAssets();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
@@ -81,13 +86,6 @@ app.MapGet("/ping-auth", (ClaimsPrincipal user) =>
     return Results.Json(new { Email = email });
 }
 ).RequireAuthorization();
-
-if (app.Environment.IsDevelopment())
-{
-    //app.MapOpenApi();
-}
-
-//app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

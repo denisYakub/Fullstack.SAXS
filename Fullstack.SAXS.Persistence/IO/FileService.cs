@@ -3,8 +3,6 @@ using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
-using System.Globalization;
-using System.Numerics;
 using System.Text;
 
 namespace Fullstack.SAXS.Persistence.IO
@@ -232,18 +230,18 @@ namespace Fullstack.SAXS.Persistence.IO
 
         public byte[] GetCSVAtoms(Area area)
         {
-            var csvLines = new List<string>() { "X,Y,Z" };
+            var csvLines = new List<string>() { "X;Y;Z" };
 
             csvLines.AddRange(
                 area
                 .Particles
                 .SelectMany(p => p.Vertices)
-                .Select(v => v.ToString())
+                .Select(v => $"{v.X};{v.Y};{v.Z}")
             );
 
             var csvContent = string.Join("\n", csvLines);
 
-            var bytes = System.Text.Encoding.UTF8.GetBytes(csvContent);
+            var bytes = Encoding.UTF8.GetBytes(csvContent);
 
             return bytes;
         }

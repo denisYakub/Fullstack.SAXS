@@ -9,5 +9,8 @@ namespace Fullstack.SAXS.Domain.Contracts
         Task SaveAsync(Guid idUser);
         Area GetArea(Guid id);
         Task<Area> GetAreaAsync(Guid id);
+        Task SaveAvgPhiAsync(Guid idUser, Guid id, double phi);
+        string GetAllGenerations();
+        string GetGenerations(Guid idUser);
     }
 }

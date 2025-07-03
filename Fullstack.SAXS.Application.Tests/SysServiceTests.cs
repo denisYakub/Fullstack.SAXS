@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Castle.Components.DictionaryAdapter.Xml;
+using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
@@ -54,7 +55,7 @@ namespace Fullstack.SAXS.Application.Tests
             var layersNum = 5;
 
             // Act
-            var phis = await _service.CreatePhiGrafAsync(Guid.NewGuid(), layersNum);
+            var phis = await _service.CreatePhiGrafAsync(String.Empty, Guid.NewGuid(), layersNum);
 
             // Assert
             Assert.Pass(phis);
@@ -73,7 +74,7 @@ namespace Fullstack.SAXS.Application.Tests
             string pathQs = Path.Combine(documentsPath, "QI.txt");
 
             // Act
-            var qs = SysService.CreateQs(minQ, maxQ, numQ);
+            var qs = ISysService.CreateQs(minQ, maxQ, numQ);
 
             using (var writer = new StreamWriter(pathQs))
             {

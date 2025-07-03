@@ -9,7 +9,7 @@ namespace Fullstack.SAXS.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class SaxsController(ISysService sysService) : ControllerBase
+    public class SaxsController(ISysService sysService, ISpService sp) : ControllerBase
     {
         [HttpPost("sys")]
         public IActionResult CreateSys([FromBody] CreateSysRequest request)
@@ -37,15 +37,37 @@ namespace Fullstack.SAXS.Server.Controllers
             return new OkResult();
         }
 
-        [HttpGet("sys/{id}")]
-        public IActionResult GetSys([FromRoute] Guid id)
+        [HttpGet("gen")]
+        public IActionResult GetGenerations()
         {
-            var json = sysService.Get(id);
+            var json = sp.GetAll();
 
             return new OkObjectResult(json);
         }
 
-        [HttpPost("sys/{id}graf/phis")]
+        [HttpGet("gen/my")]
+        public IActionResult GetMyGenerations()
+        {
+            var userId =
+                User
+                .FindFirstValue(ClaimTypes.NameIdentifier)
+                ??
+                throw new UnauthorizedAccessException("Need to login first!");
+
+            var json = sp.GetAll(userId);
+
+            return new OkObjectResult(json);
+        }
+
+        [HttpGet("sys/{id}")]
+        public IActionResult GetSys([FromRoute] Guid id)
+        {
+            var json = sp.Get(id);
+
+            return new OkObjectResult(json);
+        }
+
+        [HttpPost("sys/{id}/graf/phis")]
         public async Task<IActionResult> CreateSysPhiGraf([FromRoute] Guid id, [FromQuery] int layersNum = 5)
         {
             var userId =
@@ -59,25 +81,19 @@ namespace Fullstack.SAXS.Server.Controllers
             return new ContentResult() { Content = html, ContentType = "text/html" };
         }
 
-        [HttpPost("sys/{id}graf/intenceOpt")]
+        [HttpPost("sys/{id}/graf/intenceOpt")]
         public async Task<IActionResult> CreateSysIntensOptGraf([FromRoute] Guid id, [FromBody] CreateIntensOptRequest request)
         {
-            var userId =
-                User
-                .FindFirstValue(ClaimTypes.NameIdentifier)
-                ??
-                throw new UnauthorizedAccessException("Need to login first!");
-
             if (!request.isLegit)
                 throw new BadHttpRequestException("Request is not correct!");
 
             var html = await
                 sysService
                 .CreateIntensOptGrafAsync(
-                    userId,
                     id,
                     request.QMin, request.QMax,
-                    request.QNum
+                    request.QNum,
+                    request.StepType
                 );
 
             return new ContentResult() { Content = html, ContentType = "text/html" };

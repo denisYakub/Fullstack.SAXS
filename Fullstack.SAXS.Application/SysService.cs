@@ -1,14 +1,14 @@
-﻿using System.Text.Json;
-using Fullstack.SAXS.Application.Contracts;
+﻿using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Application
 {
-    public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph, IFileService file) : ISysService
+    public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph) : ISysService
     {
         public void Create(
             string? userId,
@@ -20,75 +20,39 @@ namespace Fullstack.SAXS.Application
             double ParticleGammaRotation
         )
         {
-            try
-            {
-                var idUser = Guid.Parse(userId);
+            var idUser = Guid.Parse(userId);
 
-                var areas = factory.GetAreas(AreaSize, AreaNumber, ParticleMaxSize);
+            var areas = factory.GetAreas(AreaSize, AreaNumber, ParticleMaxSize);
 
-                Parallel.ForEach(areas, area => {
-                    var infParticles =
-                        factory
-                        .GetInfParticles(
-                            ParticleMinSize, ParticleMaxSize,
-                            ParticleSizeShape, ParticleSizeScale,
-                            ParticleAlphaRotation,
-                            ParticleBetaRotation,
-                            ParticleGammaRotation,
-                            -AreaSize, AreaSize,
-                            -AreaSize, AreaSize,
-                            -AreaSize, AreaSize
-                        );
+            Parallel.ForEach(areas, area => {
+                var infParticles =
+                    factory
+                    .GetInfParticles(
+                        ParticleMinSize, ParticleMaxSize,
+                        ParticleSizeShape, ParticleSizeScale,
+                        ParticleAlphaRotation,
+                        ParticleBetaRotation,
+                        ParticleGammaRotation,
+                        -AreaSize, AreaSize,
+                        -AreaSize, AreaSize,
+                        -AreaSize, AreaSize
+                    );
 
-                    area.Fill(infParticles, ParticleNumber);
+                area.Fill(infParticles, ParticleNumber);
 
-                    storage.Add(area);
-                });
+                storage.Add(area);
+            });
 
-                storage.SaveAsync(idUser).Wait();
-            }
-            catch (ArgumentNullException)
-            {
-                throw new UnauthorizedAccessException("userId is null");
-            }
-            catch (FormatException)
-            {
-                throw new UnauthorizedAccessException("userId is not Guid");
-            }
-        }
-
-        public string Get(Guid id)
-        {
-            var area = storage.GetArea(id);
-
-            var options = new JsonSerializerOptions()
-            {
-                WriteIndented = true,
-                IncludeFields = true,
-            };
-
-            var json = JsonSerializer.Serialize(area, options);
-
-            return json;
-        }
-
-        public byte[] GetAtoms(Guid id)
-        {
-            var area = storage.GetArea(id);
-
-            return file.GetCSVAtoms(area);
+            storage.SaveAsync(idUser).Wait();
         }
 
         public async Task<string> CreateIntensOptGrafAsync(
-            string? userId,
             Guid id,
-            double QMin, double QMax, int QNum
+            double QMin, double QMax, int QNum, StepTypes StepType
         )
         {
-            var idUser = Guid.Parse(userId);
-
             var area = storage.GetArea(id);
-            var qs = CreateQs(QMin, QMax, QNum);
+            var qs = ISysService.CreateQs(QMin, QMax, QNum, StepType);
 
             var (x, y) = CreateIntensOptCoord(area, in qs);
 
@@ -102,6 +66,8 @@ namespace Fullstack.SAXS.Application
             var area = await storage.GetAreaAsync(id);
 
             var (x, y) = await CreatePhiCoordAsync(area, layersNum);
+
+            await storage.SaveAvgPhiAsync(idUser, id, y.Average());
 
             return await graph.GetHtmlPageAsync(x, y);
         }
@@ -157,17 +123,6 @@ namespace Fullstack.SAXS.Application
             var (q, I) = IntenceOpt(qs, globalVolume, tmpConst, localVolume, area);
 
             return (q.ToArray(), I.ToArray());
-        }
-
-        public static double[] CreateQs(double QMin, double QMax, int QNum)
-        {
-            var random = new Random();
-            var qs = new double[QNum];
-
-            for (var i = 0; i < QNum; i++)
-                qs[i] = random.GetEvenlyRandom(QMin, QMax);
-
-            return qs;
         }
 
         private static double[] CreateSegmentsRadii(double areaOuterR, int radiiNum)
