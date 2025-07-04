@@ -1,10 +1,12 @@
+const REDIRECT_PAGE = 'https://localhost:7135/Identity/Account/Login';
+
 export async function pingAuth() {
     const res = await fetch('ping-auth', {
         credentials: 'include',
     });
 
     if (res.status === 401) {
-        // Не авторизован
+        window.location.href = REDIRECT_PAGE;
         throw new Error('Unauthorized');
     }
 
@@ -15,12 +17,17 @@ export async function pingAuth() {
 }
 
 export async function createSystem(requestBody) {
-    const res = await fetch('api/saxs/sys', {
+    const res = await fetch('api/saxs/systems', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
         body: JSON.stringify(requestBody),
     });
+
+    if (res.status === 401) {
+        window.location.href = REDIRECT_PAGE;
+        throw new Error('Unauthorized');
+    }
 
     if (!res.ok) {
         const errorText = await res.text();
@@ -31,9 +38,14 @@ export async function createSystem(requestBody) {
 }
 
 export async function getAllGenerations() {
-    const res = await fetch('api/saxs/gen', {
+    const res = await fetch('api/saxs/generations', {
         credentials: 'include',
     });
+
+    if (res.status === 401) {
+        window.location.href = REDIRECT_PAGE;
+        throw new Error('Unauthorized');
+    }
 
     if (!res.ok) {
         throw new Error('Error loading generations');
@@ -43,12 +55,13 @@ export async function getAllGenerations() {
 }
 
 export async function getMyGenerations() {
-    const res = await fetch('api/saxs/gen/my', {
+    const res = await fetch('api/saxs/users/me/generations', {
         credentials: 'include',
     });
 
     if (!res.ok) {
         if (res.status === 401) {
+            window.location.href = REDIRECT_PAGE;
             throw new Error('Unauthorized');
         }
         throw new Error('Error loading your generations');
@@ -58,10 +71,11 @@ export async function getMyGenerations() {
 }
 
 export async function getSystem(id) {
-    const res = await fetch(`/api/saxs/sys/${id}`)
+    const res = await fetch(`/api/saxs/systems/${id}`)
 
     if (!res.ok) {
         if (res.status === 401) {
+            window.location.href = REDIRECT_PAGE;
             throw new Error('Unauthorized');
         }
         throw new Error('Error loading your generations');

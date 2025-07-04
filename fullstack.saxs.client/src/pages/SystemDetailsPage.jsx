@@ -17,10 +17,6 @@ export default function SystemDetailsPage() {
             .then(setData)
             .then(setLoading(false))
             .catch(err => {
-                if (err.message === 'Unauthorized') {
-                    window.location.href = 'https://localhost:7135/Identity/Account/Login';
-                    return;
-                }
                 setError(err.message || 'Error loading');
                 setLoading(false);
             });

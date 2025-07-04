@@ -6,9 +6,6 @@ export default function HomePage() {
 
     useEffect(() => {
         pingAuth()
-            .catch(() => {
-                window.location.href = 'https://localhost:7135/Identity/Account/Login';
-            })
             .finally(() => setLoading(false));
     }, []);
 

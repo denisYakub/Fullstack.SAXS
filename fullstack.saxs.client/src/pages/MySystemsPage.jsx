@@ -15,10 +15,6 @@ export default function MySystemsPage() {
                 setLoading(false);
             })
             .catch(err => {
-                if (err.message === 'Unauthorized') {
-                    window.location.href = 'https://localhost:7135/Identity/Account/Login';
-                    return;
-                }
                 setError(err.message || 'Error loading');
                 setLoading(false);
             });
