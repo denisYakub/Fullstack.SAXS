@@ -1,40 +1,35 @@
-﻿import React from 'react';
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 
 export default function Header() {
     return (
-        <header style={styles.header}>
-            <h1 style={styles.logo}>🌐 My Systems</h1>
-            <nav style={styles.nav}>
-                <Link to="/" style={styles.link}>Home</Link>
-                <Link to="/create" style={styles.link}>Create</Link>
-                <Link to="/all" style={styles.link}>All</Link>
-                <Link to="/my" style={styles.link}>Mine</Link>
+        <header className="flex items-center justify-between bg-gray-900 text-white px-6 py-4 shadow-md">
+            <h1 className="text-3xl font-bold underline select-none">🌐 My Systems</h1>
+            <nav className="space-x-6">
+                <Link
+                    to="/"
+                    className="text-lg font-medium hover:text-indigo-400 transition-colors"
+                >
+                    Home
+                </Link>
+                <Link
+                    to="/create"
+                    className="text-lg font-medium hover:text-indigo-400 transition-colors"
+                >
+                    Create
+                </Link>
+                <Link
+                    to="/all"
+                    className="text-lg font-medium hover:text-indigo-400 transition-colors"
+                >
+                    All
+                </Link>
+                <Link
+                    to="/my"
+                    className="text-lg font-medium hover:text-indigo-400 transition-colors"
+                >
+                    Mine
+                </Link>
             </nav>
         </header>
     );
 }
-
-const styles = {
-    header: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '1rem 2rem',
-        backgroundColor: '#282c34',
-        color: 'white',
-    },
-    logo: {
-        margin: 0,
-        fontSize: '1.5rem',
-    },
-    nav: {
-        display: 'flex',
-        gap: '1rem',
-    },
-    link: {
-        color: 'white',
-        textDecoration: 'none',
-        fontWeight: 'bold',
-    },
-};

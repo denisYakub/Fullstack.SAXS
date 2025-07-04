@@ -19,13 +19,16 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
 
                 var data = new SpData(path);
 
+                var entity = entities.ElementAt(i);
+
                 var gen =
                     new SpGeneration(
                         idUser,
-                        genNum, entities.ElementAt(i).Series,
-                        entities.ElementAt(i).AreaType,
-                        entities.ElementAt(i).ParticlesType ?? 0,
-                        null, entities.ElementAt(i).Particles.Count(),
+                        genNum, entity.Series,
+                        entity.AreaType,
+                        entity.ParticlesType ?? 0,
+                        entity.OuterRadius, 
+                        null, entity.Particles.Count(),
                         data.Id
                     );
 
@@ -47,6 +50,7 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                     g.SeriesNum,
                     g.AreaType,
                     g.ParticleType,
+                    g.AreaOuterRadius,
                     g.Phi,
                     g.ParticleNum,
                     g.IdSpData
@@ -76,6 +80,7 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                     g.SeriesNum,
                     g.AreaType,
                     g.ParticleType,
+                    g.AreaOuterRadius,
                     g.Phi,
                     g.ParticleNum,
                     g.IdSpData

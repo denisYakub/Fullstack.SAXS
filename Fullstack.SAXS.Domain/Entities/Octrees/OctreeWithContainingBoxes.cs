@@ -21,7 +21,7 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
 
         public bool Add(Particle particle)
         {
-            var boxIds = new List<Guid>(8);
+            var boxIds = new List<Guid>(9);
 
             foreach (var child in _children)
             {

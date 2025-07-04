@@ -83,3 +83,21 @@ export async function getSystem(id) {
 
     return res.json();
 }
+
+export async function getPhiGraphHtml(id, layersNum = 5) {
+    const res = await fetch(`/api/saxs/systems/${id}/graphs/phi?layersNum=${layersNum}`, {
+        method: 'POST',
+        credentials: 'include',
+    });
+
+    if (!res.ok) {
+        if (res.status === 401) {
+            window.location.href = REDIRECT_PAGE;
+            throw new Error('Unauthorized');
+        }
+        throw new Error('Error while getting Phi graph');
+    }
+
+    const html = await res.text();
+    return html;
+}

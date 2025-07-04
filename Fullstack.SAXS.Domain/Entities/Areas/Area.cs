@@ -61,8 +61,6 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
             if (_particles != null && Octree == null)
                 return;
 
-            //_particles = new List<Particle>(particleNumber);
-
             var retryCount = 0;
             var particleCount = 0;
 
@@ -76,8 +74,6 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
 
                 if (Contains(particle) && Octree.Add(particle))
                 {
-                    //_particles.Add(particle);
-
                     particleCount++;
                     retryCount = 0;
                 }

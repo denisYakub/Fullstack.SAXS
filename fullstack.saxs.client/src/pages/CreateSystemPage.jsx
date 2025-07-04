@@ -7,11 +7,11 @@ export default function CreateSystemPage() {
         Nc: '',
         ParticleMinSize: '',
         ParticleMaxSize: '',
-        ParticleAlphaRotation: '',
-        ParticleBetaRotation: '',
-        ParticleGammaRotation: '',
-        ParticleSizeShape: '',
-        ParticleSizeScale: '',
+        ParticleAlphaRotation: '360',
+        ParticleBetaRotation: '360',
+        ParticleGammaRotation: '360',
+        ParticleSizeShape: '3',
+        ParticleSizeScale: '2.5',
         ParticleNumber: '',
         AreaNumber: '',
         IsLegit: true,
@@ -19,13 +19,11 @@ export default function CreateSystemPage() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
 
-    // Обработчик изменения input
     function onChange(e) {
         const { name, value } = e.target;
-        setForm((f) => ({ ...f, [name]: value }));
+        setForm(f => ({ ...f, [name]: value }));
     }
 
-    // Проверка, чтобы AreaRadius или Nc был заполнен
     function isValidRequest() {
         return (form.AreaRadius.trim() !== '' || form.Nc.trim() !== '') && form.IsLegit;
     }
@@ -40,7 +38,6 @@ export default function CreateSystemPage() {
         setLoading(true);
         setMessage('');
 
-        // Преобразуем строки в числа, учтём что либо AreaRadius, либо Nc
         const requestBody = {
             AreaRadius: form.AreaRadius ? Number(form.AreaRadius) : null,
             Nc: form.Nc ? Number(form.Nc) : null,
@@ -64,11 +61,11 @@ export default function CreateSystemPage() {
                 Nc: '',
                 ParticleMinSize: '',
                 ParticleMaxSize: '',
-                ParticleAlphaRotation: '',
-                ParticleBetaRotation: '',
-                ParticleGammaRotation: '',
-                ParticleSizeShape: '',
-                ParticleSizeScale: '',
+                ParticleAlphaRotation: '360',
+                ParticleBetaRotation: '360',
+                ParticleGammaRotation: '360',
+                ParticleSizeShape: '3',
+                ParticleSizeScale: '2.5',
                 ParticleNumber: '',
                 AreaNumber: '',
                 IsLegit: true,
@@ -81,142 +78,57 @@ export default function CreateSystemPage() {
     }
 
     return (
-        <div>
-            <h2>Create System</h2>
-            <form onSubmit={onSubmit}>
-                <label>
-                    AreaRadius (or leave blank if filling Nc):<br />
-                    <input
-                        type="number"
-                        step="any"
-                        name="AreaRadius"
-                        value={form.AreaRadius}
-                        onChange={onChange}
-                    />
-                </label>
-                <br />
-                <label>
-                    Nc (or leave blank if you fill in AreaRadius):<br />
-                    <input
-                        type="number"
-                        step="any"
-                        name="Nc"
-                        value={form.Nc}
-                        onChange={onChange}
-                    />
-                </label>
-                <br />
-                <label>
-                    ParticleMinSize:<br />
-                    <input
-                        type="number"
-                        step="any"
-                        name="ParticleMinSize"
-                        value={form.ParticleMinSize}
-                        onChange={onChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    ParticleMaxSize:<br />
-                    <input
-                        type="number"
-                        step="any"
-                        name="ParticleMaxSize"
-                        value={form.ParticleMaxSize}
-                        onChange={onChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    ParticleAlphaRotation:<br />
-                    <input
-                        type="number"
-                        step="any"
-                        name="ParticleAlphaRotation"
-                        value={form.ParticleAlphaRotation}
-                        onChange={onChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    ParticleBetaRotation:<br />
-                    <input
-                        type="number"
-                        step="any"
-                        name="ParticleBetaRotation"
-                        value={form.ParticleBetaRotation}
-                        onChange={onChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    ParticleGammaRotation:<br />
-                    <input
-                        type="number"
-                        step="any"
-                        name="ParticleGammaRotation"
-                        value={form.ParticleGammaRotation}
-                        onChange={onChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    ParticleSizeShape:<br />
-                    <input
-                        type="number"
-                        step="any"
-                        name="ParticleSizeShape"
-                        value={form.ParticleSizeShape}
-                        onChange={onChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    ParticleSizeScale:<br />
-                    <input
-                        type="number"
-                        step="any"
-                        name="ParticleSizeScale"
-                        value={form.ParticleSizeScale}
-                        onChange={onChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    ParticleNumber:<br />
-                    <input
-                        type="number"
-                        name="ParticleNumber"
-                        value={form.ParticleNumber}
-                        onChange={onChange}
-                        required
-                    />
-                </label>
-                <br />
-                <label>
-                    AreaNumber:<br />
-                    <input
-                        type="number"
-                        name="AreaNumber"
-                        value={form.AreaNumber}
-                        onChange={onChange}
-                        required
-                    />
-                </label>
-                <br />
-                <button type="submit" disabled={loading}>
-                    {loading ? 'Creating...' : 'Create a system'}
-                </button>
-            </form>
-            {message && <p>{message}</p>}
+        <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-purple-800 via-indigo-900 to-blue-900 text-white px-4 pt-8">
+            <div className="max-w-3xl mx-auto p-6 bg-gray-900 text-white rounded-md shadow-lg mt-8">
+                <h2 className="text-3xl font-bold mb-6 text-center select-none">Create System</h2>
+                <form onSubmit={onSubmit} className="space-y-4">
+                    {[
+                        { label: 'AreaRadius (or leave blank if filling Nc)', name: 'AreaRadius', required: false, step: 'any' },
+                        { label: 'Nc (or leave blank if you fill in AreaRadius)', name: 'Nc', required: false, step: 'any' },
+                        { label: 'ParticleMinSize', name: 'ParticleMinSize', required: true, step: 'any' },
+                        { label: 'ParticleMaxSize', name: 'ParticleMaxSize', required: true, step: 'any' },
+                        { label: 'ParticleAlphaRotation', name: 'ParticleAlphaRotation', required: true, step: 'any' },
+                        { label: 'ParticleBetaRotation', name: 'ParticleBetaRotation', required: true, step: 'any' },
+                        { label: 'ParticleGammaRotation', name: 'ParticleGammaRotation', required: true, step: 'any' },
+                        { label: 'ParticleSizeShape', name: 'ParticleSizeShape', required: true, step: 'any' },
+                        { label: 'ParticleSizeScale', name: 'ParticleSizeScale', required: true, step: 'any' },
+                        { label: 'ParticleNumber', name: 'ParticleNumber', required: true, step: undefined },
+                        { label: 'AreaNumber', name: 'AreaNumber', required: true, step: undefined },
+                    ].map(({ label, name, required, step }) => (
+                        <label key={name} className="block">
+                            <span className="mb-1 block font-semibold">{label}:</span>
+                            <input
+                                type="number"
+                                step={step}
+                                name={name}
+                                value={form[name]}
+                                onChange={onChange}
+                                required={required}
+                                className="w-full rounded-md border border-gray-700 bg-gray-800 px-3 py-2 text-white placeholder-gray-400 focus:border-indigo-500 focus:outline-none"
+                                placeholder={required ? 'Required' : ''}
+                            />
+                        </label>
+                    ))}
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className={
+                            `w-full py-3 rounded-md font-semibold text-lg transition-colors
+                            ${loading ?
+                                'bg-indigo-700 cursor-not-allowed' :
+                                'bg-indigo-600 hover:bg-indigo-500'}`
+                        }>
+                        {loading ? 'Creating...' : 'Create a system'}
+                    </button>
+                </form>
+
+                {message && (
+                    <p className={`mt-6 text-center font-medium ${message.startsWith('Error') ? 'text-red-400' : 'text-green-400'}`}>
+                        {message}
+                    </p>
+                )}
+            </div>
         </div>
     );
 }

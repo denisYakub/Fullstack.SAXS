@@ -30,8 +30,6 @@ export default function Icosahedron({ particle }) {
     const click = (e) => {
         e.stopPropagation();
         console.log(particle);
-        //console.log(JSON.stringify(particle.Vertices.map(v => [v.X, v.Y, v.Z]), null, 2));
-        //console.log(JSON.stringify(position, null, 2))
     }
 
     return (

@@ -13,10 +13,9 @@ namespace Fullstack.SAXS.Application
     {
         public async Task CreateAsync(Guid userId, CreateSysData data)
         {
-            var areas = factory.GetAreas(data.AreaSize, data.AreaNumber, data.ParticleMaxSize);
+            var areas = factory.GetAreas(data.AreaSize, data.AreaNumber, data.ParticleMaxSize).ToArray();
 
-            Parallel.ForEach(areas, area =>
-            {
+            Parallel.For(0, areas.Length, i => {
                 var infParticles =
                     factory
                     .GetInfParticles(
@@ -30,7 +29,7 @@ namespace Fullstack.SAXS.Application
                         -data.AreaSize, data.AreaSize
                     );
 
-                area.Fill(infParticles, data.ParticleNumber);
+                areas[i].Fill(infParticles, data.ParticleNumber);
             });
 
             await storage.AddRangeAsync(areas, userId);
