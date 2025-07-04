@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Fullstack.SAXS.Application;
 using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Server.Contracts;
 using Microsoft.AspNetCore.Authorization;
@@ -9,23 +10,34 @@ namespace Fullstack.SAXS.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class MathcadController(ISysService sysService, ISpService sp) : ControllerBase
+    public class MathcadController(ISpService sp) : ControllerBase
     {
-        [HttpGet("sys/{id}/atoms")]
-        public IActionResult GetCoordinatesOfAtoms([FromRoute] Guid id)
+        private Guid UserId
         {
-            var csv = sp.GetAtoms(id);
+            get
+            {
+                var userId =
+                    User
+                    .FindFirstValue(ClaimTypes.NameIdentifier)
+                    ??
+                    throw new UnauthorizedAccessException("Need to login first!");
+
+                return Guid.Parse(userId);
+            }
+        }
+
+        [HttpGet("systems/{id}/atoms-coordinates")]
+        public async Task<IActionResult> GetCoordinatesOfAtoms([FromRoute] Guid id)
+        {
+            var csv = await sp.GetAtomsAsync(id);
 
             return File(csv, "text/csv", "vertices.csv");
         }
 
-        [HttpPost("qI")]
+        [HttpPost("q-values")]
         public IActionResult GetQI([FromBody] CreateIntensOptRequest request)
         {
-            if (!request.isLegit)
-                throw new BadHttpRequestException("Request is not correct!");
-
-            var qI = ISysService.CreateQs(request.QMin, request.QMax, request.QNum);
+            var qI = SysService.CreateQs(request.QMin, request.QMax, request.QNum);
 
             return new OkObjectResult(qI);
         }

@@ -1,9 +1,10 @@
-﻿using Fullstack.SAXS.Domain.Commands;
+﻿using System.ComponentModel.DataAnnotations;
+using Fullstack.SAXS.Domain.Commands;
 using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Server.Contracts
 {
-    public record struct CreateSysRequest(
+    public record CreateSysRequest(
         double? AreaRadius, double? Nc,
         double ParticleMinSize, double ParticleMaxSize,
         double ParticleAlphaRotation,
@@ -11,26 +12,9 @@ namespace Fullstack.SAXS.Server.Contracts
         double ParticleGammaRotation,
         double ParticleSizeShape, double ParticleSizeScale,
         int ParticleNumber, int AreaNumber
-    )
+    ) : IValidatableObject
     {
-        public readonly bool IsLegit
-        {
-            get
-            {
-                if (!AreaRadius.HasValue && !Nc.HasValue)
-                    return false;
-
-                if (ParticleMinSize > ParticleMaxSize)
-                    return false;
-
-                if (AreaNumber <= 0 || ParticleNumber <= 0)
-                    return false;
-
-                return true;
-            }
-        }
-
-        public readonly double AreaSize
+        public double AreaSize
         {
             get
             {
@@ -57,15 +41,26 @@ namespace Fullstack.SAXS.Server.Contracts
 
                     return Math.Pow(R3, 1.0 / 3.0);
                 }
-                else if (AreaRadius.HasValue)
+
+                if (AreaRadius.HasValue)
                 {
                     return AreaRadius.Value;
                 }
-                else
-                {
-                    throw new BadHttpRequestException("AreaRadius and Nc can not be null!");
-                }
+
+                throw new InvalidOperationException("Both AreaRadius and Nc are null.");
             }
+        }
+
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            if (!AreaRadius.HasValue && !Nc.HasValue)
+                yield return new ValidationResult("Either AreaRadius or Nc must be specified.");
+
+            if (ParticleMinSize > ParticleMaxSize)
+                yield return new ValidationResult("ParticleMinSize must be <= ParticleMaxSize.");
+
+            if (AreaNumber <= 0 || ParticleNumber <= 0)
+                yield return new ValidationResult("AreaNumber and ParticleNumber must be > 0.");
         }
     }
 }

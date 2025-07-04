@@ -6,9 +6,9 @@ namespace Fullstack.SAXS.Application
 {
     public class SpService(IStorage storage, IFileService file) : ISpService
     {
-        public string Get(Guid id)
+        public async Task<string> GetAsync(Guid id)
         {
-            var area = storage.GetArea(id);
+            var area = await storage.GetAreaAsync(id);
 
             var options = new JsonSerializerOptions()
             {
@@ -21,29 +21,23 @@ namespace Fullstack.SAXS.Application
             return json;
         }
 
-        public byte[] GetAtoms(Guid id)
+        public async Task<string> GetAllAsync(Guid? userId = null)
         {
-            var area = storage.GetArea(id);
-
-            return file.GetCSVAtoms(area);
-        }
-
-        public string GetAll(string userId = null)
-        {
-            string result;
-
-            if (userId == null)
+            if (userId.HasValue)
             {
-                result = storage.GetAllGenerations();
+                return await storage.GetGenerationsAsync(userId.Value);
             }
             else
             {
-                var idUser = Guid.Parse(userId);
-
-                result = storage.GetGenerations(idUser);
+                return await storage.GetAllGenerationsAsync();
             }
+        }
 
-            return result;
+        public async Task<byte[]> GetAtomsAsync(Guid id)
+        {
+            var area = await storage.GetAreaAsync(id);
+
+            return file.GetCSVAtoms(area);
         }
     }
 }

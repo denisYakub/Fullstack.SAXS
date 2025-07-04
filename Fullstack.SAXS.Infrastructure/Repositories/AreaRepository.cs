@@ -9,16 +9,38 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
 {
     public class AreaRepository(IFileService file, PosgresDbContext postgres) : IStorage
     {
-        private ICollection<Area> _areas = new List<Area>(10);
-
-        public void Add(Area entity)
+        public async Task AddRangeAsync(IEnumerable<Area> entities, Guid idUser)
         {
-            _areas.Add(entity);
+            var genNum = GetGenNum();
+
+            for (var i = 0; i < entities.Count(); i++)
+            {
+                var path = await file.WriteAsync(entities.ElementAt(i), genNum);
+
+                var data = new SpData(path);
+
+                var gen =
+                    new SpGeneration(
+                        idUser,
+                        genNum, entities.ElementAt(i).Series,
+                        entities.ElementAt(i).AreaType,
+                        entities.ElementAt(i).ParticlesType ?? 0,
+                        null, entities.ElementAt(i).Particles.Count(),
+                        data.Id
+                    );
+
+                await postgres.Datas.AddAsync(data);
+                await postgres.Generations.AddAsync(gen);
+
+            }
+
+
+            await postgres.SaveChangesAsync();
         }
 
-        public string GetAllGenerations()
+        public async Task<string> GetAllGenerationsAsync()
         {
-            var gens = postgres.Generations
+            var gens = await postgres.Generations
                 .Select(g => new
                 {
                     g.GenNum,
@@ -28,19 +50,10 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                     g.Phi,
                     g.ParticleNum,
                     g.IdSpData
-                });
+                })
+                .ToListAsync();
 
             return JsonSerializer.Serialize(gens);
-        }
-
-        public Area GetArea(Guid id)
-        {
-            var path = postgres.Datas.FirstOrDefault(d => d.Id == id);
-
-            if (path == null)
-                throw new ArgumentException($"No data with this id {id}");
-
-            return file.Read(path.Path);
         }
 
         public async Task<Area> GetAreaAsync(Guid id)
@@ -53,9 +66,9 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
             return await file.ReadAsync(path.Path);
         }
 
-        public string GetGenerations(Guid idUser)
+        public async Task<string> GetGenerationsAsync(Guid idUser)
         {
-            var gens = postgres.Generations
+            var gens = await postgres.Generations
                 .Where(g => g.IdUser == idUser)
                 .Select(g => new
                 {
@@ -66,67 +79,10 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                     g.Phi,
                     g.ParticleNum,
                     g.IdSpData
-                });
+                })
+                .ToListAsync();
 
             return JsonSerializer.Serialize(gens);
-        }
-
-        public void Save(Guid idUser)
-        {
-            var genNum = GetGenNum();
-
-            for (var i = 0; i < _areas.Count; i++)
-            {
-                var path = file.Write(_areas.ElementAt(i), genNum);
-
-                var data = new SpData(path);
-
-                var gen = 
-                    new SpGeneration(
-                        idUser, 
-                        genNum, _areas.ElementAt(i).Series, 
-                        _areas.ElementAt(i).AreaType,
-                        _areas.ElementAt(i).ParticlesType ?? 0,
-                        null, _areas.ElementAt(i).Particles.Count(),
-                        data.Id
-                    );
-
-                postgres.Datas.Add(data);
-                postgres.Generations.Add(gen);
-
-            }
-
-
-            postgres.SaveChanges();
-        }
-
-        public async Task SaveAsync(Guid idUser)
-        {
-            var genNum = GetGenNum();
-
-            for (var i = 0; i < _areas.Count; i++)
-            {
-                var path = await file.WriteAsync(_areas.ElementAt(i), genNum);
-
-                var data = new SpData(path);
-
-                var gen =
-                    new SpGeneration(
-                        idUser,
-                        genNum, _areas.ElementAt(i).Series,
-                        _areas.ElementAt(i).AreaType,
-                        _areas.ElementAt(i).ParticlesType ?? 0,
-                        null, _areas.ElementAt(i).Particles.Count(),
-                        data.Id
-                    );
-
-                await postgres.Datas.AddAsync(data);
-                await postgres.Generations.AddAsync(gen);
-
-            }
-
-
-            await postgres.SaveChangesAsync();
         }
 
         public async Task SaveAvgPhiAsync(Guid idUser, Guid id, double phi)

@@ -4,72 +4,81 @@ using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
+using Fullstack.SAXS.Domain.Models;
 using Fullstack.SAXS.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Application
 {
     public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph) : ISysService
     {
-        public void Create(
-            string? userId,
-            double AreaSize, int AreaNumber, int ParticleNumber,
-            double ParticleMinSize, double ParticleMaxSize,
-            double ParticleSizeShape, double ParticleSizeScale,
-            double ParticleAlphaRotation,
-            double ParticleBetaRotation,
-            double ParticleGammaRotation
-        )
+        public async Task CreateAsync(Guid userId, CreateSysData data)
         {
-            var idUser = Guid.Parse(userId);
+            var areas = factory.GetAreas(data.AreaSize, data.AreaNumber, data.ParticleMaxSize);
 
-            var areas = factory.GetAreas(AreaSize, AreaNumber, ParticleMaxSize);
-
-            Parallel.ForEach(areas, area => {
+            Parallel.ForEach(areas, area =>
+            {
                 var infParticles =
                     factory
                     .GetInfParticles(
-                        ParticleMinSize, ParticleMaxSize,
-                        ParticleSizeShape, ParticleSizeScale,
-                        ParticleAlphaRotation,
-                        ParticleBetaRotation,
-                        ParticleGammaRotation,
-                        -AreaSize, AreaSize,
-                        -AreaSize, AreaSize,
-                        -AreaSize, AreaSize
+                        data.ParticleMinSize, data.ParticleMaxSize,
+                        data.ParticleSizeShape, data.ParticleSizeScale,
+                        data.ParticleAlphaRotation,
+                        data.ParticleBetaRotation,
+                        data.ParticleGammaRotation,
+                        -data.AreaSize, data.AreaSize,
+                        -data.AreaSize, data.AreaSize,
+                        -data.AreaSize, data.AreaSize
                     );
 
-                area.Fill(infParticles, ParticleNumber);
-
-                storage.Add(area);
+                area.Fill(infParticles, data.ParticleNumber);
             });
 
-            storage.SaveAsync(idUser).Wait();
+            await storage.AddRangeAsync(areas, userId);
         }
 
-        public async Task<string> CreateIntensOptGrafAsync(
-            Guid id,
-            double QMin, double QMax, int QNum, StepTypes StepType
-        )
+        public async Task<string> CreateIntensOptGraphAsync(Guid id, CreateQIData data)
         {
-            var area = storage.GetArea(id);
-            var qs = ISysService.CreateQs(QMin, QMax, QNum, StepType);
+            var area = await storage.GetAreaAsync(id);
+            var qs = CreateQs(data.QMin, data.QMax, data.QNum, data.StepType);
 
             var (x, y) = CreateIntensOptCoord(area, in qs);
 
             return await graph.GetHtmlPageAsync(x, y);
         }
 
-        public async Task<string> CreatePhiGrafAsync(string? userId, Guid id, int layersNum)
+        public async Task<string> CreatePhiGraphAsync(Guid userId, Guid id, int layersNum)
         {
-            var idUser = Guid.Parse(userId);
-
             var area = await storage.GetAreaAsync(id);
 
             var (x, y) = await CreatePhiCoordAsync(area, layersNum);
 
-            await storage.SaveAvgPhiAsync(idUser, id, y.Average());
+            await storage.SaveAvgPhiAsync(userId, id, y.Average());
 
             return await graph.GetHtmlPageAsync(x, y);
+        }
+
+        public static double[] CreateQs(double QMin, double QMax, int QNum, StepTypes StepType = StepTypes.Linear)
+        {
+            double[] result = new double[QNum];
+
+            switch (StepType)
+            {
+                case StepTypes.Linear:
+                    for (int i = 0; i < QNum; i++)
+                        result[i] = QMin + i * ((QMax - QMin) / QNum - 1);
+                    break;
+                case StepTypes.Logarithmic:
+                    for (int i = 0; i < QNum; i++)
+                    {
+                        var logMin = Math.Log(QMin);
+                        var logMax = Math.Log(QMax);
+                        var t = (double)i / (QNum - 1);
+                        result[i] = Math.Exp(logMin + t * (logMax - logMin));
+                    }
+                    break;
+            }
+
+            return result;
         }
 
         private static async Task<(double[] x, double[] y)> CreatePhiCoordAsync(

@@ -1,4 +1,5 @@
-﻿using Fullstack.SAXS.Domain.Contracts;
+﻿using System.Threading.Tasks;
+using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Persistence.IO;
@@ -43,7 +44,7 @@ namespace Fullstack.SAXS.Persistence.Tests
         }
 
         [Test]
-        public void Write_AreaWithParticles_ReturnFilePath()
+        public async Task Write_AreaWithParticles_ReturnFilePath()
         {
             // Arrange
             var area = new SphereArea(1, 100, 5);
@@ -57,55 +58,55 @@ namespace Fullstack.SAXS.Persistence.Tests
             area.Fill(particles, 3);
 
             // Act
-            var file = _fileService.Write(area, 0);
+            var file = await _fileService.WriteAsync(area, 0);
 
             // Assert
             Assert.Pass(file);
         }
 
         [Test]
-        public void Write_AreaWithoutParticles_ReturnFilePath()
+        public async Task Write_AreaWithoutParticles_ReturnFilePath()
         {
             // Arrange
             var area = new SphereArea(0, 100, 5);
 
             // Act
-            var file = _fileService.Write(area, 0);
+            var file = await _fileService.WriteAsync(area, 0);
 
             // Assert
             Assert.Pass(file);
         }
 
         [Test]
-        public void Read_AreaWithParticles_ContainsParticles()
+        public async Task Read_AreaWithParticles_ContainsParticles()
         {
             // Arrange
             if (_areaWithParticlesPath == null) 
                 Assert.Fail();
 
             // Act
-            var area = _fileService.Read(_areaWithParticlesPath);
+            var area = await _fileService.ReadAsync(_areaWithParticlesPath);
 
             // Assert
             Assert.That(area.Particles.Any());
         }
 
         [Test]
-        public void Read_AreaWithoutParticles_DoesntContainsParticles()
+        public async Task Read_AreaWithoutParticles_DoesntContainsParticles()
         {
             // Arrange
             if (_areaWithoutParticlesPath == null)
                 Assert.Fail();
 
             // Act
-            var area = _fileService.Read(_areaWithoutParticlesPath);
+            var area = await _fileService.ReadAsync(_areaWithoutParticlesPath);
 
             // Assert
             Assert.That(area.Particles == null);
         }
 
         [Test]
-        public void Read_RealAreaWithoutParticleCollision_True()
+        public async Task Read_RealAreaWithoutParticleCollision_True()
         {
             // Arrange
             var file = "Series#0_OuterRadius#1000_AreaType#Sphere_ParticlesType#Icosahedron.csv";
@@ -120,7 +121,7 @@ namespace Fullstack.SAXS.Persistence.Tests
             if (!Path.Exists(path))
                 throw new ArgumentException("Test file does not exist!");
 
-            var area = _fileService.Read(path);
+            var area = await _fileService.ReadAsync(path);
 
             var countOfCollision = 0;
             var particles = area.Particles.ToArray();

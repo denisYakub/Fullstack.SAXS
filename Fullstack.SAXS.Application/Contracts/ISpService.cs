@@ -2,8 +2,8 @@
 {
     public interface ISpService
     {
-        string Get(Guid id);
-        string GetAll(string userId = null);
-        byte[] GetAtoms(Guid id);
+        Task<string> GetAsync(Guid id);
+        Task<string> GetAllAsync(Guid? userId = null);
+        Task<byte[]> GetAtomsAsync(Guid id);
     }
 }
