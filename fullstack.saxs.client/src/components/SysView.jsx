@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import Icosahedron from './Icosahedron';
+import ParticleMesh from './ParticleMesh';
 
 export default function SysView({ data }) {
     const [visibleCount, setVisibleCount] = useState(1); // от 1 до 10 шагов по 10%
@@ -51,11 +51,11 @@ export default function SysView({ data }) {
                     />
                 </mesh>
 
-                <Suspense fallback={null}>
+                {<Suspense fallback={null}>
                     {data.Particles.slice(0, visibleParticles).map((particle, index) => (
-                        <Icosahedron key={index} particle={particle} />
+                        <ParticleMesh key = { index } particle = { particle } />
                     ))}
-                </Suspense>
+                </Suspense>}
 
                 <OrbitControls />
             </Canvas>

@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { createSystem } from '../api/systemApi';
 
+const PARTICLE_TYPES = ['Icosahedron', 'C60', 'C70', 'C240', 'C540'];
+
 export default function CreateSystemPage() {
     const [form, setForm] = useState({
         AreaRadius: '',
         Nc: '',
+        ParticleType: 'Icosahedron',
         ParticleMinSize: '',
         ParticleMaxSize: '',
         ParticleAlphaRotation: '360',
@@ -41,6 +44,7 @@ export default function CreateSystemPage() {
         const requestBody = {
             AreaRadius: form.AreaRadius ? Number(form.AreaRadius) : null,
             Nc: form.Nc ? Number(form.Nc) : null,
+            ParticleType: form.ParticleType,
             ParticleMinSize: Number(form.ParticleMinSize),
             ParticleMaxSize: Number(form.ParticleMaxSize),
             ParticleAlphaRotation: Number(form.ParticleAlphaRotation),
@@ -59,6 +63,7 @@ export default function CreateSystemPage() {
             setForm({
                 AreaRadius: '',
                 Nc: '',
+                ParticleType: 'Icosahedron',
                 ParticleMinSize: '',
                 ParticleMaxSize: '',
                 ParticleAlphaRotation: '360',
@@ -82,6 +87,21 @@ export default function CreateSystemPage() {
             <div className="max-w-3xl mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
                 <h2 className="text-3xl font-bold mb-6 text-center select-none">Create System</h2>
                 <form onSubmit={onSubmit} className="space-y-4">
+                    {/* ¬€œ¿ƒ¿ﬁŸ»… —œ»—Œ  */}
+                    <label className="block">
+                        <span className="mb-1 block font-semibold">Particle Type:</span>
+                        <select
+                            name="ParticleType"
+                            value={form.ParticleType}
+                            onChange={onChange}
+                            className="w-full rounded-md bg-gray-700 px-3 py-2 text-white placeholder-white/50 focus:border-indigo-400 focus:outline-none"
+                        >
+                            {PARTICLE_TYPES.map((type) => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
+                        </select>
+                    </label>
+
                     {[
                         { label: 'AreaRadius (or leave blank if filling Nc)', name: 'AreaRadius', required: false, step: 'any' },
                         { label: 'Nc (or leave blank if you fill in AreaRadius)', name: 'Nc', required: false, step: 'any' },
@@ -104,7 +124,7 @@ export default function CreateSystemPage() {
                                 value={form[name]}
                                 onChange={onChange}
                                 required={required}
-                                className="w-full rounded-md bg-white/10 backdrop-blur-md px-3 py-2 text-white placeholder-white/50 focus:border-indigo-400 focus:outline-none"
+                                className="w-full rounded-md bg-gray-700 px-3 py-2 text-white placeholder-white/50 focus:border-indigo-400 focus:outline-none"
                                 placeholder={required ? 'Required' : ''}
                             />
                         </label>

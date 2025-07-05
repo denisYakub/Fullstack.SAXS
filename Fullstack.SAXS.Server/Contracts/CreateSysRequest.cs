@@ -6,7 +6,7 @@ using MathNet.Numerics.Distributions;
 namespace Fullstack.SAXS.Server.Contracts
 {
     public record CreateSysRequest(
-        double? AreaRadius, double? Nc, ParticleTypes particleType,
+        double? AreaRadius, double? Nc, ParticleTypes ParticleType,
         double ParticleMinSize, double ParticleMaxSize,
         double ParticleAlphaRotation,
         double ParticleBetaRotation,

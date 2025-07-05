@@ -31,7 +31,7 @@ namespace Fullstack.SAXS.Server.Controllers
         {
             var dto = new CreateSysData(
                 request.AreaSize, request.AreaNumber, request.ParticleNumber,
-                request.particleType,
+                request.ParticleType,
                 request.ParticleMinSize, request.ParticleMaxSize,
                 request.ParticleSizeShape, request.ParticleSizeScale,
                 request.ParticleAlphaRotation,

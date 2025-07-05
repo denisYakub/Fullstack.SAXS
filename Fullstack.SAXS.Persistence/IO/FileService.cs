@@ -53,11 +53,11 @@ namespace Fullstack.SAXS.Persistence.IO
 
                 Particle particle = particleType switch
                 {
-                    ParticleTypes.Icosahedron => new IcosahedronParticle(series, center, angles),
-                    ParticleTypes.C60 => new C60(series, center, angles),
-                    ParticleTypes.C70 => new C70(series, center, angles),
-                    ParticleTypes.C240 => new C240(series, center, angles),
-                    ParticleTypes.C540 => new C540(series, center, angles),
+                    ParticleTypes.Icosahedron => new IcosahedronParticle(size, center, angles),
+                    ParticleTypes.C60 => new C60(size, center, angles),
+                    ParticleTypes.C70 => new C70(size, center, angles),
+                    ParticleTypes.C240 => new C240(size, center, angles),
+                    ParticleTypes.C540 => new C540(size, center, angles),
                     _ => throw new NotImplementedException()
                 };
 
