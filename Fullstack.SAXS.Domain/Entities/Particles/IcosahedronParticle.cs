@@ -15,22 +15,13 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
         protected override int[][] Faces => _faces;
 
-        public override IReadOnlyCollection<Vector3D> Vertices
-        {
-            get
-            {
-                if (_vertices == null)
-                    _vertices = [.. GenerateVertices()];
-
-                return _vertices;
-            }
-        }
+        public override IReadOnlyCollection<Vector3D> Vertices => _vertices;
 
         public override ParticleTypes ParticleType => ParticleTypes.Icosahedron;
 
         private readonly double _outerR;
         private readonly double _innerR;
-        private Vector3D[]? _vertices = null;
+        private Vector3D[] _vertices;
 
         private static readonly int[][] _faces = [
             [0, 11, 5],
@@ -58,30 +49,32 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
         public IcosahedronParticle(double size, Vector3D center, EulerAngles rotationAngles)
             : base(size, center, rotationAngles)
         {
+            _vertices = GenerateVertices(center, size, rotationAngles);
+
             var edge = GetEdgeSize(size);
 
             _outerR = 0.951 * edge;
             _innerR = 0.7557 * edge;
         }
 
-        public IReadOnlyCollection<Vector3D> GenerateVertices()
+        private static Vector3D[] GenerateVertices(Vector3D center, double size, EulerAngles rotationAngles)
         {
             var vertices = new Vector3D[12];
 
-            vertices[0] = new Vector3D(-1, _phi, 0) * Size;
-            vertices[1] = new Vector3D(1, _phi, 0) * Size;
-            vertices[2] = new Vector3D(-1, -_phi, 0) * Size;
-            vertices[3] = new Vector3D(1, -_phi, 0) * Size;
+            vertices[0] = new Vector3D(-1, _phi, 0) * size;
+            vertices[1] = new Vector3D(1, _phi, 0) * size;
+            vertices[2] = new Vector3D(-1, -_phi, 0) * size;
+            vertices[3] = new Vector3D(1, -_phi, 0) * size;
 
-            vertices[4] = new Vector3D(0, -1, _phi) * Size;
-            vertices[5] = new Vector3D(0, 1, _phi) * Size;
-            vertices[6] = new Vector3D(0, -1, -_phi) * Size;
-            vertices[7] = new Vector3D(0, 1, -_phi) * Size;
+            vertices[4] = new Vector3D(0, -1, _phi) * size;
+            vertices[5] = new Vector3D(0, 1, _phi) * size;
+            vertices[6] = new Vector3D(0, -1, -_phi) * size;
+            vertices[7] = new Vector3D(0, 1, -_phi) * size;
 
-            vertices[8] = new Vector3D(_phi, 0, -1) * Size;
-            vertices[9] = new Vector3D(_phi, 0, 1) * Size;
-            vertices[10] = new Vector3D(-_phi, 0, -1) * Size;
-            vertices[11] = new Vector3D(-_phi, 0, 1) * Size;
+            vertices[8] = new Vector3D(_phi, 0, -1) * size;
+            vertices[9] = new Vector3D(_phi, 0, 1) * size;
+            vertices[10] = new Vector3D(-_phi, 0, -1) * size;
+            vertices[11] = new Vector3D(-_phi, 0, 1) * size;
 
 
             int index = 12;
@@ -111,9 +104,9 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
                 vertices[i] = Vector3D
                     .Transform(
                         vertices[i],
-                        RotationAngles.CreateRotationMatrix()
+                        rotationAngles.CreateRotationMatrix()
                     );
-                vertices[i] += Center;
+                vertices[i] += center;
             }
 
             return vertices;
