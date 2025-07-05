@@ -1,4 +1,5 @@
-﻿using Fullstack.SAXS.Server.Contracts;
+﻿using Fullstack.SAXS.Domain.Enums;
+using Fullstack.SAXS.Server.Contracts;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel.Client;
 
 namespace Fullstack.SAXS.Server.Tests;
@@ -11,11 +12,12 @@ public class CreateSysRequestTests
     public void Setup()
     {
         _request = new CreateSysRequest(
-            100, 0.1,       // AreaRadius, Nc
-            1, 5,           // ParticleMinSize, ParticleMaxSize,
-            360, 360, 360,  // ParticleAngleRotations
-            3, 2.5,         // ParticleSizeShape, ParticleSizeScale,
-            100_000, 1      // ParticleNumber, AreaNumber
+            100, 0.1,
+            ParticleTypes.Icosahedron,
+            1, 5,
+            360, 360, 360,
+            3, 2.5,
+            100_000, 1
         );
     }
 

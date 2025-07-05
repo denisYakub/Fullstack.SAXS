@@ -1,18 +1,14 @@
 ﻿using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
-using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Enums;
 using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Infrastructure.Factories
 {
-    public class SphereIcosahedronFactory : AreaParticleFactory
+    public class IcosahedronFactory : ParticleFactory
     {
-        public override IEnumerable<Area> GetAreas(double areaSize, int number, double maxParticleSize)
-        {
-            for (int i = 0; i < number; i++) 
-                yield return new SphereArea(i, areaSize, maxParticleSize);
-        }
+        public override ParticleTypes Type => ParticleTypes.Icosahedron;
 
         public override IEnumerable<Particle> GetInfParticles(
             double minSize, double maxSize,
@@ -38,7 +34,7 @@ namespace Fullstack.SAXS.Infrastructure.Factories
                 var y = random.GetEvenlyRandom(minY, maxY);
                 var z = random.GetEvenlyRandom(minZ, maxZ);
 
-                yield return new IcosahedronParticle(size, new (x, y, z), new (a, b, g));
+                yield return new IcosahedronParticle(size, new(x, y, z), new(a, b, g));
             }
         }
     }

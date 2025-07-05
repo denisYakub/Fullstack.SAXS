@@ -1,7 +1,9 @@
-﻿namespace Fullstack.SAXS.Domain.Models
+﻿using Fullstack.SAXS.Domain.Enums;
+
+namespace Fullstack.SAXS.Domain.Models
 {
     public record CreateSysData(
-        double AreaSize, int AreaNumber, int ParticleNumber,
+        double AreaSize, int AreaNumber, int ParticleNumber, ParticleTypes particleType,
         double ParticleMinSize, double ParticleMaxSize,
         double ParticleSizeShape, double ParticleSizeScale,
         double ParticleAlphaRotation,

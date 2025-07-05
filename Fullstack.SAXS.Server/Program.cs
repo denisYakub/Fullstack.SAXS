@@ -14,12 +14,15 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
+    .AddSingleton<ParticleFactory, IcosahedronFactory>()
+    .AddSingleton<ParticleFactory, C60Factory>()
+    .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
     .AddScoped<ISysService, SysService>()
     .AddScoped<ISpService, SpService>()
     .AddScoped<IStorage, AreaRepository>()
     .AddScoped<IFileService, FileService>()
     .AddScoped<SysService>()
-    .AddScoped<AreaParticleFactory, SphereIcosahedronFactory>()
+    .AddScoped<AreaFactory, SphereFactory>()
     .AddScoped<IGraphService, GraphService>()
     .AddSingleton<IStringService, StringService>();
 

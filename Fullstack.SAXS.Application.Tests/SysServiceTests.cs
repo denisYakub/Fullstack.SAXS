@@ -17,9 +17,10 @@ namespace Fullstack.SAXS.Application.Tests
         [SetUp]
         public void Setup()
         {
-            var factoryMock = new Mock<AreaParticleFactory>();
+            var factoryMock = new Mock<AreaFactory>();
             var storageMock = new Mock<IStorage>();
             var graphMock = new Mock<IGraphService>();
+            var prtclFResolverMock = new Mock<IParticleFactoryResolver>();
 
             storageMock
                 .Setup(s => s.GetAreaAsync(It.IsAny<Guid>()))
@@ -42,7 +43,8 @@ namespace Fullstack.SAXS.Application.Tests
                 });
 
             _service = new SysService(
-                factoryMock.Object, 
+                factoryMock.Object,
+                prtclFResolverMock.Object,
                 storageMock.Object, 
                 graphMock.Object
             );

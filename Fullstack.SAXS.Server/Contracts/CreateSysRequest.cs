@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Fullstack.SAXS.Domain.Commands;
+using Fullstack.SAXS.Domain.Enums;
 using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Server.Contracts
 {
     public record CreateSysRequest(
-        double? AreaRadius, double? Nc,
+        double? AreaRadius, double? Nc, ParticleTypes particleType,
         double ParticleMinSize, double ParticleMaxSize,
         double ParticleAlphaRotation,
         double ParticleBetaRotation,

@@ -1,11 +1,11 @@
-﻿using Fullstack.SAXS.Domain.Entities.Areas;
-using Fullstack.SAXS.Domain.Entities.Particles;
+﻿using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Enums;
 
 namespace Fullstack.SAXS.Domain.Contracts
 {
-    public abstract class AreaParticleFactory
+    public abstract class ParticleFactory
     {
-        public abstract IEnumerable<Area> GetAreas(double areaSize, int number, double maxParticleSize);
+        public abstract ParticleTypes Type { get; }
         public abstract IEnumerable<Particle> GetInfParticles(
             double minSize, double maxSize, double sizeShape, double sizeScale,
             double alphaRotation, double betaRotation, double gammaRotation,

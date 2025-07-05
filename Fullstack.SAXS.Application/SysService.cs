@@ -9,25 +9,23 @@ using Fullstack.SAXS.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Application
 {
-    public class SysService(AreaParticleFactory factory, IStorage storage, IGraphService graph) : ISysService
+    public class SysService(AreaFactory areaF, IParticleFactoryResolver prtclFResolver, IStorage storage, IGraphService graph) : ISysService
     {
         public async Task CreateAsync(Guid userId, CreateSysData data)
         {
-            var areas = factory.GetAreas(data.AreaSize, data.AreaNumber, data.ParticleMaxSize).ToArray();
+            var areas = areaF.GetAreas(data.AreaSize, data.AreaNumber, data.ParticleMaxSize).ToArray();
 
             Parallel.For(0, areas.Length, i => {
-                var infParticles =
-                    factory
+                var infParticles = 
+                    prtclFResolver
+                    .Resolve(data.particleType)
                     .GetInfParticles(
-                        data.ParticleMinSize, data.ParticleMaxSize,
-                        data.ParticleSizeShape, data.ParticleSizeScale,
-                        data.ParticleAlphaRotation,
-                        data.ParticleBetaRotation,
-                        data.ParticleGammaRotation,
+                        data.ParticleMinSize, data.ParticleMaxSize, 
+                        data.ParticleSizeShape, data.ParticleSizeScale, 
+                        data.ParticleAlphaRotation, data.ParticleBetaRotation, data.ParticleGammaRotation,
                         -data.AreaSize, data.AreaSize,
                         -data.AreaSize, data.AreaSize,
-                        -data.AreaSize, data.AreaSize
-                    );
+                        -data.AreaSize, data.AreaSize);
 
                 areas[i].Fill(infParticles, data.ParticleNumber);
             });
