@@ -33,13 +33,13 @@ namespace Fullstack.SAXS.Persistence.Tests
             _fileService = new FileService(strServiceMock.Object);
 
             _areaWithoutParticlesPath = Path.Combine(
-                folder, 
-                "Series#0_OuterRadius#100_AreaType#Sphere_ParticlesType#.csv"
+                folder,
+                "Generation_0\\Series#0_OuterRadius#100_AreaType#Sphere_ParticlesType#.csv"
             );
 
             _areaWithParticlesPath = Path.Combine(
-                folder, 
-                "Series#1_OuterRadius#100_AreaType#Sphere_ParticlesType#Icosahedron.csv"
+                folder,
+                "Generation_0\\Series#1_OuterRadius#100_AreaType#Sphere_ParticlesType#Icosahedron.csv"
             );
         }
 

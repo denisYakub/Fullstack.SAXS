@@ -3,6 +3,7 @@ using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Fullstack.SAXS.Persistence.IO
@@ -13,117 +14,90 @@ namespace Fullstack.SAXS.Persistence.IO
         {
             var fileName = Path.GetFileNameWithoutExtension(filePath);
 
-            var areaData = fileName.Split('_');
+            var areaParameters = fileName
+                .Split('_')
+                .Select(s => s.Split('#'))
+                .Where(keyValue => keyValue.Length == 2)
+                .ToDictionary(keyValue => keyValue[0], keyValue => keyValue[1]);
 
-            int series = 0;
-            var r = 0.0;
-            AreaTypes areaType;
-            ParticleTypes? particleType = null;
+            var series = int.Parse(
+                areaParameters.GetValueOrDefault("Series") ??
+                throw new FormatException("Missing Series")
+            );
 
-            foreach (var data in areaData)
-            {
-                var name = data.Split('#')[0];
-                var value = data.Split('#')[1];
+            var outerR = double.Parse(
+                areaParameters.GetValueOrDefault("OuterRadius") ??
+                throw new FormatException("Missing OuterRadius")
+            );
 
-                if (name == "Series")
-                    series = int.Parse(value);
-                else if (name == "OuterRadius")
-                    r = double.Parse(value);
-                else if (name == "AreaType")
-                    areaType = AreaTypes.Sphere;
-                else if (name == "ParticlesType")
-                    particleType = ParticleTypes.Icosahedron;
-            }
+            var areaType = Enum.Parse<AreaTypes>(areaParameters.GetValueOrDefault("AreaType") ?? 
+                throw new FormatException("Missing AreaType")
+            );
 
-            var lines = File.ReadLinesAsync(filePath, Encoding.UTF8).GetAsyncEnumerator();
+            var particleType = Enum.Parse<ParticleTypes>(areaParameters.GetValueOrDefault("ParticlesType") ??
+                throw new FormatException("Missing ParticlesType")
+            );
 
             List<Particle> particles = [];
 
-            if (await lines.MoveNextAsync())
-                while (await lines.MoveNextAsync())
+            await foreach ( var line in File.ReadLinesAsync(filePath, Encoding.UTF8))
+            {
+                var data = line.Split(';');
+
+                if (data.Length < 3)
+                    throw new FormatException("Need 3 element to create particle");
+
+                var size = double.Parse(data[0]);
+                var center = Vector3D.Parse(data[1]);
+                var angles = EulerAngles.Parse(data[2]);
+
+                Particle particle = particleType switch
                 {
-                    var data = lines.Current.Split(';');
+                    ParticleTypes.Icosahedron => new IcosahedronParticle(series, center, angles),
+                    ParticleTypes.C60 => new C60(series, center, angles),
+                    ParticleTypes.C70 => new C70(series, center, angles),
+                    ParticleTypes.C240 => new C240(series, center, angles),
+                    ParticleTypes.C540 => new C540(series, center, angles),
+                    _ => throw new NotImplementedException()
+                };
 
-                    var size = data[0];
-                    var center = data[1];
-                    var rotationAngles = data[2];
+                particles.Add(particle);
+            }
 
-                    var particle = new IcosahedronParticle(
-                        double.Parse(size),
-                        Vector3D.Parse(center),
-                        EulerAngles.Parse(rotationAngles)
-                    );
-
-                    particles.Add(particle);
-                }
-
-            if (particleType == null)
-                return new SphereArea(series, r, null);
-            else
-                return new SphereArea(series, r, particles);
+            return new SphereArea(series, outerR, particles);
         }
 
-        public async Task<string> WriteAsync(Area obj, long GenerationNum)
+        public async Task<string> WriteAsync(Area obj, long generationNum)
         {
-            var file = new StringBuilder();
+            if (obj.Particles is null)
+                throw new FormatException("Area contains no particles");
 
-            file.AppendJoin('_', [
+            var fileName = string.Join('_', new[] 
+            {
                 $"{nameof(obj.Series)}#{obj.Series}",
                 $"{nameof(obj.OuterRadius)}#{obj.OuterRadius}",
                 $"{nameof(obj.AreaType)}#{obj.AreaType}",
                 $"{nameof(obj.ParticlesType)}#{obj.ParticlesType}",
-            ]);
-            file.Append(".csv");
+            }) + ".csv";
 
-            var mainFolder = @string.GetCsvFolder();
-            var subFolder = $"Generation_{GenerationNum}";
+            var folder = Path.Combine(@string.GetCsvFolder(), $"Generation_{generationNum}");
+            Directory.CreateDirectory(folder);
 
-            var folder = Path.Combine(mainFolder, subFolder);
+            var filePath = Path.Combine(folder, fileName);
 
-            if (!Directory.Exists(folder))
-                Directory.CreateDirectory(folder);
+            await using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
 
-            var path = Path.Combine(folder, file.ToString());
-
-            var prtcls = obj.Particles;
-
-            var text = new StringBuilder();
-
-            if (prtcls.Any())
+            foreach (var p in obj.Particles)
             {
-                var prtclF = prtcls.First();
-                string[] headers = [
-                    nameof(prtclF.Size),
-                    nameof(prtclF.Center),
-                    nameof(prtclF.RotationAngles),
-                ];
-
-                text.AppendJoin(";", headers);
-                text.AppendLine();
-
-                foreach (var prtcl in prtcls)
-                {
-                    string[] values = [
-                        prtcl.Size.ToString(),
-                        prtcl.Center.ToString(),
-                        prtcl.RotationAngles.ToString()
-                    ];
-
-                    text.AppendJoin(";", values);
-                    text.AppendLine();
-                }
+                await writer.WriteLineAsync($"{p.Size};{p.Center};{p.RotationAngles}");
             }
 
-            var writeTask = File.WriteAllTextAsync(path, text.ToString(), Encoding.UTF8);
-
-            await writeTask;
-
-            return path;
+            return filePath;
         }
 
         public byte[] GetCSVAtoms(Area area)
         {
-            var csvLines = new List<string>() { "X;Y;Z" };
+            var csvLines = new List<string>();
 
             csvLines.AddRange(
                 area
