@@ -1,7 +1,8 @@
 const REDIRECT_PAGE = 'https://localhost:7135/Identity/Account/Login';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 export async function pingAuth() {
-    const res = await fetch('ping-auth', {
+    const res = await fetch(`${API_BASE}/ping-auth`, {
         credentials: 'include',
     });
 
@@ -17,7 +18,7 @@ export async function pingAuth() {
 }
 
 export async function createSystem(requestBody) {
-    const res = await fetch('api/saxs/systems', {
+    const res = await fetch(`${API_BASE}/api/saxs/systems`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -38,7 +39,7 @@ export async function createSystem(requestBody) {
 }
 
 export async function getAllGenerations() {
-    const res = await fetch('api/saxs/generations', {
+    const res = await fetch(`${API_BASE}/api/saxs/generations`, {
         credentials: 'include',
     });
 
@@ -55,7 +56,7 @@ export async function getAllGenerations() {
 }
 
 export async function getMyGenerations() {
-    const res = await fetch('api/saxs/users/me/generations', {
+    const res = await fetch(`${API_BASE}/api/saxs/users/me/generations`, {
         credentials: 'include',
     });
 
@@ -71,7 +72,7 @@ export async function getMyGenerations() {
 }
 
 export async function getSystem(id) {
-    const res = await fetch(`/api/saxs/systems/${id}`)
+    const res = await fetch(`${API_BASE}/api/saxs/systems/${id}`)
 
     if (!res.ok) {
         if (res.status === 401) {
@@ -84,20 +85,29 @@ export async function getSystem(id) {
     return res.json();
 }
 
-export async function getPhiGraphHtml(id, layersNum = 5) {
-    const res = await fetch(`/api/saxs/systems/${id}/graphs/phi?layersNum=${layersNum}`, {
-        method: 'POST',
-        credentials: 'include',
-    });
+export async function openPhiGraph(id, layersNum = 5) {
+    const res = await fetch(
+        `${API_BASE}/api/saxs/systems/${id}/graphs/phi?layersNum=${layersNum}`,
+        {
+            method: 'POST',
+            credentials: 'include',
+        }
+    );
 
     if (!res.ok) {
         if (res.status === 401) {
             window.location.href = REDIRECT_PAGE;
             throw new Error('Unauthorized');
         }
-        throw new Error('Error while getting Phi graph');
+        throw new Error('Failed to generate graph');
     }
 
     const html = await res.text();
-    return html;
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+
+    window.open(url, '_blank');
+
+    // Откладываем удаление URL, чтобы окно успело загрузить содержимое
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
 }

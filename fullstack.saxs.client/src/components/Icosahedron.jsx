@@ -49,7 +49,7 @@ export default function Icosahedron({ particle }) {
                         itemSize={1}
                     />
                 </bufferGeometry>
-                <meshStandardMaterial color="orange" wireframe />
+                <meshStandardMaterial color="#fb923c" wireframe />
             </mesh>
         </group>
     );

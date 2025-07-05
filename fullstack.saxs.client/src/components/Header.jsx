@@ -2,8 +2,8 @@
 
 export default function Header() {
     return (
-        <header className="flex items-center justify-between bg-gray-900 text-white px-6 py-4 shadow-md">
-            <h1 className="text-3xl font-bold underline select-none">🌐 My Systems</h1>
+        <header className="flex items-center justify-between bg-gray-600 text-white px-6 py-4 shadow-md">
+            <h1 className="text-3xl font-bold text-orange-500 select-none">🌐SAXS</h1>
             <nav className="space-x-6">
                 <Link
                     to="/"

@@ -4,41 +4,33 @@ import { OrbitControls } from '@react-three/drei';
 import Icosahedron from './Icosahedron';
 
 export default function SysView({ data }) {
+    const [visibleCount, setVisibleCount] = useState(1); // от 1 до 10 шагов по 10%
+
     const outerRadius = data.OuterRadius * 2;
     const totalParticles = data.Particles.length;
-    const maxSteps = Math.ceil(totalParticles / 10);
-    const [visibleCount, setVisibleCount] = useState(maxSteps);
+    const percent = visibleCount * 10;
+    const visibleParticles = Math.floor((percent / 100) * totalParticles);
 
     return (
-        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <div className="w-full h-full relative bg-black rounded-md blur hover:blur-none transition-filter duration-300">
             {/* Ползунок */}
-            <div style={{
-                position: 'absolute',
-                top: '1rem',
-                right: '1rem',
-                background: 'rgba(0,0,0,0.5)',
-                padding: '0.5rem 1rem',
-                borderRadius: '0.5rem',
-                zIndex: 10,
-                color: 'white',
-                fontSize: '0.9rem'
-            }}>
+            <div className="absolute top-4 right-4 bg-black/50 px-4 py-2 rounded-lg z-10 text-white text-sm">
                 <label>
-                    Show: {Math.min(visibleCount * 10, totalParticles)} / {totalParticles}
+                    Show: {visibleParticles} / {totalParticles}
                     <input
                         type="range"
                         min="1"
-                        max={maxSteps}
+                        max="10"
                         value={visibleCount}
                         onChange={(e) => setVisibleCount(Number(e.target.value))}
-                        style={{ width: '150px', marginLeft: '10px' }}
+                        className="w-36 ml-2.5 accent-orange-500"
                     />
                 </label>
             </div>
 
             {/* Canvas в 100% */}
             <Canvas
-                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                className="absolute top-0 left-0 w-full h-full"
                 camera={{ position: [0, 0, outerRadius * 1.2], fov: 60 }}
             >
                 <ambientLight />
@@ -60,7 +52,7 @@ export default function SysView({ data }) {
                 </mesh>
 
                 <Suspense fallback={null}>
-                    {data.Particles.slice(0, visibleCount * 10).map((particle, index) => (
+                    {data.Particles.slice(0, visibleParticles).map((particle, index) => (
                         <Icosahedron key={index} particle={particle} />
                     ))}
                 </Suspense>

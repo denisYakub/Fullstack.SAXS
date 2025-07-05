@@ -29,11 +29,13 @@ export default function HomePage() {
         );
 
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-r from-purple-800 via-indigo-900 to-blue-900 text-white px-4">
-            <h2 className="text-4xl font-bold mb-6 select-none">Welcome!</h2>
-            <p className="text-lg max-w-xl text-center">
-                This is your dashboard. Use the navigation menu to create and manage your systems.
-            </p>
+        <div className="min-h-screen flex flex-col bg-gray-300 justify-center items-center text-white px-4 pt-8">
+            <div className="max-w-3xl mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
+                <h2 className="text-4xl font-bold mb-6 select-none">Welcome!</h2>
+                <p className="text-lg max-w-xl text-center">
+                    This is your dashboard. Use the navigation menu to create and manage your systems.
+                </p>
+            </div>
         </div>
     );
 }
