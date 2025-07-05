@@ -145,7 +145,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
             return outerSphereVolume * numberOfDotsInsideFullerene / samples;
         }
 
-        public static double GetEdgeSize(double size)
+        private static double GetEdgeSize(double size)
         {
             return Vector3D
                 .Distance(new Vector3D(-1, _phi, 0) * size, new Vector3D(-_phi, 0, 1) * size);
