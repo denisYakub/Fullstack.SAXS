@@ -29,6 +29,12 @@ export default function Header() {
                 >
                     Mine
                 </Link>
+                <Link
+                    to="/particle"
+                    className="text-lg font-medium hover:text-indigo-400 transition-colors"
+                >
+                    Particle
+                </Link>
             </nav>
         </header>
     );

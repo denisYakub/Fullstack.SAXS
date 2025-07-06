@@ -34,7 +34,7 @@ export default function SysView({ data }) {
                 camera={{ position: [0, 0, outerRadius * 1.2], fov: 60 }}
             >
                 <ambientLight />
-                <pointLight position={[outerRadius, outerRadius, outerRadius]} />
+                <directionalLight position={[outerRadius, outerRadius, outerRadius]} />
 
                 {/* Сфера-граница */}
                 <mesh>
