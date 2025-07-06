@@ -13,10 +13,22 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Определяем путь до Python скрипта
+var currentDir = Directory.GetCurrentDirectory();
+var rootDir = Directory.GetParent(currentDir)?.FullName;
+var pythonScriptPath = Path.Combine(rootDir!, "Fullstack.SAXS.api", "Fullstack.SAXS.Api.py");
+
+// Добавляем сервис в DI
+builder.Services.AddSingleton<IHostedService>(provider =>
+    new PythonProcessHostedService(pythonScriptPath));
+
 builder.Services
     .AddSingleton<ParticleFactory, IcosahedronFactory>()
     .AddSingleton<ParticleFactory, C60Factory>()
     .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
+    .AddSingleton<IHostedService>(
+        provider => new PythonProcessHostedService(pythonScriptPath)
+    )
     .AddScoped<ISysService, SysService>()
     .AddScoped<ISpService, SpService>()
     .AddScoped<IStorage, AreaRepository>()
@@ -27,8 +39,9 @@ builder.Services
     .AddSingleton<IStringService, StringService>();
 
 builder.Services
-    .AddDbContext<PosgresDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")))
+    .AddDbContext<PosgresDbContext>(
+        options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"))
+    )
     .AddDefaultIdentity<IdentityUser>()
     .AddEntityFrameworkStores<PosgresDbContext>()
     .AddDefaultUI()

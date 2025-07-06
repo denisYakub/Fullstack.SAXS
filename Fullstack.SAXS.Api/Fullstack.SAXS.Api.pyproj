@@ -8,10 +8,11 @@
     <StartupFile>Fullstack.SAXS.Api.py</StartupFile>
     <SearchPath>
     </SearchPath>
-    <WorkingDirectory>.</WorkingDirectory>
+    <WorkingDirectory>C:\Users\denis\source\repos\Fullstack.SAXS\Fullstack.SAXS.api</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>Fullstack.SAXS.api</Name>
     <RootNamespace>Fullstack.SAXS.Api</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
