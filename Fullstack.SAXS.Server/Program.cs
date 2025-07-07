@@ -25,6 +25,9 @@ builder.Services.AddSingleton<IHostedService>(provider =>
 builder.Services
     .AddSingleton<ParticleFactory, IcosahedronFactory>()
     .AddSingleton<ParticleFactory, C60Factory>()
+    .AddSingleton<ParticleFactory, C70Factory>()
+    .AddSingleton<ParticleFactory, C240Factory>()
+    .AddSingleton<ParticleFactory, C540Factory>()
     .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
     .AddSingleton<IHostedService>(
         provider => new PythonProcessHostedService(pythonScriptPath)

@@ -1,9 +1,5 @@
-﻿using System.Drawing;
-using System.Numerics;
-using Fullstack.SAXS.Domain.Entities.Octrees;
-using Fullstack.SAXS.Domain.Enums;
+﻿using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
-using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Domain.Entities.Particles
 {

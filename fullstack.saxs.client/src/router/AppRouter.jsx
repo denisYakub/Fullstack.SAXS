@@ -6,7 +6,7 @@ import AllSystemsPage from '../pages/AllSystemsPage';
 import MySystemsPage from '../pages/MySystemsPage';
 import SystemDetailsPage from '../pages/SystemDetailsPage';
 import Header from '../components/Header';
-import { DrawParticle } from '../components/DrawParticle';
+import { DrawAllParticleTypes } from '../components/DrawParticle';
 
 export default function AppRouter() {
     return (<BrowserRouter>
@@ -18,7 +18,7 @@ export default function AppRouter() {
             <Route path="/all" element={ <AllSystemsPage /> } />
             <Route path="/my" element={ <MySystemsPage /> } />
             <Route path="/system/:id" element={<SystemDetailsPage />} />
-            <Route path="/particle" element={<DrawParticle />} />
+            <Route path="/particle" element={<DrawAllParticleTypes />} />
         </Routes>
     </BrowserRouter>);
 }

@@ -1,8 +1,9 @@
 import React from 'react';
-import { C60Lines, ICosahedronLines } from './DrawParticle'
+import { IcosahedronLines, C60Lines, C70Lines, C240Lines, C540Lines } from './DrawParticle'
 
 export default function ParticleMesh({ particle }) {
     const position = [particle.Center.X, particle.Center.Y, particle.Center.Z];
+    console.log(particle)
 
     const click = (e) => {
         e.stopPropagation();
@@ -12,10 +13,19 @@ export default function ParticleMesh({ particle }) {
     let meshElement;
     switch (particle.ParticleType) {
         case 0:
-            meshElement = <ICosahedronLines vertices={particle.Vertices} />;
+            meshElement = <IcosahedronLines vertices={particle.Vertices} />;
             break;
         case 1:
             meshElement = <C60Lines vertices={particle.Vertices} />;
+            break;
+        case 2:
+            meshElement = <C70Lines vertices={particle.Vertices} />;
+            break;
+        case 3:
+            meshElement = <C240Lines vertices={particle.Vertices} />;
+            break;
+        case 4:
+            meshElement = <C540Lines vertices={particle.Vertices} />;
             break;
         default:
             throw new Error('Unknown particle type');

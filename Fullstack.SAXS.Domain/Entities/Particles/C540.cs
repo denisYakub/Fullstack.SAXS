@@ -36,12 +36,6 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
             _outerR = 0;
             _innerR = double.MaxValue;
 
-            var massCenter = new Vector3D(
-                _vertices.Average(v => v.X),
-                _vertices.Average(v => v.Y),
-                _vertices.Average(v => v.Z)
-            );
-
             foreach (var v in _vertices)
             {
                 var r = Vector3D.Distance(v, center);
@@ -52,7 +46,6 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
                 if (r < _innerR)
                     _innerR = r;
             }
-            ;
         }
 
         private static Vector3D[] GenerateVertices(Vector3D center, double size, EulerAngles rotationAngles)
