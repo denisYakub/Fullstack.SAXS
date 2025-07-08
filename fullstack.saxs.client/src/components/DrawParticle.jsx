@@ -1897,59 +1897,68 @@ function ConnectLines({ vertices, faces }) {
     );
 }
 
-export function DrawAllParticleTypes() {
+export function DrawAllParticleTypes({ selectedType }) {
     return (
-        <div className="min-h-screen flex flex-col bg-gray-300 justify-center items-center text-white px-4 pt-8">
-            {/*Icosahedron*/}
-            <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
-                <h1>Icosahedron</h1>
-                <Canvas camera={{ position: [0, 0, 4], fov: 50 }}>
-                    <ambientLight />
-                    <directionalLight position={[3, 3, 3]} />
-                    <IcosahedronLines vertices={ICOSAHEDRON_VERTICES} />
-                    <OrbitControls />
-                </Canvas>
-            </div>
-            {/*C60*/}
-            <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
-                <h1>C60</h1>
-                <Canvas camera={{ position: [0, 0, 4], fov: 50 }}>
-                    <ambientLight />
-                    <directionalLight position={[3, 3, 3]} />
-                    <C60Lines vertices={ C60_VERTICES } />
-                    <OrbitControls />
-                </Canvas>
-            </div>
-            {/*C70*/}
-            <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
-                <h1>C70</h1>
-                <Canvas camera={{ position: [0, 0, 4], fov: 50 }}>
-                    <ambientLight />
-                    <directionalLight position={[3, 3, 3]} />
-                    <C70Lines vertices={C70_VERTICES} />
-                    <OrbitControls />
-                </Canvas>
-            </div>
-            {/*C240*/}
-            <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
-                <h1>C240</h1>
-                <Canvas camera={{ position: [0, 0, 4], fov: 50 }}>
-                    <ambientLight />
-                    <directionalLight position={[3, 3, 3]} />
-                    <C240Lines vertices={C240_VERTICES} />
-                    <OrbitControls />
-                </Canvas>
-            </div>
-            {/*C540*/}
-            <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
-                <h1>C540</h1>
-                <Canvas camera={{ position: [0, 0, 4], fov: 50 }}>
-                    <ambientLight />
-                    <directionalLight position={[3, 3, 3]} />
-                    <C540Lines vertices={C540_VERTICES} />
-                    <OrbitControls />
-                </Canvas>
-            </div>
+        <div>
+            {selectedType === 'Icosahedron' && (
+                <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
+                    <h1>Icosahedron</h1>
+                    <Canvas camera={{ position: [0, 0, 4], fov: 50 }}>
+                        <ambientLight />
+                        <directionalLight position={[3, 3, 3]} />
+                        <IcosahedronLines vertices={ICOSAHEDRON_VERTICES} />
+                        <OrbitControls />
+                    </Canvas>
+                </div>
+            )}
+
+            {selectedType === 'C60' && (
+                <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
+                    <h1>C60</h1>
+                    <Canvas camera={{ position: [0, 0, 3], fov: 50 }}>
+                        <ambientLight />
+                        <directionalLight position={[3, 3, 3]} />
+                        <C60Lines vertices={C60_VERTICES} />
+                        <OrbitControls />
+                    </Canvas>
+                </div>
+            )}
+
+            {selectedType === 'C70' && (
+                <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
+                    <h1>C70</h1>
+                    <Canvas camera={{ position: [0, 0, 10], fov: 50 }}>
+                        <ambientLight />
+                        <directionalLight position={[3, 3, 3]} />
+                        <C70Lines vertices={C70_VERTICES} />
+                        <OrbitControls />
+                    </Canvas>
+                </div>
+            )}
+
+            {selectedType === 'C240' && (
+                <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
+                    <h1>C240</h1>
+                    <Canvas camera={{ position: [0, 0, 18], fov: 50 }}>
+                        <ambientLight />
+                        <directionalLight position={[3, 3, 3]} />
+                        <C240Lines vertices={C240_VERTICES} />
+                        <OrbitControls />
+                    </Canvas>
+                </div>
+            )}
+
+            {selectedType === 'C540' && (
+                <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
+                    <h1>C540</h1>
+                    <Canvas camera={{ position: [0, 0, 25], fov: 50 }}>
+                        <ambientLight />
+                        <directionalLight position={[3, 3, 3]} />
+                        <C540Lines vertices={C540_VERTICES} />
+                        <OrbitControls />
+                    </Canvas>
+                </div>
+            )}
         </div>
     );
 }
