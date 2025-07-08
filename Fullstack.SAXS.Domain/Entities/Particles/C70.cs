@@ -16,7 +16,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
         public override IReadOnlyCollection<Vector3D> Vertices => _vertices;
 
-        public override ParticleTypes ParticleType => ParticleTypes.C60;
+        public override ParticleTypes ParticleType => ParticleTypes.C70;
 
         protected override int[][] Faces => _faces;
 
