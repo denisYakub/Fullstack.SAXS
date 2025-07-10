@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { createSystem } from '../api/systemApi';
 import { DrawAllParticleTypes } from '../components/DrawParticle';
+import LoadingPage from './LoadingPage';
+import ErrorPage from './ErrorPage';
 
 const PARTICLE_TYPES = ['Icosahedron', 'C60', 'C70', 'C240', 'C540'];
 

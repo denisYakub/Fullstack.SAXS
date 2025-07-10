@@ -4,6 +4,8 @@ import { getSystem, openPhiGraph } from '../api/SystemApi';
 import { GetAtomsCoord, GetQI } from '../api/MathCadApi';
 import SysView from '../components/SysView';
 import Area from '../context/Area';
+import LoadingPage from './LoadingPage';
+import ErrorPage from './ErrorPage';
 
 export default function SystemDetailsPage() {
     const [loading, setLoading] = useState(true);
@@ -39,19 +41,8 @@ export default function SystemDetailsPage() {
             });
     }, [id]);
 
-    if (loading)
-        return (
-            <div className="flex justify-center items-center min-h-screen text-xl text-gray-400">
-                Loading...
-            </div>
-        );
-
-    if (error)
-        return (
-            <div className="flex justify-center items-center min-h-screen text-red-500 font-semibold">
-                Error: {error}
-            </div>
-        );
+    if (error) return <ErrorPage exception={error} />;
+    if (loading) return <LoadingPage />;
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-300 justify-center items-center text-white px-4 pt-8">

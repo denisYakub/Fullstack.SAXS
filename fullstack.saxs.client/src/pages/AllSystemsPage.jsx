@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getAllGenerations } from '../api/systemApi';
 import { useNavigate } from 'react-router-dom';
+import LoadingPage from './LoadingPage';
+import ErrorPage from './ErrorPage';
 
 export default function AllSystemsPage() {
     const [gens, setGens] = useState([]);
@@ -20,19 +22,8 @@ export default function AllSystemsPage() {
             });
     }, []);
 
-    if (loading)
-        return (
-            <div className="flex justify-center items-center min-h-screen text-xl text-gray-400">
-                Loading...
-            </div>
-        );
-
-    if (error)
-        return (
-            <div className="flex justify-center items-center min-h-screen text-red-500 font-semibold">
-                Error: {error}
-            </div>
-        );
+    if (error) return <ErrorPage exception={error} />;
+    if (loading) return <LoadingPage />;
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-300 justify-center items-center text-white px-4 pt-8">

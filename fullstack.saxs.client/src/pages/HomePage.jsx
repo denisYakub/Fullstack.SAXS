@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { pingAuth } from '../api/SystemApi';
+import LoadingPage from './LoadingPage';
+import ErrorPage from './ErrorPage';
 
 export default function HomePage() {
     const [loading, setLoading] = useState(true);
@@ -14,19 +16,8 @@ export default function HomePage() {
             });
     }, []);
 
-    if (error)
-        return (
-            <div className="min-h-screen flex justify-center items-center bg-red-900 text-red-300 text-lg font-semibold p-6">
-                Error: {error}
-            </div>
-        );
-
-    if (loading)
-        return (
-            <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white text-xl">
-                Loading...
-            </div>
-        );
+    if (error) return <ErrorPage exception={error} />;
+    if (loading) return <LoadingPage />;
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-300 justify-center items-center text-white px-4 pt-8">
