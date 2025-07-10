@@ -42,7 +42,7 @@ namespace Fullstack.SAXS.Persistence.IO
                 if (data.Length < 3)
                     throw new FormatException("Each line must contain at least 3 values: size;position;rotation.");
 
-                if (!double.TryParse(data[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var size))
+                if (!double.TryParse(data[0], NumberStyles.Float, CultureInfo.GetCultureInfo("ru-RU"), out var size))
                     throw new FormatException($"Invalid size value: '{data[0]}'");
 
                 var center = Vector3D.Parse(data[1]);
@@ -86,7 +86,7 @@ namespace Fullstack.SAXS.Persistence.IO
 
             foreach (var p in obj.Particles)
             {
-                var size = p.Size.ToString(CultureInfo.InvariantCulture);
+                var size = p.Size.ToString(CultureInfo.GetCultureInfo("ru-RU"));
                 var center = p.Center.ToString();
                 var angles = p.RotationAngles.ToString();
 
