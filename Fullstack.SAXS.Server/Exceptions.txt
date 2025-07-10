@@ -31,6 +31,7 @@ ValidationResult
 - Either AreaRadius or Nc must be specified.
 - ParticleMinSize must be <= ParticleMaxSize.
 - AreaNumber and ParticleNumber must be > 0.
+- ParticleMinSize and ParticleMaxSize must be > 0.
 
 UnauthorizedAccessException
 - User is not authenticated.

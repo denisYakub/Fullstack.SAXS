@@ -55,6 +55,9 @@ namespace Fullstack.SAXS.Server.Contracts
             if (!AreaRadius.HasValue && !Nc.HasValue)
                 yield return new ValidationResult("Either AreaRadius or Nc must be specified.");
 
+            if (ParticleMinSize <= 0 || ParticleMaxSize <= 0)
+                yield return new ValidationResult("ParticleMinSize and ParticleMaxSize must be > 0.");
+
             if (ParticleMinSize > ParticleMaxSize)
                 yield return new ValidationResult("ParticleMinSize must be <= ParticleMaxSize.");
 
