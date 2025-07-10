@@ -120,30 +120,44 @@ namespace Fullstack.SAXS.Domain.ValueObjects
 
         public static Vector3D Parse(string s)
         {
-            if (s[0] != '<' && s[s.Length - 1] != '>')
-                throw new ArgumentException("Bad format!");
+            try
+            {
+                if (s is null)
+                    throw new ArgumentNullException(nameof(s), "Input string cannot be null.");
 
-            var values = s.Substring(1, s.Length - 2);
-            var data = values.Split(' ');
+                if (s[0] != '<' && s[s.Length - 1] != '>')
+                    throw new FormatException("Input must start with '<' and end with '>'.");
 
-            if (data.Length != 3)
-                throw new ArgumentException("Bad format!");
+                var values = s.Substring(1, s.Length - 2);
+                var data = values.Split(' ');
 
-            return
-                new Vector3D(
-                    double.Parse(
-                        data[0].Replace(',', '.'),
-                        CultureInfo.InvariantCulture
-                    ),
-                    double.Parse(
-                        data[1].Replace(',', '.'),
-                        CultureInfo.InvariantCulture
-                    ),
-                    double.Parse(
-                        data[2].Replace(',', '.'),
-                        CultureInfo.InvariantCulture
-                    )
-                );
+                if (data.Length != 3)
+                    throw new FormatException("Input must contain exactly three space-separated values.");
+
+                return
+                    new Vector3D(
+                        double.Parse(
+                            data[0].Replace(',', '.'),
+                            CultureInfo.InvariantCulture
+                        ),
+                        double.Parse(
+                            data[1].Replace(',', '.'),
+                            CultureInfo.InvariantCulture
+                        ),
+                        double.Parse(
+                            data[2].Replace(',', '.'),
+                            CultureInfo.InvariantCulture
+                        )
+                    );
+            }
+            catch (FormatException ex)
+            {
+                throw new FormatException("One or more values are not valid double-point numbers.", ex);
+            }
+            catch (OverflowException ex)
+            {
+                throw new OverflowException("One or more values are too large or too small.", ex);
+            }
         }
     }
 

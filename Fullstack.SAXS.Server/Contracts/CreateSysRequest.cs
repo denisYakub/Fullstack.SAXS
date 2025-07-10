@@ -19,18 +19,16 @@ namespace Fullstack.SAXS.Server.Contracts
         {
             get
             {
-                // If Area is shpere and particle is icosahedron
                 if (Nc.HasValue)
                 {
-                    var particleConst = (5.0 / 12.0) * (3.0 + Math.Sqrt(5.0));
-                    var areaConst = (4.0 / 3.0) * Math.PI;
+                    var sphereConst = (4.0 / 3.0) * Math.PI;
 
                     var gamma = new Gamma(ParticleSizeShape, ParticleSizeScale);
 
                     var particleVolumeSum = 
                         Enumerable
                         .Repeat(
-                            particleConst * Math.Pow(
+                            sphereConst * Math.Pow(
                                 gamma.GetGammaRandom(ParticleMinSize, ParticleMaxSize), 
                                 3
                             ), 
@@ -38,7 +36,7 @@ namespace Fullstack.SAXS.Server.Contracts
                         )
                         .Sum();
 
-                    var R3 = particleVolumeSum / (Nc.Value * areaConst);
+                    var R3 = particleVolumeSum / (sphereConst * Nc.Value);
 
                     return Math.Pow(R3, 1.0 / 3.0);
                 }

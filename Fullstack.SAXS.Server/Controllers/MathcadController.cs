@@ -16,13 +16,13 @@ namespace Fullstack.SAXS.Server.Controllers
         {
             get
             {
-                var userId =
-                    User
-                    .FindFirstValue(ClaimTypes.NameIdentifier)
-                    ??
-                    throw new UnauthorizedAccessException("Need to login first!");
+                var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier)
+                    ?? throw new UnauthorizedAccessException("User is not authenticated.");
 
-                return Guid.Parse(userId);
+                if (!Guid.TryParse(userIdStr, out var userId))
+                    throw new FormatException("Invalid user ID format in claims.");
+
+                return userId;
             }
         }
 

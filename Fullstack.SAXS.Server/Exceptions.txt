@@ -1,0 +1,36 @@
+﻿
+NotSupportedException:
+- Particle type '{type}' is not supported.
+ArgumentNullException
+- Input string cannot be null.
+- Particle factory resolver does not contains factories.
+
+FormatException
+- Input must start with '<' and end with '>'.
+- Input must contain exactly three space-separated values.
+- One or more values are not valid floating-point numbers.
+- Missing or invalid value for Series.
+- Missing or invalid value for OuterRadius.
+- Missing or invalid value for AreaType.
+- Missing or invalid value for ParticlesType.
+- Each line must contain at least 3 values: size;position;rotation.
+- Invalid size value: '{data[0]}'
+- Area contains no particles.
+- Invalid user ID format in claims.
+
+OverflowException
+- One or more values are too large or too small.
+
+KeyNotFoundException
+- No data found with ID: {id}.
+
+InvalidOperationException
+- Both AreaRadius and Nc are null.
+
+ValidationResult
+- Either AreaRadius or Nc must be specified.
+- ParticleMinSize must be <= ParticleMaxSize.
+- AreaNumber and ParticleNumber must be > 0.
+
+UnauthorizedAccessException
+- User is not authenticated.

@@ -65,7 +65,7 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
             var path = await postgres.Datas.FirstOrDefaultAsync(d => d.Id == id);
 
             if (path == null)
-                throw new ArgumentException($"No data with this id {id}");
+                throw new KeyNotFoundException($"No data found with ID: {id}.");
 
             return await file.ReadAsync(path.Path);
         }

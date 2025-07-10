@@ -28,7 +28,7 @@ export default function ParticleMesh({ particle }) {
             meshElement = <C540Lines vertices={particle.Vertices} />;
             break;
         default:
-            throw new Error('Unknown particle type');
+            throw new Error(`Particle type ${particle.ParticleType} is not supported.`);
     }
 
     return (

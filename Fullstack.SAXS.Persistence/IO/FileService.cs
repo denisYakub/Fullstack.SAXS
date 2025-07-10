@@ -4,6 +4,7 @@ using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace Fullstack.SAXS.Persistence.IO
@@ -20,23 +21,17 @@ namespace Fullstack.SAXS.Persistence.IO
                 .Where(keyValue => keyValue.Length == 2)
                 .ToDictionary(keyValue => keyValue[0], keyValue => keyValue[1]);
 
-            var series = int.Parse(
-                areaParameters.GetValueOrDefault("Series") ??
-                throw new FormatException("Missing Series")
-            );
+            if (!areaParameters.TryGetValue("Series", out var seriesStr) || !int.TryParse(seriesStr, out var series))
+                throw new FormatException("Missing or invalid value for Series.");
 
-            var outerR = double.Parse(
-                areaParameters.GetValueOrDefault("OuterRadius") ??
-                throw new FormatException("Missing OuterRadius")
-            );
+            if (!areaParameters.TryGetValue("OuterRadius", out var outerRStr) || !double.TryParse(outerRStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var outerR))
+                throw new FormatException("Missing or invalid value for OuterRadius.");
 
-            var areaType = Enum.Parse<AreaTypes>(areaParameters.GetValueOrDefault("AreaType") ?? 
-                throw new FormatException("Missing AreaType")
-            );
+            if (!areaParameters.TryGetValue("AreaType", out var areaTypeStr) || !Enum.TryParse(areaTypeStr, out AreaTypes areaType))
+                throw new FormatException("Missing or invalid value for AreaType.");
 
-            var particleType = Enum.Parse<ParticleTypes>(areaParameters.GetValueOrDefault("ParticlesType") ??
-                throw new FormatException("Missing ParticlesType")
-            );
+            if (!areaParameters.TryGetValue("ParticlesType", out var particleTypeStr) || !Enum.TryParse(particleTypeStr, out ParticleTypes particleType))
+                throw new FormatException("Missing or invalid value for ParticlesType.");
 
             List<Particle> particles = [];
 
@@ -45,9 +40,11 @@ namespace Fullstack.SAXS.Persistence.IO
                 var data = line.Split(';');
 
                 if (data.Length < 3)
-                    throw new FormatException("Need 3 element to create particle");
+                    throw new FormatException("Each line must contain at least 3 values: size;position;rotation.");
 
-                var size = double.Parse(data[0]);
+                if (!double.TryParse(data[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var size))
+                    throw new FormatException($"Invalid size value: '{data[0]}'");
+
                 var center = Vector3D.Parse(data[1]);
                 var angles = EulerAngles.Parse(data[2]);
 
@@ -58,7 +55,7 @@ namespace Fullstack.SAXS.Persistence.IO
                     ParticleTypes.C70 => new C70(size, center, angles),
                     ParticleTypes.C240 => new C240(size, center, angles),
                     ParticleTypes.C540 => new C540(size, center, angles),
-                    _ => throw new NotImplementedException()
+                    _ => throw new NotSupportedException($"Particle type '{particleType}' is not supported.")
                 };
 
                 particles.Add(particle);
@@ -69,8 +66,8 @@ namespace Fullstack.SAXS.Persistence.IO
 
         public async Task<string> WriteAsync(Area obj, long generationNum)
         {
-            if (obj.Particles is null)
-                throw new FormatException("Area contains no particles");
+            if (obj.Particles is null || obj.Particles.Count() == 0)
+                throw new FormatException("Area contains no particles.");
 
             var fileName = string.Join('_', new[] 
             {
@@ -89,7 +86,11 @@ namespace Fullstack.SAXS.Persistence.IO
 
             foreach (var p in obj.Particles)
             {
-                await writer.WriteLineAsync($"{p.Size};{p.Center};{p.RotationAngles}");
+                var size = p.Size.ToString(CultureInfo.InvariantCulture);
+                var center = p.Center.ToString();
+                var angles = p.RotationAngles.ToString();
+
+                await writer.WriteLineAsync($"{size};{center};{angles}");
             }
 
             return filePath;
