@@ -3,7 +3,6 @@ import { IcosahedronLines, C60Lines, C70Lines, C240Lines, C540Lines } from './Dr
 
 export default function ParticleMesh({ particle }) {
     const position = [particle.Center.X, particle.Center.Y, particle.Center.Z];
-    console.log(particle)
 
     const click = (e) => {
         e.stopPropagation();

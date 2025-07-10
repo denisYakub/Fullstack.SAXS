@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getSystem, openPhiGraph } from '../api/SystemApi';
 import { GetAtomsCoord, GetQI } from '../api/MathCadApi';
 import SysView from '../components/SysView';
+import Area from '../context/Area';
 
 export default function SystemDetailsPage() {
     const [loading, setLoading] = useState(true);
@@ -28,7 +29,8 @@ export default function SystemDetailsPage() {
         setLoading(true);
         getSystem(id)
             .then(systemData => {
-                setData(systemData);
+                const area = new Area(systemData.OuterRadius, systemData.Particles);
+                setData(area);
                 setLoading(false);
             })
             .catch(err => {
@@ -57,6 +59,7 @@ export default function SystemDetailsPage() {
                 <div className="w-[50vw] mx-auto p-6 space-y-6">
                     <h2 className="text-3xl font-bold select-none">System Details</h2>
                     <p className="text-gray-300">ID system: <span className="font-mono">{id}</span></p>
+                    <p className="text-gray-300">Particles type: <span className="font-mono">{data.getFirstParticleTypeName()}</span></p>
 
                     {data && (
                         <div className="rounded-md shadow-md h-[60vh] w-full">
