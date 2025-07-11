@@ -24,7 +24,7 @@ namespace Fullstack.SAXS.Persistence.IO
             if (!areaParameters.TryGetValue("Series", out var seriesStr) || !int.TryParse(seriesStr, out var series))
                 throw new FormatException("Missing or invalid value for Series.");
 
-            if (!areaParameters.TryGetValue("OuterRadius", out var outerRStr) || !double.TryParse(outerRStr, NumberStyles.Float, CultureInfo.InvariantCulture, out var outerR))
+            if (!areaParameters.TryGetValue("OuterRadius", out var outerRStr) || !double.TryParse(outerRStr, NumberStyles.Float, CultureInfo.GetCultureInfo("ru-RU"), out var outerR))
                 throw new FormatException("Missing or invalid value for OuterRadius.");
 
             if (!areaParameters.TryGetValue("AreaType", out var areaTypeStr) || !Enum.TryParse(areaTypeStr, out AreaTypes areaType))
