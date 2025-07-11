@@ -13,14 +13,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Определяем путь до Python скрипта
 var currentDir = Directory.GetCurrentDirectory();
 var rootDir = Directory.GetParent(currentDir)?.FullName;
 var pythonScriptPath = Path.Combine(rootDir!, "Fullstack.SAXS.api", "Fullstack.SAXS.Api.py");
-
-// Добавляем сервис в DI
-builder.Services.AddSingleton<IHostedService>(provider =>
-    new PythonProcessHostedService(pythonScriptPath));
 
 builder.Services
     .AddSingleton<ParticleFactory, IcosahedronFactory>()
@@ -28,6 +23,7 @@ builder.Services
     .AddSingleton<ParticleFactory, C70Factory>()
     .AddSingleton<ParticleFactory, C240Factory>()
     .AddSingleton<ParticleFactory, C540Factory>()
+    .AddSingleton<IStringService, StringService>()
     .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
     .AddSingleton<IHostedService>(
         provider => new PythonProcessHostedService(pythonScriptPath)
@@ -38,8 +34,7 @@ builder.Services
     .AddScoped<IFileService, FileService>()
     .AddScoped<SysService>()
     .AddScoped<AreaFactory, SphereFactory>()
-    .AddScoped<IGraphService, GraphService>()
-    .AddSingleton<IStringService, StringService>();
+    .AddScoped<IGraphService, GraphService>();
 
 builder.Services
     .AddDbContext<PosgresDbContext>(
