@@ -1,6 +1,16 @@
 const REDIRECT_PAGE = 'https://localhost:7135/Identity/Account/Login';
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
+function checkResponse(res) {
+    if (res.status === 401) {
+        window.location.href = REDIRECT_PAGE;
+    }
+    else if (!res.ok) {
+        console.error(res)
+        window.location.href = '/service-unavailable';
+    }
+}
+
 export async function GetAtomsCoord(id) {
     const res = await fetch(
         `${API_BASE}/api/mathcad/systems/${id}/atoms-coordinates`,
@@ -9,13 +19,7 @@ export async function GetAtomsCoord(id) {
         }
     );
 
-    if (!res.ok) {
-        if (res.status === 401) {
-            window.location.href = REDIRECT_PAGE;
-            throw new Error('Unauthorized');
-        }
-        throw new Error('Network error');
-    }
+    checkResponse(res);
 
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
@@ -45,13 +49,7 @@ export async function GetQI(requestBody) {
         }
     );
 
-    if (!res.ok) {
-        if (res.status === 401) {
-            window.location.href = REDIRECT_PAGE;
-            throw new Error('Unauthorized')
-        }
-        throw new Error('Network error');
-    }
+    checkResponse(res);
 
     const data = await res.json();
 

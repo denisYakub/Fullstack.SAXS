@@ -2,68 +2,87 @@ import React, { useEffect, useState } from 'react';
 import { getMyGenerations } from '../api/systemApi';
 import { useNavigate } from 'react-router-dom';
 import LoadingPage from './LoadingPage';
-import ErrorPage from './ErrorPage';
+import Toast from '../components/Toast';
 
 export default function MySystemsPage() {
+    const [showToast, setShowToast] = useState(false);
+    const [toastType, setToastType] = useState('info');
+    const [message, setMessage] = useState(null);
     const [gens, setGens] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         getMyGenerations()
             .then(data => {
                 setGens(data);
+                if (data.length <= 0) {
+                    setShowToast(true);
+                    setMessage('No systems yet.');
+                    setToastType('warning');
+                }
                 setLoading(false);
             })
             .catch(err => {
-                setError(err.message || 'Error loading');
+                setShowToast(true);
+                setMessage(err.message);
+                setToastType('error');
                 setLoading(false);
             });
     }, []);
 
-    if (error) return <ErrorPage exception={error} />;
     if (loading) return <LoadingPage />;
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-300 justify-center items-center text-white px-4 pt-8">
-            <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
-                <h2 className="text-3xl font-bold mb-6 select-none text-center">My Systems</h2>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full border border-gray-700 rounded-lg">
-                        <thead className="bg-gray-800 text-white">
-                            <tr>
-                                {['GenNum', 'SeriesNum', 'AreaType', 'ParticleType', 'AreaOuterRadius', 'Phi', 'ParticleNum', 'IdSpData'].map(col => (
-                                    <th
-                                        key={col}
-                                        className="py-3 px-4 text-left border-b border-gray-600 select-none"
-                                    >
-                                        {col}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {gens.map(g => (
-                                <tr
-                                    key={g.IdSpData}
-                                    className="cursor-pointer bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-400 hover:to-gray-600 text-white"
-                                    onClick={() => navigate(`/system/${g.IdSpData}`)}
-                                >
-                                    <td className="py-2 px-4">{g.GenNum}</td>
-                                    <td className="py-2 px-4">{g.SeriesNum}</td>
-                                    <td className="py-2 px-4">{g.AreaType}</td>
-                                    <td className="py-2 px-4">{g.ParticleType}</td>
-                                    <td className="py-2 px-4">{g.AreaOuterRadius}</td>
-                                    <td className="py-2 px-4">{g.Phi}</td>
-                                    <td className="py-2 px-4">{g.ParticleNum}</td>
-                                    <td className="py-2 px-4">{g.IdSpData}</td>
+        <div className="min-h-screen flex flex-col items-center bg-gray-300 text-white px-4 pt-10 pb-10">
+            <div className="w-full max-w-6xl bg-gray-700 rounded-xl shadow-2xl p-8">
+                <h2 className="text-4xl font-bold mb-8 text-center select-none">All Systems</h2>
+
+                {gens.length === 0 ? (
+                    <div className="text-center text-lg text-gray-200 mt-10">No systems available.</div>
+                ) : (
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full border border-gray-600 rounded-lg overflow-hidden">
+                            <thead className="bg-gray-800 text-white">
+                                <tr>
+                                    {[
+                                        'GenNum', 'SeriesNum', 'AreaType', 'ParticleType',
+                                        'AreaOuterRadius', 'Phi', 'ParticleNum'
+                                    ].map(col => (
+                                        <th
+                                            key={col}
+                                            className="px-5 py-3 text-left border-b border-gray-500 select-none"
+                                        >
+                                            {col}
+                                        </th>
+                                    ))}
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                {gens.map(g => (
+                                    <tr
+                                        key={g.IdSpData}
+                                        onClick={() => navigate(`/system/${g.IdSpData}`)}
+                                        className="cursor-pointer bg-gray-600 hover:bg-gray-500 transition-colors duration-200"
+                                    >
+                                        <td className="px-5 py-2">{g.GenNum}</td>
+                                        <td className="px-5 py-2">{g.SeriesNum}</td>
+                                        <td className="px-5 py-2">{g.AreaType}</td>
+                                        <td className="px-5 py-2">{g.ParticleType}</td>
+                                        <td className="px-5 py-2">{g.AreaOuterRadius}</td>
+                                        <td className="px-5 py-2">{g.Phi}</td>
+                                        <td className="px-5 py-2">{g.ParticleNum}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </div>
+
+            {showToast && message && (
+                <Toast message={message} type={toastType} />
+            )}
         </div>
     );
 }

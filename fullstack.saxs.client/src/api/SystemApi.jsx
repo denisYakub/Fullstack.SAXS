@@ -1,19 +1,25 @@
+import Area from "../context/Area";
+
 const REDIRECT_PAGE = 'https://localhost:7135/Identity/Account/Login';
 const API_BASE = import.meta.env.VITE_API_URL || '';
+
+function checkResponse(res) {
+    if (res.status === 401) {
+        window.location.href = REDIRECT_PAGE;
+    }
+    else if (!res.ok) {
+        console.error(res)
+        window.location.href = '/service-unavailable';
+    }
+}
 
 export async function pingAuth() {
     const res = await fetch(`${API_BASE}/ping-auth`, {
         credentials: 'include',
     });
 
-    if (res.status === 401) {
-        window.location.href = REDIRECT_PAGE;
-        throw new Error('Unauthorized');
-    }
+    checkResponse(res);
 
-    if (!res.ok) {
-        throw new Error('Network error');
-    }
     return;
 }
 
@@ -25,15 +31,7 @@ export async function createSystem(requestBody) {
         body: JSON.stringify(requestBody),
     });
 
-    if (res.status === 401) {
-        window.location.href = REDIRECT_PAGE;
-        throw new Error('Unauthorized');
-    }
-
-    if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || 'Error while creating system');
-    }
+    checkResponse(res);
 
     return res;
 }
@@ -43,14 +41,7 @@ export async function getAllGenerations() {
         credentials: 'include',
     });
 
-    if (res.status === 401) {
-        window.location.href = REDIRECT_PAGE;
-        throw new Error('Unauthorized');
-    }
-
-    if (!res.ok) {
-        throw new Error('Error loading generations');
-    }
+    checkResponse(res);
 
     return res.json();
 }
@@ -60,13 +51,7 @@ export async function getMyGenerations() {
         credentials: 'include',
     });
 
-    if (!res.ok) {
-        if (res.status === 401) {
-            window.location.href = REDIRECT_PAGE;
-            throw new Error('Unauthorized');
-        }
-        throw new Error('Error loading your generations');
-    }
+    checkResponse(res);
 
     return res.json();
 }
@@ -74,15 +59,11 @@ export async function getMyGenerations() {
 export async function getSystem(id) {
     const res = await fetch(`${API_BASE}/api/saxs/systems/${id}`)
 
-    if (!res.ok) {
-        if (res.status === 401) {
-            window.location.href = REDIRECT_PAGE;
-            throw new Error('Unauthorized');
-        }
-        throw new Error('Error loading your generations');
-    }
+    checkResponse(res);
 
-    return res.json();
+    const json = await res.json();
+
+    return new Area(json.OuterRadius, json.Particles);;
 }
 
 export async function openPhiGraph(id, layersNum = 5) {
@@ -94,13 +75,7 @@ export async function openPhiGraph(id, layersNum = 5) {
         }
     );
 
-    if (!res.ok) {
-        if (res.status === 401) {
-            window.location.href = REDIRECT_PAGE;
-            throw new Error('Unauthorized');
-        }
-        throw new Error('Failed to generate graph');
-    }
+    checkResponse(res);
 
     const html = await res.text();
     const blob = new Blob([html], { type: 'text/html' });

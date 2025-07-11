@@ -6,6 +6,7 @@ import AllSystemsPage from '../pages/AllSystemsPage';
 import MySystemsPage from '../pages/MySystemsPage';
 import SystemDetailsPage from '../pages/SystemDetailsPage';
 import Header from '../components/Header';
+import ErrorPage from '../pages/ErrorPage';
 
 export default function AppRouter() {
     return (<BrowserRouter>
@@ -17,6 +18,7 @@ export default function AppRouter() {
             <Route path="/all" element={ <AllSystemsPage /> } />
             <Route path="/my" element={ <MySystemsPage /> } />
             <Route path="/system/:id" element={<SystemDetailsPage />} />
+            <Route path="/service-unavailable" element={<ErrorPage exception="503 Service Unavailable." />} />
         </Routes>
     </BrowserRouter>);
 }

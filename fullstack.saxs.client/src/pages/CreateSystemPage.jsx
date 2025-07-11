@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { createSystem } from '../api/systemApi';
 import { DrawAllParticleTypes } from '../components/DrawParticle';
-import LoadingPage from './LoadingPage';
-import ErrorPage from './ErrorPage';
+import Toast from '../components/Toast';
 
 const PARTICLE_TYPES = ['Icosahedron', 'C60', 'C70', 'C240', 'C540'];
 
 export default function CreateSystemPage() {
+    const [showToast, setShowToast] = useState(false);
+    const [toastType, setToastType] = useState('info');
     const [form, setForm] = useState({
         AreaRadius: '',
         Nc: '',
@@ -38,6 +39,8 @@ export default function CreateSystemPage() {
         e.preventDefault();
         if (!isValidRequest()) {
             setMessage('Fill in either AreaRadius or Nc');
+            setShowToast(true);
+            setToastType('warning');
             return;
         }
 
@@ -63,6 +66,8 @@ export default function CreateSystemPage() {
         try {
             await createSystem(requestBody);
             setMessage('System creation complete.');
+            setShowToast(true);
+            setToastType('success');
             setForm({
                 AreaRadius: '',
                 Nc: '',
@@ -80,25 +85,28 @@ export default function CreateSystemPage() {
             });
         } catch (error) {
             setMessage('Error: ' + error.message);
+            setShowToast(true);
+            setToastType('error');
         } finally {
             setLoading(false);
         }
     }
 
     return (
-        <div className="min-h-screen flex flex-row justify-center items-center bg-gray-300  text-white px-4 pt-8">
-            <div className="flex flex-row gap-[10px]">
-                <div className="p-6 bg-gray-600 text-white rounded-md shadow-lg">
-                    <h2 className="text-3xl font-bold mb-6 text-center select-none">Create System</h2>
-                    <form onSubmit={onSubmit} className="space-y-4">
-                        {/* ВЫПАДАЮЩИЙ СПИСОК */}
+        <div className="min-h-screen flex items-center justify-center bg-gray-300 px-4 pt-10 text-white">
+            <div className="flex flex-row gap-10">
+                {/* Левая часть: форма */}
+                <div className="w-1/2 p-8 bg-gray-700 rounded-lg shadow-xl">
+                    <h2 className="text-4xl font-bold mb-6 text-center select-none">Create System</h2>
+                    <form onSubmit={onSubmit} className="space-y-5">
+                        {/* Выпадающий список */}
                         <label className="block">
-                            <span className="mb-1 block font-semibold">Particle Type:</span>
+                            <span className="block font-semibold mb-1">Particle Type:</span>
                             <select
                                 name="ParticleType"
                                 value={form.ParticleType}
                                 onChange={onChange}
-                                className="w-full rounded-md bg-gray-700 px-3 py-2 text-white placeholder-white/50 focus:border-indigo-400 focus:outline-none"
+                                className="w-full rounded-md bg-gray-600 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
                             >
                                 {PARTICLE_TYPES.map((type) => (
                                     <option key={type} value={type}>{type}</option>
@@ -106,6 +114,7 @@ export default function CreateSystemPage() {
                             </select>
                         </label>
 
+                        {/* Инпуты */}
                         {[
                             { label: 'AreaRadius (or leave blank if filling Nc)', name: 'AreaRadius', required: false, step: 'any' },
                             { label: 'Nc (or leave blank if you fill in AreaRadius)', name: 'Nc', required: false, step: 'any' },
@@ -116,11 +125,11 @@ export default function CreateSystemPage() {
                             { label: 'ParticleGammaRotation', name: 'ParticleGammaRotation', required: true, step: 'any' },
                             { label: 'ParticleSizeShape', name: 'ParticleSizeShape', required: true, step: 'any' },
                             { label: 'ParticleSizeScale', name: 'ParticleSizeScale', required: true, step: 'any' },
-                            { label: 'ParticleNumber', name: 'ParticleNumber', required: true, step: undefined },
-                            { label: 'AreaNumber', name: 'AreaNumber', required: true, step: undefined },
+                            { label: 'ParticleNumber', name: 'ParticleNumber', required: true },
+                            { label: 'AreaNumber', name: 'AreaNumber', required: true },
                         ].map(({ label, name, required, step }) => (
                             <label key={name} className="block">
-                                <span className="mb-1 block font-semibold">{label}:</span>
+                                <span className="block font-semibold mb-1">{label}:</span>
                                 <input
                                     type="number"
                                     step={step}
@@ -128,35 +137,34 @@ export default function CreateSystemPage() {
                                     value={form[name]}
                                     onChange={onChange}
                                     required={required}
-                                    className="w-full rounded-md bg-gray-700 px-3 py-2 text-white placeholder-white/50 focus:border-indigo-400 focus:outline-none"
+                                    className="w-full rounded-md bg-gray-600 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
                                     placeholder={required ? 'Required' : ''}
                                 />
                             </label>
                         ))}
 
+                        {/* Кнопка */}
                         <button
                             type="submit"
                             disabled={loading}
-                            className={
-                                `w-full py-3 rounded-md
-                                ${loading ?
-                                    'bg-gradient-to-r from-gray-600 to-gray-700 cursor-not-allowed' :
-                                    'bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-400 hover:to-gray-600'}
-                                text-white`
-                            }>
+                            className={`w-full py-3 rounded-md text-white font-semibold transition
+                            ${loading
+                                    ? 'bg-gradient-to-r from-gray-600 to-gray-700 cursor-not-allowed'
+                                    : 'bg-gradient-to-r from-indigo-500 to-indigo-700 hover:from-indigo-400 hover:to-indigo-600'
+                                }`}
+                        >
                             {loading ? 'Creating...' : 'Create a system'}
                         </button>
-
                     </form>
 
-                    {message && (
-                        <p className={`mt-6 text-center font-medium ${message.startsWith('Error') ? 'text-red-400' : 'text-green-400'}`}>
-                            {message}
-                        </p>
-                    )}
+                    {/* Toast уведомление */}
+                    {showToast && message && <Toast message={message} type={toastType} />}
                 </div>
+
+                {/* Правая часть: визуализация */}
                 <DrawAllParticleTypes selectedType={form.ParticleType} />
             </div>
         </div>
     );
+
 }

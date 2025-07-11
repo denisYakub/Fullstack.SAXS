@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { pingAuth } from '../api/SystemApi';
 import LoadingPage from './LoadingPage';
-import ErrorPage from './ErrorPage';
 
 export default function HomePage() {
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         pingAuth()
-            .then(() => setLoading(false))
-            .catch(err => {
-                setError(err.message || 'Error loading');
-                setLoading(false);
-            });
+            .then(
+                () => setLoading(false)
+            )
+            .catch(
+                () => window.location.href = '/service-unavailable'
+            );
     }, []);
 
-    if (error) return <ErrorPage exception={error} />;
     if (loading) return <LoadingPage />;
 
     return (

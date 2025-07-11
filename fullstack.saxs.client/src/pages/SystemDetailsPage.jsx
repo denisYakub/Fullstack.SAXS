@@ -3,25 +3,23 @@ import { useParams } from 'react-router-dom';
 import { getSystem, openPhiGraph } from '../api/SystemApi';
 import { GetAtomsCoord, GetQI } from '../api/MathCadApi';
 import SysView from '../components/SysView';
-import Area from '../context/Area';
 import LoadingPage from './LoadingPage';
-import ErrorPage from './ErrorPage';
+import Toast from '../components/Toast';
 
 export default function SystemDetailsPage() {
+    const [showToast, setShowToast] = useState(false);
+    const [toastType, setToastType] = useState('info');
+    const [message, setMessage] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [data, setData] = useState(null);
-    const [form, setForm] = useState({
+    const [formQ, setFormQ] = useState({
         qMin: 0.02,
         qMax: 5,
         qNum: 150,
     });
-
-    const requestBody = {
-        QMin: Number(form.qMin),
-        QMax: Number(form.qMax),
-        QNum: Number(form.qNum)
-    };
+    const [formPhi, setFormPhi] = useState({
+        phiNumber: 5,
+    });
 
     const { id } = useParams();
 
@@ -31,65 +29,136 @@ export default function SystemDetailsPage() {
         setLoading(true);
         getSystem(id)
             .then(systemData => {
-                const area = new Area(systemData.OuterRadius, systemData.Particles);
-                setData(area);
+                setData(systemData);
                 setLoading(false);
             })
             .catch(err => {
-                setError(err.message || 'Loading Error');
+                setShowToast(true);
+                setMessage(err.message);
+                setToastType('error');
                 setLoading(false);
             });
     }, [id]);
 
-    if (error) return <ErrorPage exception={error} />;
+    function onChangePhi(e) {
+        const { name, value } = e.target;
+        setFormPhi(f => ({ ...f, [name]: value }));
+    }
+
+    function onChangeQ(e) {
+        const { name, value } = e.target;
+        setFormQ(f => ({ ...f, [name]: value }));
+    }
+
+    async function onSubmitDistributionDensity(e) {
+        e.preventDefault();
+        openPhiGraph(id, formPhi.phiNumber)
+    }
+
+    async function onSubmitDownloadAtomsCoordinates(e) {
+        e.preventDefault();
+        GetAtomsCoord(id);
+    }
+
+    async function onSubmitDownloadQIVector(e) {
+        e.preventDefault();
+
+        const requestBody = {
+            QMin: Number(formQ.qMin),
+            QMax: Number(formQ.qMax),
+            QNum: Number(formQ.qNum)
+        };
+
+        GetQI(requestBody);
+    }
+
     if (loading) return <LoadingPage />;
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-300 justify-center items-center text-white px-4 pt-8">
-            <div className="max-w mx-auto p-6 bg-gray-600 text-white rounded-md shadow-lg mt-8">
-                <div className="w-[50vw] mx-auto p-6 space-y-6">
-                    <h2 className="text-3xl font-bold select-none">System Details</h2>
-                    <p className="text-gray-300">ID system: <span className="font-mono">{id}</span></p>
-                    <p className="text-gray-300">Particles type: <span className="font-mono">{data.getFirstParticleTypeName()}</span></p>
+            <div className="max-w-5xl w-full mx-auto p-8 bg-gray-700 text-white rounded-lg shadow-xl">
+                <h2 className="text-4xl font-bold mb-4 select-none text-center">System Details</h2>
 
-                    {data && (
-                        <div className="rounded-md shadow-md h-[60vh] w-full">
-                            <SysView data={data} />
-                        </div>
-                    )}
+                <div className="text-sm text-gray-300 mb-6 text-center">
+                    <p className="mb-1">
+                        ID system: <span className="font-mono">{id}</span>
+                    </p>
+                    <p>
+                        Particles type: <span className="font-mono">{data.getFirstParticleTypeName()}</span>
+                    </p>
+                </div>
 
-                    <h3 className="text-xl font-semibold text-white mb-4 select-none">
-                        System graphs
-                    </h3>
-                    <div className="flex flex-wrap gap-4 mt-6 justify-center">
-                        <button
-                            onClick={() => openPhiGraph(id)}
-                            className='px-6 py-3 rounded-md transition bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-400 hover:to-gray-600text-white'
-                        >
-                            Distribution density
-                        </button>
+                {data && (
+                    <div className="rounded-md shadow-md h-[60vh] w-full mb-8 border border-gray-500">
+                        <SysView data={data} />
                     </div>
+                )}
 
-                    <h3 className="text-xl font-semibold text-white mb-4 select-none">
-                        Mathcad files
-                    </h3>
-                    <div className="flex flex-wrap gap-4 mt-6 justify-center">
+                {/* Секция графиков */}
+                <div className="mb-10">
+                    <h3 className="text-2xl font-semibold mb-4 select-none border-b border-gray-500 pb-2">System Graphs</h3>
+                    <form onSubmit={onSubmitDistributionDensity} className="space-y-4">
+                        <label className="block">
+                            <span className="mb-1 block font-semibold">phiNumber:</span>
+                            <input
+                                type="number"
+                                step="any"
+                                name="phiNumber"
+                                value={formPhi["phiNumber"]}
+                                onChange={onChangePhi}
+                                required
+                                className="w-full rounded-md bg-gray-600 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                            />
+                        </label>
                         <button
-                            onClick={() => GetAtomsCoord(id)}
-                            className='px-6 py-3 rounded-md transition bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-400 hover:to-gray-600text-white'
+                            type="submit"
+                            className="w-full py-3 rounded-md bg-indigo-600 hover:bg-indigo-700 transition text-white font-semibold"
                         >
-                            Download atoms coordinates
+                            Generate Distribution Density
                         </button>
+                    </form>
+                </div>
 
+                {/* Секция Mathcad */}
+                <div className="mb-10">
+                    <h3 className="text-2xl font-semibold mb-4 select-none border-b border-gray-500 pb-2">Mathcad Files</h3>
+                    <form onSubmit={onSubmitDownloadQIVector} className="space-y-4">
+                        {['qMin', 'qMax', 'qNum'].map(name => (
+                            <label key={name} className="block">
+                                <span className="mb-1 block font-semibold">{name}:</span>
+                                <input
+                                    type="number"
+                                    step="any"
+                                    name={name}
+                                    value={formQ[name]}
+                                    onChange={onChangeQ}
+                                    required
+                                    className="w-full rounded-md bg-gray-600 px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                />
+                            </label>
+                        ))}
                         <button
-                            onClick={() => GetQI(requestBody)}
-                            className='px-6 py-3 rounded-md transition bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-400 hover:to-gray-600text-white'
+                            type="submit"
+                            className="w-full py-3 rounded-md bg-emerald-600 hover:bg-emerald-700 transition text-white font-semibold"
                         >
-                            Download QI vector
+                            Download QI Vector
                         </button>
-                    </div>
+                    </form>
+                </div>
+
+                {/* Кнопка загрузки координат */}
+                <div className="text-center">
+                    <button
+                        onClick={onSubmitDownloadAtomsCoordinates}
+                        className="px-6 py-3 rounded-md bg-orange-500 hover:bg-orange-600 transition text-white font-semibold"
+                    >
+                        Download Atoms Coordinates
+                    </button>
                 </div>
             </div>
+
+            {/* Toast уведомление */}
+            {showToast && message && <Toast message={message} type={toastType} />}
         </div>
     );
 }
