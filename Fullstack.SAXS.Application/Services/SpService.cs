@@ -2,7 +2,7 @@
 using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Domain.Contracts;
 
-namespace Fullstack.SAXS.Application
+namespace Fullstack.SAXS.Application.Services
 {
     public class SpService(IStorage storage, IFileService file) : ISpService
     {

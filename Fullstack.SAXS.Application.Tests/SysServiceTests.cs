@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Castle.Components.DictionaryAdapter.Xml;
 using Fullstack.SAXS.Application.Contracts;
+using Fullstack.SAXS.Application.Services;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;

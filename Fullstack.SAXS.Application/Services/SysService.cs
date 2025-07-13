@@ -7,7 +7,7 @@ using Fullstack.SAXS.Domain.Extensions;
 using Fullstack.SAXS.Domain.Models;
 using Fullstack.SAXS.Domain.ValueObjects;
 
-namespace Fullstack.SAXS.Application
+namespace Fullstack.SAXS.Application.Services
 {
     public class SysService(AreaFactory areaF, IParticleFactoryResolver prtclFResolver, IStorage storage, IGraphService graph) : ISysService
     {

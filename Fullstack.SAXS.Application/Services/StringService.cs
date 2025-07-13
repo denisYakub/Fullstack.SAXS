@@ -1,7 +1,8 @@
-﻿using Fullstack.SAXS.Domain.Contracts;
+﻿using Fullstack.SAXS.Application.Config;
+using Fullstack.SAXS.Domain.Contracts;
 using Microsoft.Extensions.Options;
 
-namespace Fullstack.SAXS.Application
+namespace Fullstack.SAXS.Application.Services
 {
     public class StringService(IOptions<PathOptions> options) : IStringService
     {

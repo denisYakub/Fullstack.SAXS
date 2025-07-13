@@ -1,4 +1,4 @@
-﻿namespace Fullstack.SAXS.Application
+﻿namespace Fullstack.SAXS.Application.Config
 {
     public class PathOptions
     {

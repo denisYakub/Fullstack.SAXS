@@ -5,13 +5,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Fullstack.SAXS.Infrastructure.Kafka
 {
-    public class Consumer : BackgroundService
+    public class SystemTopicsConsumer : BackgroundService
     {
         private readonly IConsumer<Ignore, string> _consumer;
-        private readonly ILogger<Consumer> _logger;
+        private readonly ILogger<SystemTopicsConsumer> _logger;
 
 
-        public Consumer(IConfiguration config, ILogger<Consumer> logger)
+        public SystemTopicsConsumer(IConfiguration config, ILogger<SystemTopicsConsumer> logger)
         {
             var consumerConfig = new ConsumerConfig
             {
