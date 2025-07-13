@@ -1,29 +1,14 @@
 ﻿using Fullstack.SAXS.Domain.Contracts;
+using Microsoft.Extensions.Options;
 
 namespace Fullstack.SAXS.Application
 {
-    public class StringService : IStringService
+    public class StringService(IOptions<PathOptions> options) : IStringService
     {
-        public string GetCsvFolder()
-        {
-            var csvFolder = "C:\\Users\\denis\\source\\repos\\denisYakub\\Fullerenes\\Fullerenes.Server\\CsvResults";
+        public string GetCsvFolder() => options.Value.CsvFolder;
 
-            if (!Directory.Exists(csvFolder))
-                Directory.CreateDirectory(csvFolder);
+        public string GetGraphUriPath() => options.Value.GraphUriPath;
 
-            return csvFolder;
-        }
-
-        public string GetGraphUriPath()
-        {
-            return "http://localhost:5001";
-        }
-
-        public string GetPythonServerFilePath()
-        {
-            var currentDir = Directory.GetCurrentDirectory();
-            var rootDir = Directory.GetParent(currentDir)?.FullName;
-            return Path.Combine(rootDir!, "Fullstack.SAXS.api", "Fullstack.SAXS.Api.py");
-        }
+        public string GetPythonServerFilePath() => options.Value.PythonServerFilePath;
     }
 }

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Fullstack.SAXS.Application.Commands
 {
-    public class CreateSystemHandler(ISysService sysService, IEventPublisher publisher) : IRequestHandler<CreateSystemCommand>
+    public class CreateSystemHandler(ISysService sysService) : IRequestHandler<CreateSystemCommand>
     {
         public async Task Handle(CreateSystemCommand request, CancellationToken cancellationToken)
         {
@@ -16,8 +16,6 @@ namespace Fullstack.SAXS.Application.Commands
                 ParticleType = request.Data.particleType,
                 Timestamp = DateTime.UtcNow
             });
-
-            await publisher.PublishAsync("systems.created", eventPayload);
         }
     }
 }

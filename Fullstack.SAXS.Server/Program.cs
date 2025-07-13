@@ -15,6 +15,10 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<PathOptions>(
+    builder.Configuration.GetSection("Paths")
+);
+
 builder.Services
     .AddSingleton<ParticleFactory, IcosahedronFactory>()
     .AddSingleton<ParticleFactory, C60Factory>()
@@ -37,7 +41,7 @@ builder.Services.AddMediatR(
     cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateSystemHandler).Assembly)
 );
 
-builder.Services.AddHostedService<Consumer>();
+//builder.Services.AddHostedService<Consumer>();
 
 builder.Services
     .AddDbContext<PosgresDbContext>(
