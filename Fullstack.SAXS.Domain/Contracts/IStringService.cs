@@ -4,5 +4,6 @@
     {
         string GetCsvFolder();
         string GetGraphUriPath();
+        string GetPythonServerFilePath();
     }
 }

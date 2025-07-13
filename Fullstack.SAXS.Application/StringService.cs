@@ -18,5 +18,12 @@ namespace Fullstack.SAXS.Application
         {
             return "http://localhost:5001";
         }
+
+        public string GetPythonServerFilePath()
+        {
+            var currentDir = Directory.GetCurrentDirectory();
+            var rootDir = Directory.GetParent(currentDir)?.FullName;
+            return Path.Combine(rootDir!, "Fullstack.SAXS.api", "Fullstack.SAXS.Api.py");
+        }
     }
 }

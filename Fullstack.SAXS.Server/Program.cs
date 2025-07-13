@@ -15,10 +15,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var currentDir = Directory.GetCurrentDirectory();
-var rootDir = Directory.GetParent(currentDir)?.FullName;
-var pythonScriptPath = Path.Combine(rootDir!, "Fullstack.SAXS.api", "Fullstack.SAXS.Api.py");
-
 builder.Services
     .AddSingleton<ParticleFactory, IcosahedronFactory>()
     .AddSingleton<ParticleFactory, C60Factory>()
@@ -28,9 +24,7 @@ builder.Services
     .AddSingleton<IEventPublisher, Producer>()
     .AddSingleton<IStringService, StringService>()
     .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
-    .AddSingleton<IHostedService>(
-        provider => new PythonProcessHostedService(pythonScriptPath)
-    )
+    .AddSingleton<IHostedService, PythonProcessHostedService>()
     .AddScoped<ISysService, SysService>()
     .AddScoped<ISpService, SpService>()
     .AddScoped<IStorage, AreaRepository>()
