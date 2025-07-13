@@ -1,7 +1,10 @@
 ﻿using System.Security.Claims;
+using Fullstack.SAXS.Application.Commands;
 using Fullstack.SAXS.Application.Contracts;
+using Fullstack.SAXS.Application.Queries;
 using Fullstack.SAXS.Domain.Models;
 using Fullstack.SAXS.Server.Contracts;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +13,7 @@ namespace Fullstack.SAXS.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class SaxsController(ISysService sysService, ISpService sp) : ControllerBase
+    public class SaxsController(IMediator mediator) : ControllerBase
     {
         private Guid UserId
         {
@@ -39,7 +42,7 @@ namespace Fullstack.SAXS.Server.Controllers
                 request.ParticleGammaRotation
             );
 
-            await sysService.CreateAsync(UserId, dto);
+            await mediator.Send(new CreateSystemCommand(UserId, dto));  
 
             return new OkResult();
         }
@@ -47,7 +50,7 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpGet("systems/{id}")]
         public async Task<IActionResult> GetSys([FromRoute] Guid id)
         {
-            var json = await sp.GetAsync(id);
+            var json = await mediator.Send(new GetSystemQuery(id));
 
             return new OkObjectResult(json);
         }
@@ -55,7 +58,7 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpPost("systems/{id}/graphs/phi")]
         public async Task<IActionResult> CreateSysPhiGraph([FromRoute] Guid id, [FromQuery] int layersNum = 5)
         {
-            var html = await sysService.CreatePhiGraphAsync(UserId, id, layersNum);
+            var html = await mediator.Send(new CreatePhiGraphCommand(UserId, id, layersNum));
 
             return new ContentResult() { Content = html, ContentType = "text/html" };
         }
@@ -68,7 +71,7 @@ namespace Fullstack.SAXS.Server.Controllers
                 request.QNum,
                 request.StepType
             );
-            var html = await sysService.CreateIntensOptGraphAsync(id, dto);
+            var html = await mediator.Send(new CreateIntenseOptGraphCommand(id, dto));
 
             return new ContentResult() { Content = html, ContentType = "text/html" };
         }
@@ -76,7 +79,7 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpGet("generations")]
         public async Task<IActionResult> GetGenerations()
         {
-            var json = await sp.GetAllAsync();
+            var json = await mediator.Send(new GetAllGenerationsQuery());
 
             return new OkObjectResult(json);
         }
@@ -84,7 +87,7 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpGet("users/me/generations")]
         public async Task<IActionResult> GetMyGenerations()
         {
-            var json = await sp.GetAllAsync(UserId);
+            var json = await mediator.Send(new GetAllGenerationsQuery(UserId));
 
             return new OkObjectResult(json);
         }

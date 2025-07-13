@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
+using Fullstack.SAXS.Domain.Extensions;
 using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Infrastructure.Factories

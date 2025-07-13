@@ -1,7 +1,8 @@
 ﻿using System.Security.Claims;
 using Fullstack.SAXS.Application;
-using Fullstack.SAXS.Application.Contracts;
+using Fullstack.SAXS.Application.Queries;
 using Fullstack.SAXS.Server.Contracts;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +11,7 @@ namespace Fullstack.SAXS.Server.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class MathcadController(ISpService sp) : ControllerBase
+    public class MathcadController(IMediator mediator) : ControllerBase
     {
         private Guid UserId
         {
@@ -29,7 +30,7 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpGet("systems/{id}/atoms-coordinates")]
         public async Task<IActionResult> GetCoordinatesOfAtoms([FromRoute] Guid id)
         {
-            var csv = await sp.GetAtomsAsync(id);
+            var csv = await mediator.Send(new GetAllAtomsQuery(id));
 
             return File(csv, "text/csv", "vertices.csv");
         }

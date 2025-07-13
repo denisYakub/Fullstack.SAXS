@@ -1,10 +1,10 @@
 ﻿using System.Text;
 using Castle.Components.DictionaryAdapter.Xml;
 using Fullstack.SAXS.Application.Contracts;
-using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Extensions;
 using MathNet.Numerics.Distributions;
 using Moq;
 

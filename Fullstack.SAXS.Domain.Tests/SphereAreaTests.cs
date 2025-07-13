@@ -1,8 +1,8 @@
 ﻿using System.Globalization;
 using System.IO;
-using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
+using Fullstack.SAXS.Domain.Extensions;
 using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Domain.Tests

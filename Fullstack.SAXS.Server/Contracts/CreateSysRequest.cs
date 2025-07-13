@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Fullstack.SAXS.Domain.Commands;
 using Fullstack.SAXS.Domain.Enums;
+using Fullstack.SAXS.Domain.Extensions;
 using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Server.Contracts
