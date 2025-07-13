@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using Fullstack.SAXS.Application;
+using Fullstack.SAXS.Application.Commands;
 using Fullstack.SAXS.Application.Contracts;
+using Fullstack.SAXS.Application.Queries;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Infrastructure.DbContexts;
 using Fullstack.SAXS.Infrastructure.Factories;
@@ -35,6 +37,10 @@ builder.Services
     .AddScoped<SysService>()
     .AddScoped<AreaFactory, SphereFactory>()
     .AddScoped<IGraphService, GraphService>();
+
+builder.Services.AddMediatR(
+    cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateSystemHandler).Assembly)
+);
 
 builder.Services
     .AddDbContext<PosgresDbContext>(
