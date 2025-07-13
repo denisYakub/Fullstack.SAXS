@@ -1,6 +1,6 @@
 ﻿using MathNet.Numerics.Distributions;
 
-namespace Fullstack.SAXS.Domain.Commands
+namespace Fullstack.SAXS.Domain.Extensions
 {
     public static class GammaExtensions
     {
