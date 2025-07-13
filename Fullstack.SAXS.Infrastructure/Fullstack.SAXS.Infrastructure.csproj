@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="Confluent.Kafka" Version="2.11.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.6" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="9.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
@@ -17,6 +18,7 @@
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.Design" Version="1.1.0" />
 	</ItemGroup>
 	<ItemGroup>
+	  <ProjectReference Include="..\Fullstack.SAXS.Application\Fullstack.SAXS.Application.csproj" />
 	  <ProjectReference Include="..\Fullstack.SAXS.Domain\Fullstack.SAXS.Domain.csproj" />
 	</ItemGroup>
 </Project>

@@ -2,10 +2,10 @@ using System.Security.Claims;
 using Fullstack.SAXS.Application;
 using Fullstack.SAXS.Application.Commands;
 using Fullstack.SAXS.Application.Contracts;
-using Fullstack.SAXS.Application.Queries;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Infrastructure.DbContexts;
 using Fullstack.SAXS.Infrastructure.Factories;
+using Fullstack.SAXS.Infrastructure.Kafka;
 using Fullstack.SAXS.Infrastructure.Repositories;
 using Fullstack.SAXS.Persistence.HTML;
 using Fullstack.SAXS.Persistence.IO;
@@ -25,6 +25,7 @@ builder.Services
     .AddSingleton<ParticleFactory, C70Factory>()
     .AddSingleton<ParticleFactory, C240Factory>()
     .AddSingleton<ParticleFactory, C540Factory>()
+    .AddSingleton<IEventPublisher, Producer>()
     .AddSingleton<IStringService, StringService>()
     .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
     .AddSingleton<IHostedService>(
@@ -41,6 +42,8 @@ builder.Services
 builder.Services.AddMediatR(
     cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateSystemHandler).Assembly)
 );
+
+builder.Services.AddHostedService<Consumer>();
 
 builder.Services
     .AddDbContext<PosgresDbContext>(
