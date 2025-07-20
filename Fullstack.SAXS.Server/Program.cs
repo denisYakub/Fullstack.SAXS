@@ -43,8 +43,6 @@ builder.Services.AddMediatR(
     cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateSystemHandler).Assembly)
 );
 
-//builder.Services.AddHostedService<Consumer>();
-
 builder.Services
     .AddDbContext<PosgresDbContext>(
         options => options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"))

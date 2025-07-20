@@ -30,7 +30,7 @@ namespace Fullstack.SAXS.Application.Tests
                 ));
 
             graphMock
-                .Setup(g => g.GetHtmlPageAsync(It.IsAny<double[]>(), It.IsAny<double[]>()))
+                .Setup(g => g.GetHtmlPageAsync(It.IsAny<double[]>(), It.IsAny<double[]>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns<float[], float[]>((x, y) =>
                 {
                     var builder = new StringBuilder();

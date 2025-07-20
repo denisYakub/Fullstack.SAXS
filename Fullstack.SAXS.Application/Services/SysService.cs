@@ -40,7 +40,7 @@ namespace Fullstack.SAXS.Application.Services
 
             var (x, y) = CreateIntensOptCoord(area, in qs);
 
-            return await graph.GetHtmlPageAsync(x, y);
+            return await graph.GetHtmlPageAsync(x, y, "Empty", "Empty", "Empty");
         }
 
         public async Task<string> CreatePhiGraphAsync(Guid userId, Guid id, int layersNum)
@@ -51,7 +51,7 @@ namespace Fullstack.SAXS.Application.Services
 
             await storage.SaveAvgPhiAsync(userId, id, y.Average());
 
-            return await graph.GetHtmlPageAsync(x, y);
+            return await graph.GetHtmlPageAsync(x, y, "Layers", "Density", "Phi");
         }
 
         public static double[] CreateQs(double QMin, double QMax, int QNum, StepTypes StepType = StepTypes.Linear)

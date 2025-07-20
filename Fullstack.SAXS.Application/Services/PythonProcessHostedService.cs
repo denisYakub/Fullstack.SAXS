@@ -5,20 +5,27 @@ using Microsoft.Extensions.Logging;
 
 namespace Fullstack.SAXS.Application.Services
 {
-    public class PythonProcessHostedService(
-        IStringService scriptPath, 
-        ILogger<PythonProcessHostedService> logger
-    ) : BackgroundService
+    public class PythonProcessHostedService : BackgroundService
     {
+        private readonly IStringService _scriptPath;
+        private readonly ILogger<PythonProcessHostedService> _logger;
         private Process _process;
         private bool _disposed;
+
+        public PythonProcessHostedService(
+            IStringService scriptPath,
+            ILogger<PythonProcessHostedService> logger)
+        {
+            _scriptPath = scriptPath;
+            _logger = logger;
+        }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var start = new ProcessStartInfo
             {
                 FileName = "python",
-                Arguments = $"\"{scriptPath.GetPythonServerFilePath()}\"",
+                Arguments = $"\"{_scriptPath.GetPythonServerFilePath()}\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -26,29 +33,40 @@ namespace Fullstack.SAXS.Application.Services
             };
 
             _process = new Process { StartInfo = start };
+            _process.OutputDataReceived += (s, e) => { if (e.Data != null) _logger.LogInformation(e.Data); };
+            _process.ErrorDataReceived += (s, e) =>
+            {
+                if (string.IsNullOrWhiteSpace(e.Data)) return;
 
-            _process.OutputDataReceived += (s, e) => { if (e.Data != null) logger.LogInformation(e.Data); };
-            _process.ErrorDataReceived += (s, e) => { if (e.Data != null) logger.LogError(e.Data); };
+                if (e.Data.Contains("DeprecationWarning") || e.Data.Contains("UserWarning"))
+                    _logger.LogWarning(e.Data);
+                else
+                    _logger.LogError(e.Data);
+            };
 
             _process.Start();
             _process.BeginOutputReadLine();
             _process.BeginErrorReadLine();
 
-            logger.LogInformation("Flask server started.");
+            _logger.LogInformation("Flask server started.");
 
             using (stoppingToken.Register(() =>
             {
                 if (!_process.HasExited)
-                    _process.Kill();
+                    _process.Kill(entireProcessTree: true);
             }))
             {
-                await Task.WhenAny(
-                    Task.Run(() => _process.WaitForExit()),
-                    Task.Delay(Timeout.Infinite, stoppingToken)
-                );
+                try
+                {
+                    await _process.WaitForExitAsync(stoppingToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    _logger.LogInformation("Flask server stopping...");
+                }
             }
 
-            logger.LogInformation("Flask server exited.");
+            _logger.LogInformation("Flask server exited.");
         }
 
         public override void Dispose()
@@ -56,13 +74,14 @@ namespace Fullstack.SAXS.Application.Services
             if (_disposed) return;
 
             if (_process != null && !_process.HasExited)
-                _process.Kill();
+                _process.Kill(entireProcessTree: true);
 
             _process?.Dispose();
             _disposed = true;
 
             base.Dispose();
-            logger.LogInformation("Flask server stopped.");
+            _logger.LogInformation("Flask server disposed.");
         }
     }
+
 }
