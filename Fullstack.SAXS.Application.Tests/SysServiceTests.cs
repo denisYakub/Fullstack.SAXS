@@ -94,7 +94,7 @@ namespace Fullstack.SAXS.Application.Tests
             var areaRadius = 100;
             var maxParticleSize = 5;
 
-            var area = new SphereArea(0, areaRadius, maxParticleSize);
+            var area = new SphereArea(0, areaRadius);
 
             area.Fill(InfParticleGenerator(maxParticleSize, areaRadius), particleNum);
 

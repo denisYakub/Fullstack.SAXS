@@ -13,7 +13,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
         public override ParticleTypes ParticleType => ParticleTypes.C240;
 
-        protected override int[][] Faces => _faces;
+        protected override IReadOnlyCollection<int[]> Faces => _faces;
 
         private readonly double _outerR;
         private readonly double _innerR;

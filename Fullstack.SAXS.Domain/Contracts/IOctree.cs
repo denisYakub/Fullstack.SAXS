@@ -1,6 +1,6 @@
 ﻿using Fullstack.SAXS.Domain.Entities.Particles;
 
-namespace Fullstack.SAXS.Domain.Entities.Octrees
+namespace Fullstack.SAXS.Domain.Contracts
 {
     public interface IOctree
     {

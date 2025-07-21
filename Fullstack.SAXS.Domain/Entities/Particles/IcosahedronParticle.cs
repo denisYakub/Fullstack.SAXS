@@ -9,7 +9,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
         public override double InnerSphereRadius => _innerR;
 
-        protected override int[][] Faces => _faces;
+        protected override IReadOnlyCollection<int[]> Faces => _faces;
 
         public override IReadOnlyCollection<Vector3D> Vertices => _vertices;
 

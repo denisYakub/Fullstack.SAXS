@@ -23,7 +23,7 @@ namespace Fullstack.SAXS.Domain.Tests
         public void Fill_With100KParticles_Pass()
         {
             // Arrange
-            var area = new SphereArea(0, _areaRadius, _maxParticleSize);
+            var area = new SphereArea(0, _areaRadius);
 
             // Act
             area.Fill(_infParticles, 100_000);
@@ -36,7 +36,7 @@ namespace Fullstack.SAXS.Domain.Tests
         public void Fill_With500KParticles_Pass()
         {
             // Arrange
-            var area = new SphereArea(0, _areaRadius, _maxParticleSize);
+            var area = new SphereArea(0, _areaRadius);
 
             // Act
             area.Fill(_infParticles, 500_000);
@@ -49,7 +49,7 @@ namespace Fullstack.SAXS.Domain.Tests
         public void Fill_With100KParticlesAndCheckCollision_NoCollision()
         {
             // Arrange
-            var area = new SphereArea(0, _areaRadius, _maxParticleSize);
+            var area = new SphereArea(0, _areaRadius);
 
             var countOfCollision = 0;
 
@@ -76,7 +76,7 @@ namespace Fullstack.SAXS.Domain.Tests
         public void Fill_With10KParticlesAndSaveСoordinatesToDocuments_Pass()
         {
             // Arrange
-            var area = new SphereArea(0, 200, _maxParticleSize);
+            var area = new SphereArea(0, 200);
 
             string documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 

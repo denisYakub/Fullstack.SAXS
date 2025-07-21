@@ -1,6 +1,5 @@
 ﻿using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.ValueObjects;
-using System.Numerics;
 
 namespace Fullstack.SAXS.Domain.Entities.Octrees
 {
@@ -45,6 +44,9 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
 
         public bool Contains(Particle particle)
         {
+            if (particle == null)
+                throw new ArgumentNullException(nameof(particle), "Shouldn't be null.");
+
             var half = Edge / 2;
 
             return
@@ -58,6 +60,9 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
 
         public bool Clashes(Particle particle)
         {
+            if (particle == null)
+                throw new ArgumentNullException(nameof(particle), "Shouldn't be null.");
+
             var cubeMin = Center - new Vector3D(Edge / 2);
             var cubeMax = Center + new Vector3D(Edge / 2);
 

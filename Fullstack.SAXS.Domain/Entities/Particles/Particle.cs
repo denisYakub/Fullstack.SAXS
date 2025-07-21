@@ -1,38 +1,33 @@
-﻿using System.Numerics;
-using Fullstack.SAXS.Domain.Enums;
+﻿using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Domain.Entities.Particles
 {
-    public abstract class Particle
+    public abstract class Particle(double size, Vector3D center, EulerAngles rotationAngles)
     {
-        public readonly double Size;
-        public readonly Vector3D Center;
-        public readonly EulerAngles RotationAngles;
+        public double Size => size;
+        public Vector3D Center => center;
+        public EulerAngles RotationAngles => rotationAngles;
 
         public abstract double OuterSphereRadius { get; }
         public abstract double InnerSphereRadius { get; }
         public abstract IReadOnlyCollection<Vector3D> Vertices { get; }
         public abstract ParticleTypes ParticleType { get; }
-        protected abstract int[][] Faces { get; }
-
-        protected Particle(double size, Vector3D center, EulerAngles rotationAngles)
-        {
-            Size = size;
-            Center = center;
-            RotationAngles = rotationAngles;
-        }
+        protected abstract IReadOnlyCollection<int[]> Faces { get; }
 
         public bool Intersect(Particle other)
         {
+            if (other == null)
+                throw new ArgumentNullException(nameof(other), "Shouldn't be null.");
+
             var outerRSum = OuterSphereRadius + other.OuterSphereRadius;
 
-            if (Vector3D.DistanceSquared(Center, other.Center) > outerRSum * outerRSum)
+            if (Vector3D.DistanceSquared(center, other.Center) > outerRSum * outerRSum)
                 return false;
 
             var innerRSum = InnerSphereRadius + other.InnerSphereRadius;
 
-            if (Vector3D.DistanceSquared(Center, other.Center) <= innerRSum * innerRSum)
+            if (Vector3D.DistanceSquared(center, other.Center) <= innerRSum * innerRSum)
                 return true;
 
             foreach (var vertex in other.Vertices)
@@ -48,10 +43,10 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
         public bool Contains(Vector3D point)
         {
-            if (Vector3D.DistanceSquared(point, Center) > OuterSphereRadius * OuterSphereRadius)
+            if (Vector3D.DistanceSquared(point, center) > OuterSphereRadius * OuterSphereRadius)
                 return false;
 
-            if (Vector3D.DistanceSquared(point, Center) <= InnerSphereRadius * InnerSphereRadius)
+            if (Vector3D.DistanceSquared(point, center) <= InnerSphereRadius * InnerSphereRadius)
                 return true;
 
             var vertices = Vertices;
@@ -74,31 +69,5 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
             return true;
         }
-
-        /*public string Draw()
-        {
-            var strB = new StringBuilder();
-            var str = new string[12];
-
-            for (int i = 0; i < str.Length; i++)
-            {
-                string input = Vertices.ElementAt(i).ToString();
-
-                str[i] = 
-                    "[" + 
-                    string
-                        .Join(
-                            ", ",
-                            input
-                                .Trim('<', '>')
-                                .Split([' ', '\u00A0'], StringSplitOptions.RemoveEmptyEntries)
-                                .Select(s => s.Replace(',', '.'))
-                        )
-                     + "]";
-            }
-            strB.AppendJoin(", ", str);
-
-            return strB.ToString();
-        }*/
     }
 }

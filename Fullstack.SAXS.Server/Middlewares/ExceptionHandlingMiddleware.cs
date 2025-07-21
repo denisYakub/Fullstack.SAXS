@@ -3,21 +3,27 @@ using System.Text.Json;
 
 namespace Fullstack.SAXS.Server.Middlewares
 {
-    public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger, IHostEnvironment env)
+    internal class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger, IHostEnvironment env)
     {
         private readonly RequestDelegate _next = next;
         private readonly ILogger<ExceptionHandlingMiddleware> _logger = logger;
         private readonly IHostEnvironment _env = env;
 
+        private static readonly Action<ILogger, string, Exception?> _logErrorMessage =
+            LoggerMessage.Define<string>(
+                LogLevel.Error,
+                new EventId(1003, "ErrorMessage"),
+                "{Message}");
+
         public async Task Invoke(HttpContext context)
         {
             try
             {
-                await _next(context);
+                await _next(context).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception caught in middleware");
+                _logErrorMessage(_logger, ex.Message, null);
 
                 var (statusCode, message) = MapExceptionToResponse(ex);
 
@@ -31,7 +37,9 @@ namespace Fullstack.SAXS.Server.Middlewares
                 };
 
                 var json = JsonSerializer.Serialize(errorResponse);
-                await context.Response.WriteAsync(json);
+                await context.Response
+                    .WriteAsync(json)
+                    .ConfigureAwait(false);
             }
         }
 

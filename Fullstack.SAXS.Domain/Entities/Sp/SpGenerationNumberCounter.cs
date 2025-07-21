@@ -4,29 +4,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Fullstack.SAXS.Domain.Entities.Sp
 {
     [Table("sp_generation_number_counter")]
-    public class SpGenerationNumberCounter
+    public class SpGenerationNumberCounter(int id, long currentNum)
     {
         [Key]
         [Column("id")]
-        public int Id { get; private set; }
+        public int Id { get; private set; } = id;
         [Column("generation_current_number")]
-        public long CurrentNum { get; private set; }
+        public long CurrentNum { get; private set; } = currentNum;
 
         public SpGenerationNumberCounter()
-        {
-            Id = 1;
-            CurrentNum = 0;
-        }
+            : this(1, 0) { }
 
-        public SpGenerationNumberCounter(int id, long currentNum)
-        {
-            Id=id;
-            CurrentNum = currentNum;
-        }
-
-        public void Increase()
-        {
+        public void Increase() =>
             CurrentNum += 1;
-        }
     }
 }

@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Fullstack.SAXS.Persistence.IO
 {
-    public class FileService(IStringService @string) : IFileService
+    public class FileService(IConnectionStrService connectionStrService) : IFileService
     {
         public async Task<Area> ReadAsync(string filePath)
         {
@@ -35,7 +35,7 @@ namespace Fullstack.SAXS.Persistence.IO
 
             List<Particle> particles = [];
 
-            await foreach ( var line in File.ReadLinesAsync(filePath, Encoding.UTF8))
+            await foreach ( var line in File.ReadLinesAsync(filePath, Encoding.UTF8).ConfigureAwait(false))
             {
                 var data = line.Split(';');
 
@@ -64,9 +64,12 @@ namespace Fullstack.SAXS.Persistence.IO
             return new SphereArea(series, outerR, particles);
         }
 
-        public async Task<string> WriteAsync(Area obj, long generationNum)
+        public async Task<string> WriteAsync(Area obj, long GenerationNum)
         {
-            if (obj.Particles is null || obj.Particles.Count() == 0)
+            if (obj == null) 
+                throw new ArgumentNullException(nameof(obj), "Shouldn't be null.");
+
+            if (obj.Particles == null || !obj.Particles.Any())
                 throw new FormatException("Area contains no particles.");
 
             var fileName = string.Join('_', new[] 
@@ -77,20 +80,26 @@ namespace Fullstack.SAXS.Persistence.IO
                 $"{nameof(obj.ParticlesType)}#{obj.ParticlesType}",
             }) + ".csv";
 
-            var folder = Path.Combine(@string.GetCsvFolder(), $"Generation_{generationNum}");
+            var folder = Path.Combine(connectionStrService.GetCsvFolder(), $"Generation_{GenerationNum}");
             Directory.CreateDirectory(folder);
 
             var filePath = Path.Combine(folder, fileName);
 
-            await using var writer = new StreamWriter(filePath, false, Encoding.UTF8);
-
-            foreach (var p in obj.Particles)
+            var writer = new StreamWriter(filePath, false, Encoding.UTF8);
+            try
             {
-                var size = p.Size.ToString(CultureInfo.GetCultureInfo("ru-RU"));
-                var center = p.Center.ToString();
-                var angles = p.RotationAngles.ToString();
+                foreach (var p in obj.Particles)
+                {
+                    var size = p.Size.ToString(CultureInfo.GetCultureInfo("ru-RU"));
+                    var center = p.Center.ToString();
+                    var angles = p.RotationAngles.ToString();
 
-                await writer.WriteLineAsync($"{size};{center};{angles}");
+                    await writer.WriteLineAsync($"{size};{center};{angles}").ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await writer.DisposeAsync().ConfigureAwait(false);
             }
 
             return filePath;
@@ -98,6 +107,9 @@ namespace Fullstack.SAXS.Persistence.IO
 
         public byte[] GetCSVAtoms(Area area)
         {
+            if (area == null)
+                throw new ArgumentNullException(nameof(area), "Shouldn't be null.");
+
             var csvLines = new List<string>();
 
             csvLines.AddRange(

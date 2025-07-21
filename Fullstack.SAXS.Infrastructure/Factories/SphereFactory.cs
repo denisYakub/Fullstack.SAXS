@@ -5,10 +5,10 @@ namespace Fullstack.SAXS.Infrastructure.Factories
 {
     public class SphereFactory : AreaFactory
     {
-        public override IEnumerable<Area> GetAreas(double areaSize, int number, double maxParticleSize)
+        public override IEnumerable<Area> GetAreas(double areaSize, int number)
         {
             for (int i = 0; i < number; i++) 
-                yield return new SphereArea(i, areaSize, maxParticleSize);
+                yield return new SphereArea(i, areaSize);
         }
     }
 }

@@ -4,31 +4,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Fullstack.SAXS.Domain.Entities.Sp
 {
     [Table("sp_data")]
-    public class SpData
+    public class SpData(Guid id, string path)
     {
         [Key]
         [Column("id")]
-        public Guid Id { get; private set; }
+        public Guid Id { get; private set; } = id;
         [Column("path")]
-        public string Path { get; private set; }
-        public SpGeneration SpGeneration { get; private set; }
+        public string Path { get; private set; } = path;
 
         public SpData()
-        {
-            Id = Guid.Empty;
-            Path = string.Empty;
-        }
+            : this(Guid.Empty, string.Empty)
+        { }
 
-        public SpData(string path)
-        {
-            Id = Guid.NewGuid();
-            Path = path;
-        }
-
-        public SpData(Guid id, string path)
-        {
-            Id = id;
-            Path = path;
-        }
+        public SpData(string path) 
+            : this(Guid.NewGuid(), path) 
+        { }
     }
 }

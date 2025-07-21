@@ -1,17 +1,18 @@
-﻿using Fullstack.SAXS.Domain.Entities.Particles;
+﻿using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Domain.Entities.Particles;
 
 namespace Fullstack.SAXS.Domain.Entities.Octrees
 {
     public class OctreeWithContainingBoxes : IOctree
     {
-        class Node(BoundingBox box)
+        private sealed class Node(BoundingBox box)
         {
             public Guid Id { get; } = Guid.NewGuid();
             public BoundingBox Box { get; } = box;
         }
 
         private Node[] _children;
-        private ICollection<(Particle particle, List<Guid> boxs)> _objects;
+        private List<(Particle particle, List<Guid> boxs)> _objects;
 
         public OctreeWithContainingBoxes(double outerRadius)
         {

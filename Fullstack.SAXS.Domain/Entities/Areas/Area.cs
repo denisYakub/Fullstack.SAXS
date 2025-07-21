@@ -1,65 +1,49 @@
-﻿using Fullstack.SAXS.Domain.Entities.Octrees;
+﻿using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
 
 namespace Fullstack.SAXS.Domain.Entities.Areas
 {
-    public abstract class Area
+    public abstract class Area(int series, ICollection<Particle> particles)
     {
-        public readonly int Series;
+        public int Series { get; init; } = series;
 
-        private static readonly int _retryToFillMax = 1_000;
+        private const int _retryToFillMax = 1_000;
 
-        private ICollection<Particle>? _particles;
-
-        public IEnumerable<Particle>? Particles 
+        public IEnumerable<Particle> Particles 
         { 
             get
             {
-                if (_particles != null)
-                    return _particles;
+                if (particles.Count > 0)
+                    return particles;
 
-                if (Octree != null)
-                    return Octree.GetAll();
-
-                return null;
+                return Octree.GetAll();
             }
         }
-        public ParticleTypes? ParticlesType 
+        public ParticleTypes ParticlesType 
         {
             get
             {
-                if (_particles != null)
-                    return _particles.First().ParticleType;
+                if (particles.Count > 0)
+                    return particles.First().ParticleType;
 
-                if (Octree != null)
-                    return Octree.GetAll().First().ParticleType;
-
-                return null;
+                return Octree.GetAll().First().ParticleType;
             }
         }
 
         public abstract double OuterRadius { get; }
         public abstract AreaTypes AreaType { get; }
-        protected abstract IOctree? Octree { get; }
-
-        protected Area(int series)
-        {
-            Series = series;
-        }
-
-        protected Area(int series, ICollection<Particle>? particles)
-        {
-            Series = series;
-            _particles = particles;
-        }
+        protected abstract IOctree Octree { get; }
 
         public abstract bool Contains(Particle particle);
 
         public void Fill(IEnumerable<Particle> infParticles, int particleNumber)
         {
-            if (_particles != null && Octree == null)
+            if (particles.Count > 0)
                 return;
+
+            if (infParticles == null)
+                throw new ArgumentNullException(nameof(infParticles), "Should be init.");
 
             var retryCount = 0;
             var particleCount = 0;

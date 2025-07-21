@@ -30,13 +30,15 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpGet("systems/{id}/atoms-coordinates")]
         public async Task<IActionResult> GetCoordinatesOfAtoms([FromRoute] Guid id)
         {
-            var csv = await mediator.Send(new GetAllAtomsQuery(id));
+            var csv = await mediator
+                .Send(new GetAllAtomsQuery(id))
+                .ConfigureAwait(false);
 
             return File(csv, "text/csv", "vertices.csv");
         }
 
         [HttpPost("q-values")]
-        public IActionResult GetQI([FromBody] CreateIntensOptRequest request)
+        public static IActionResult GetQI([FromBody] CreateIntensOptRequest request)
         {
             var qI = SysService.CreateQs(request.QMin, request.QMax, request.QNum);
 

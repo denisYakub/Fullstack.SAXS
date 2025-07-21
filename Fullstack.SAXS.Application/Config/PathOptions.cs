@@ -2,8 +2,8 @@
 {
     public class PathOptions
     {
-        public string CsvFolder { get; set; }
-        public string GraphUriPath { get; set; }
-        public string PythonServerFilePath { get; set; }
+        public required string CsvFolder { get; set; }
+        public required Uri GraphUriPath { get; set; }
+        public required string PythonServerFilePath { get; set; }
     }
 }

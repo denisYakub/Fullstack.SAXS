@@ -8,24 +8,28 @@ namespace Fullstack.SAXS.Domain.ValueObjects
     /// NutatioAngle - Betta
     /// ProperRotationAngle - Gamma
     /// </summary>
-    public readonly struct EulerAngles
+    public readonly struct EulerAngles : IEquatable<EulerAngles>
     {
-        public readonly double PraecessioAngle;
-        public readonly double NutatioAngle;
-        public readonly double ProperRotationAngle;
+        private readonly double praecessioAngle;
+        private readonly double nutatioAngle;
+        private readonly double properRotationAngle;
+
+        public double PraecessioAngle => praecessioAngle;
+        public double NutatioAngle => nutatioAngle;
+        public double ProperRotationAngle => properRotationAngle;
 
         public EulerAngles(double alpha, double betta, double gamma)
         {
-            PraecessioAngle = alpha;
-            NutatioAngle = betta;
-            ProperRotationAngle = gamma;
+            praecessioAngle = alpha;
+            nutatioAngle = betta;
+            properRotationAngle = gamma;
         }
 
         public Matrix4x4D CreateRotationMatrix()
         {
-            var alpha = Math.PI * PraecessioAngle / 180.0;
-            var beta = Math.PI * NutatioAngle / 180.0;
-            var gamma = Math.PI * ProperRotationAngle / 180.0;
+            var alpha = Math.PI * praecessioAngle / 180.0;
+            var beta = Math.PI * nutatioAngle / 180.0;
+            var gamma = Math.PI * properRotationAngle / 180.0;
 
             var rotationX = Matrix4x4D.CreateRotationX(alpha);
             var rotationY = Matrix4x4D.CreateRotationY(beta);
@@ -36,7 +40,7 @@ namespace Fullstack.SAXS.Domain.ValueObjects
 
         public override string ToString()
         {
-            return $"<{PraecessioAngle} {NutatioAngle} {ProperRotationAngle}>";
+            return $"<{praecessioAngle} {nutatioAngle} {properRotationAngle}>";
         }
 
         public static EulerAngles Parse(string s)
@@ -79,6 +83,40 @@ namespace Fullstack.SAXS.Domain.ValueObjects
             {
                 throw new OverflowException("One or more values are too large or too small.", ex);
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is EulerAngles other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 31 + praecessioAngle.GetHashCode();
+                hash = hash * 31 + nutatioAngle.GetHashCode();
+                hash = hash * 31 + properRotationAngle.GetHashCode();
+                return hash;
+            }
+        }
+
+        public static bool operator ==(EulerAngles left, EulerAngles right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(EulerAngles left, EulerAngles right)
+        {
+            return !(left == right);
+        }
+
+        public bool Equals(EulerAngles other)
+        {
+            return praecessioAngle == other.praecessioAngle &&
+                nutatioAngle == other.nutatioAngle &&
+                properRotationAngle == other.properRotationAngle;
         }
     }
 }

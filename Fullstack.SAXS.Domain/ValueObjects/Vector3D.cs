@@ -2,7 +2,7 @@
 
 namespace Fullstack.SAXS.Domain.ValueObjects
 {
-    public readonly struct Vector3D
+    public readonly struct Vector3D : IEquatable<Vector3D>
     {
         private readonly double x, y, z;
 
@@ -158,6 +158,53 @@ namespace Fullstack.SAXS.Domain.ValueObjects
             {
                 throw new OverflowException("One or more values are too large or too small.", ex);
             }
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is Vector3D other && Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 17;
+                hash = hash * 31 + x.GetHashCode();
+                hash = hash * 31 + y.GetHashCode();
+                hash = hash * 31 + z.GetHashCode();
+                return hash;
+            }
+        }
+
+        public static bool operator ==(Vector3D left, Vector3D right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(Vector3D left, Vector3D right)
+        {
+            return !(left == right);
+        }
+
+        public bool Equals(Vector3D other)
+        {
+            return x == other.x && y == other.y && z == other.z;
+        }
+
+        public static Vector3D Add(Vector3D left, Vector3D right)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Vector3D Subtract(Vector3D left, Vector3D right)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static Vector3D Multiply(Vector3D left, Vector3D right)
+        {
+            throw new NotImplementedException();
         }
     }
 

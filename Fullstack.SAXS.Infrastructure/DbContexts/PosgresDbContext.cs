@@ -13,12 +13,6 @@ namespace Fullstack.SAXS.Infrastructure.DbContexts
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-
-            builder
-                .Entity<SpGeneration>()
-                .HasOne(gen => gen.SpData)
-                .WithOne(data => data.SpGeneration)
-                .HasForeignKey<SpGeneration>(gen => gen.IdSpData);
         }
     }
 }

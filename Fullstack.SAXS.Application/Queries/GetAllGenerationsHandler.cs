@@ -7,7 +7,12 @@ namespace Fullstack.SAXS.Application.Queries
     {
         public async Task<string> Handle(GetAllGenerationsQuery request, CancellationToken cancellationToken)
         {
-            var json = await spService.GetAllAsync(request.UserId);
+            if (request == null)
+                throw new ArgumentNullException(nameof(request), "Shouldn't be null.");
+
+            var json = await spService
+                .GetAllAsync(request.UserId)
+                .ConfigureAwait(false);
 
             return json;
         }

@@ -7,7 +7,12 @@ namespace Fullstack.SAXS.Application.Commands
     {
         public async Task<string> Handle(CreatePhiGraphCommand request, CancellationToken cancellationToken)
         {
-            var html = await sysService.CreatePhiGraphAsync(request.UserId, request.AreaId, request.LayersNumber);
+            if (request == null)
+                throw new ArgumentNullException(nameof(request), "Shouldn't be null.");
+
+            var html = await sysService
+                .CreatePhiGraphAsync(request.UserId, request.AreaId, request.LayersNumber)
+                .ConfigureAwait(false);
 
             return html;
         }

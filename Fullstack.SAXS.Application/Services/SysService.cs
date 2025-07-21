@@ -13,7 +13,10 @@ namespace Fullstack.SAXS.Application.Services
     {
         public async Task CreateAsync(Guid userId, CreateSysData data)
         {
-            var areas = areaF.GetAreas(data.AreaSize, data.AreaNumber, data.ParticleMaxSize).ToArray();
+            if (data == null)
+                throw new ArgumentNullException(nameof(data), "Shouldn't be null.");
+
+            var areas = areaF.GetAreas(data.AreaSize, data.AreaNumber).ToArray();
 
             Parallel.For(0, areas.Length, i => {
                 var infParticles = 
@@ -30,28 +33,45 @@ namespace Fullstack.SAXS.Application.Services
                 areas[i].Fill(infParticles, data.ParticleNumber);
             });
 
-            await storage.AddRangeAsync(areas, userId);
+            await storage
+                .AddRangeAsync(areas, userId)
+                .ConfigureAwait(false);
         }
 
         public async Task<string> CreateIntensOptGraphAsync(Guid id, CreateQIData data)
         {
-            var area = await storage.GetAreaAsync(id);
+            if (data == null)
+                throw new ArgumentNullException(nameof(data), "Shouldn't be null.");
+
+            var area = await storage
+                .GetAreaAsync(id)
+                .ConfigureAwait(false);
+
             var qs = CreateQs(data.QMin, data.QMax, data.QNum, data.StepType);
 
             var (x, y) = CreateIntensOptCoord(area, in qs);
 
-            return await graph.GetHtmlPageAsync(x, y, "Empty", "Empty", "Empty");
+            return await graph
+                .GetHtmlPageAsync(x, y, "Empty", "Empty", "Empty")
+                .ConfigureAwait(false);
         }
 
         public async Task<string> CreatePhiGraphAsync(Guid userId, Guid id, int layersNum)
         {
-            var area = await storage.GetAreaAsync(id);
+            var area = await storage
+                .GetAreaAsync(id)
+                .ConfigureAwait(false);
 
-            var (x, y) = await CreatePhiCoordAsync(area, layersNum);
+            var (x, y) = await CreatePhiCoordAsync(area, layersNum)
+                .ConfigureAwait(false);
 
-            await storage.SaveAvgPhiAsync(userId, id, y.Average());
+            await storage
+                .SaveAvgPhiAsync(userId, id, y.Average())
+                .ConfigureAwait(false);
 
-            return await graph.GetHtmlPageAsync(x, y, "Layers", "Density", "Phi");
+            return await graph
+                .GetHtmlPageAsync(x, y, "Layers", "Density", "Phi")
+                .ConfigureAwait(false);
         }
 
         public static double[] CreateQs(double QMin, double QMax, int QNum, StepTypes StepType = StepTypes.Linear)
@@ -104,14 +124,14 @@ namespace Fullstack.SAXS.Application.Services
 
             for (int i = 0; i < segmentTasks.Length; i++)
             {
-                var (segmentPoint, segmentParticlePoints) = await segmentTasks[i];
+                var (segmentPoint, segmentParticlePoints) = await segmentTasks[i].ConfigureAwait(false);
 
                 double phi = segmentParticlePoints / (double)segmentPoint;
 
                 phiValues[i].value = phi;
             }
 
-            var result = phiValues.Select((phi, index) => (index, phi.value));
+            var result = phiValues.Select((phi, index) => (index, phi.value)).ToList();
 
             return (
                 result.Select(x => (double)x.index).ToArray(),
@@ -219,10 +239,28 @@ namespace Fullstack.SAXS.Application.Services
             IEnumerable<double> localVolume,
             Area area)
         {
-            int qNum = qs.Count();
-            int fullereneNum = area.Particles.Count();
+            if (qs == null)
+                throw new ArgumentNullException(nameof(qs), "Shouldn't be null.");
 
-            Span<double> localVolumeSqr = localVolume.Select(v => Math.Pow(v, 2)).ToArray();
+            if (globalVolume == null)
+                throw new ArgumentNullException(nameof(globalVolume), "Shouldn't be null.");
+
+            if (tmpConst == null)
+                throw new ArgumentNullException(nameof(tmpConst), "Shouldn't be null.");
+
+            if (localVolume == null)
+                throw new ArgumentNullException(nameof(localVolume), "Shouldn't be null.");
+
+            var qsArr = qs.ToArray();
+            var localVolumeArr = localVolume.ToArray();
+            var tmpConstArr = tmpConst.ToArray();
+            var globalVolumeArr = globalVolume.ToArray();
+            var areaParticlesArr = area.Particles.ToArray();
+
+            int qNum = qsArr.Length;
+            int fullereneNum = areaParticlesArr.Length;
+
+            Span<double> localVolumeSqr = localVolumeArr.Select(v => Math.Pow(v, 2)).ToArray();
 
             var qR = new FloatMatrix(new double[qNum * fullereneNum], fullereneNum);
             var factorConst = new FloatMatrix(new double[qNum * fullereneNum], fullereneNum);
@@ -231,7 +269,7 @@ namespace Fullstack.SAXS.Application.Services
             for (int i = 0; i < qNum; i++)
                 for (int j = 0; j < fullereneNum; j++)
                 {
-                    qR[i, j] = qs.ElementAt(i) * area.Particles.ElementAt(j).OuterSphereRadius;
+                    qR[i, j] = qsArr[i] * areaParticlesArr[j].OuterSphereRadius;
                     factorConst[i, j] = Factor(qR[i, j]);
                     factorSqr[i, j] = factorConst[i, j] * factorConst[i, j];
                 }
@@ -243,7 +281,7 @@ namespace Fullstack.SAXS.Application.Services
                 for (int j = 0; j < fullereneNum; j++)
                 {
                     s2[i] += factorSqr[i, j] * localVolumeSqr[j];
-                    spFirstSummand[i] += localVolume.ElementAt(j) * factorConst[i, j] * Sinc(qs.ElementAt(i) * tmpConst.ElementAt(j));
+                    spFirstSummand[i] += localVolumeArr[j] * factorConst[i, j] * Sinc(qsArr[i] * tmpConstArr[j]);
                 }
 
             Span<double> spFactors = new double[qNum];
@@ -251,14 +289,14 @@ namespace Fullstack.SAXS.Application.Services
             for (int i = 0; i < fullereneNum; i++)
                 for (int j = i + 1; j < fullereneNum; j++)
                 {
-                    var dist = Vector3D.Distance(area.Particles.ElementAt(i).Center, area.Particles.ElementAt(j).Center);
-                    var vol = localVolume.ElementAt(j) * localVolume.ElementAt(i);
+                    var dist = Vector3D.Distance(areaParticlesArr[i].Center, areaParticlesArr[j].Center);
+                    var vol = localVolumeArr[j] * localVolumeArr[i];
 
                     for (int k = 0; k < qNum; k++)
-                        spFactors[k] += factorConst[k, i] * factorConst[k, j] * Sinc(qs.ElementAt(k) * dist) * vol;
+                        spFactors[k] += factorConst[k, i] * factorConst[k, j] * Sinc(qsArr[k] * dist) * vol;
                 }
 
-            Span<double> spGlobalArray = globalVolume.ToArray();
+            Span<double> spGlobalArray = globalVolumeArr;
 
             var I = new double[qNum];
 

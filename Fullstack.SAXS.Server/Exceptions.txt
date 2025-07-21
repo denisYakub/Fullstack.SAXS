@@ -4,6 +4,7 @@ NotSupportedException:
 ArgumentNullException
 - Input string cannot be null.
 - Particle factory resolver does not contains factories.
+- Shouldn't be null.
 
 FormatException
 - Input must start with '<' and end with '>'.

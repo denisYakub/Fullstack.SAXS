@@ -7,7 +7,6 @@ using Fullstack.SAXS.Application.Services;
 using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Infrastructure.DbContexts;
 using Fullstack.SAXS.Infrastructure.Factories;
-using Fullstack.SAXS.Infrastructure.Kafka;
 using Fullstack.SAXS.Infrastructure.Repositories;
 using Fullstack.SAXS.Persistence.HTML;
 using Fullstack.SAXS.Persistence.IO;
@@ -27,8 +26,7 @@ builder.Services
     .AddSingleton<ParticleFactory, C70Factory>()
     .AddSingleton<ParticleFactory, C240Factory>()
     .AddSingleton<ParticleFactory, C540Factory>()
-    .AddSingleton<IEventPublisher, Producer>()
-    .AddSingleton<IStringService, StringService>()
+    .AddSingleton<IConnectionStrService, ConnectionStrService>()
     .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
     .AddSingleton<IHostedService, PythonProcessHostedService>()
     .AddScoped<ISysService, SysService>()

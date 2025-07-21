@@ -11,34 +11,45 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
     {
         public async Task AddRangeAsync(IEnumerable<Area> entities, Guid idUser)
         {
+            if (entities == null)
+                throw new ArgumentNullException(nameof(entities), "Shouldn't be null.");
+
+            var entityList = entities.ToList();
+
             var genNum = GetGenNum();
 
-            for (var i = 0; i < entities.Count(); i++)
+            for (var i = 0; i < entityList.Count; i++)
             {
-                var path = await file.WriteAsync(entities.ElementAt(i), genNum);
+                var path = await file
+                    .WriteAsync(entityList.ElementAt(i), genNum)
+                    .ConfigureAwait(false);
 
                 var data = new SpData(path);
 
-                var entity = entities.ElementAt(i);
+                var entity = entityList.ElementAt(i);
 
                 var gen =
                     new SpGeneration(
                         idUser,
                         genNum, entity.Series,
                         entity.AreaType,
-                        entity.ParticlesType ?? 0,
+                        entity.ParticlesType,
                         entity.OuterRadius, 
                         null, entity.Particles.Count(),
                         data.Id
                     );
 
-                await postgres.Datas.AddAsync(data);
-                await postgres.Generations.AddAsync(gen);
+                await postgres.Datas
+                    .AddAsync(data)
+                    .ConfigureAwait(false);
+                await postgres.Generations
+                    .AddAsync(gen)
+                    .ConfigureAwait(false);
 
             }
 
 
-            await postgres.SaveChangesAsync();
+            await postgres.SaveChangesAsync().ConfigureAwait(false);
         }
 
         public async Task<string> GetAllGenerationsAsync()
@@ -55,19 +66,24 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                     g.ParticleNum,
                     g.IdSpData
                 })
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             return JsonSerializer.Serialize(gens);
         }
 
         public async Task<Area> GetAreaAsync(Guid id)
         {
-            var path = await postgres.Datas.FirstOrDefaultAsync(d => d.Id == id);
+            var path = await postgres.Datas
+                .FirstOrDefaultAsync(d => d.Id == id)
+                .ConfigureAwait(false);
 
             if (path == null)
                 throw new KeyNotFoundException($"No data found with ID: {id}.");
 
-            return await file.ReadAsync(path.Path);
+            return await file
+                .ReadAsync(path.Path)
+                .ConfigureAwait(false);
         }
 
         public async Task<string> GetGenerationsAsync(Guid idUser)
@@ -85,7 +101,8 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                     g.ParticleNum,
                     g.IdSpData
                 })
-                .ToListAsync();
+                .ToListAsync()
+                .ConfigureAwait(false);
 
             return JsonSerializer.Serialize(gens);
         }
@@ -94,11 +111,14 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
         {
             var generation = await postgres
                 .Generations
-                .FirstAsync(g => g.IdSpData == id && g.IdUser == idUser);
+                .FirstAsync(g => g.IdSpData == id && g.IdUser == idUser)
+                .ConfigureAwait(false);
 
             generation.ChangePhi(phi);
 
-            await postgres.SaveChangesAsync();
+            await postgres
+                .SaveChangesAsync()
+                .ConfigureAwait(false);
         }
 
         private long GetGenNum()

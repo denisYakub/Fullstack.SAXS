@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using Fullstack.SAXS.Application.Commands;
-using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Application.Queries;
 using Fullstack.SAXS.Domain.Models;
 using Fullstack.SAXS.Server.Contracts;
@@ -42,7 +41,9 @@ namespace Fullstack.SAXS.Server.Controllers
                 request.ParticleGammaRotation
             );
 
-            await mediator.Send(new CreateSystemCommand(UserId, dto));  
+            await mediator
+                .Send(new CreateSystemCommand(UserId, dto))
+                .ConfigureAwait(false);  
 
             return new OkResult();
         }
@@ -50,7 +51,9 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpGet("systems/{id}")]
         public async Task<IActionResult> GetSys([FromRoute] Guid id)
         {
-            var json = await mediator.Send(new GetSystemQuery(id));
+            var json = await mediator
+                .Send(new GetSystemQuery(id))
+                    .ConfigureAwait(false);
 
             return new OkObjectResult(json);
         }
@@ -58,7 +61,9 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpPost("systems/{id}/graphs/phi")]
         public async Task<IActionResult> CreateSysPhiGraph([FromRoute] Guid id, [FromQuery] int layersNum = 5)
         {
-            var html = await mediator.Send(new CreatePhiGraphCommand(UserId, id, layersNum));
+            var html = await mediator
+                .Send(new CreatePhiGraphCommand(UserId, id, layersNum))
+                .ConfigureAwait(false);
 
             return new ContentResult() { Content = html, ContentType = "text/html" };
         }
@@ -71,7 +76,9 @@ namespace Fullstack.SAXS.Server.Controllers
                 request.QNum,
                 request.StepType
             );
-            var html = await mediator.Send(new CreateIntenseOptGraphCommand(id, dto));
+            var html = await mediator
+                .Send(new CreateIntenseOptGraphCommand(id, dto))
+                .ConfigureAwait(false);
 
             return new ContentResult() { Content = html, ContentType = "text/html" };
         }
@@ -79,7 +86,9 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpGet("generations")]
         public async Task<IActionResult> GetGenerations()
         {
-            var json = await mediator.Send(new GetAllGenerationsQuery());
+            var json = await mediator
+                .Send(new GetAllGenerationsQuery())
+                .ConfigureAwait(false);
 
             return new OkObjectResult(json);
         }
@@ -87,7 +96,9 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpGet("users/me/generations")]
         public async Task<IActionResult> GetMyGenerations()
         {
-            var json = await mediator.Send(new GetAllGenerationsQuery(UserId));
+            var json = await mediator
+                .Send(new GetAllGenerationsQuery(UserId))
+                .ConfigureAwait(false);
 
             return new OkObjectResult(json);
         }

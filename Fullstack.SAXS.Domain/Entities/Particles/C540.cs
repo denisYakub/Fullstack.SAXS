@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fullstack.SAXS.Domain.Enums;
+﻿using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Domain.Entities.Particles
@@ -18,7 +13,7 @@ namespace Fullstack.SAXS.Domain.Entities.Particles
 
         public override ParticleTypes ParticleType => ParticleTypes.C540;
 
-        protected override int[][] Faces => _faces;
+        protected override IReadOnlyCollection<int[]> Faces => _faces;
 
         private readonly double _outerR;
         private readonly double _innerR;

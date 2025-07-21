@@ -16,7 +16,7 @@ namespace Fullstack.SAXS.Persistence.Tests
         [SetUp]
         public void Setup()
         {
-            var strServiceMock = new Mock<IStringService>();
+            var strServiceMock = new Mock<IConnectionStrService>();
 
             var folder = Path.Combine(
                 AppContext.BaseDirectory,
@@ -47,7 +47,7 @@ namespace Fullstack.SAXS.Persistence.Tests
         public async Task Write_AreaWithParticles_ReturnFilePath()
         {
             // Arrange
-            var area = new SphereArea(1, 100, 5);
+            var area = new SphereArea(1, 100);
 
             Particle[] particles = [
                 new IcosahedronParticle(5, new (0, 0, 0), new (360, 360, 360)),
@@ -68,7 +68,7 @@ namespace Fullstack.SAXS.Persistence.Tests
         public async Task Write_AreaWithoutParticles_ReturnFilePath()
         {
             // Arrange
-            var area = new SphereArea(0, 100, 5);
+            var area = new SphereArea(0, 100);
 
             // Act
             var file = await _fileService.WriteAsync(area, 0);

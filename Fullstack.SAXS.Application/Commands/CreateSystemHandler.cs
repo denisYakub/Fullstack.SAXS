@@ -8,7 +8,12 @@ namespace Fullstack.SAXS.Application.Commands
     {
         public async Task Handle(CreateSystemCommand request, CancellationToken cancellationToken)
         {
-            await sysService.CreateAsync(request.UserId, request.Data);
+            if (request == null)
+                throw new ArgumentNullException(nameof(request), "Shouldn't be null.");
+
+            await sysService
+                .CreateAsync(request.UserId, request.Data)
+                .ConfigureAwait(false);
 
             var eventPayload = JsonSerializer.Serialize(new
             {

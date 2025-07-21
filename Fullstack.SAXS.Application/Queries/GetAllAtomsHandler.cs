@@ -7,7 +7,12 @@ namespace Fullstack.SAXS.Application.Queries
     {
         public async Task<byte[]> Handle(GetAllAtomsQuery request, CancellationToken cancellationToken)
         {
-            var json = await spService.GetAtomsAsync(request.AreaId);
+            if (request == null)
+                throw new ArgumentNullException(nameof(request), "Shouldn't be null.");
+
+            var json = await spService
+                .GetAtomsAsync(request.AreaId)
+                .ConfigureAwait(false);
 
             return json;
         }

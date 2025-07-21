@@ -5,41 +5,44 @@ using Fullstack.SAXS.Domain.Enums;
 namespace Fullstack.SAXS.Domain.Entities.Sp
 {
     [Table("sp_generation")]
-    public class SpGeneration
+    public class SpGeneration(
+        Guid id, Guid idUser,
+        long genNum, int seriesNum,
+        string areaType, string particleType,
+        double areaOuterRadius, double? phi, int particleNum,
+        Guid idSpData
+    )
     {
         [Key]
         [Column("id")]
-        public Guid Id { get; private set; }
+        public Guid Id { get; private set; } = id;
         [Column("id_user")]
-        public Guid IdUser { get; private set; }
+        public Guid IdUser { get; private set; } = idUser;
         [Column("generation_number")]
-        public long GenNum { get; private set; }
+        public long GenNum { get; private set; } = genNum;
         [Column("series_number")]
-        public int SeriesNum { get; private set; }
+        public int SeriesNum { get; private set; } = seriesNum;
         [Column("area_type")]
-        public string AreaType { get; private set; }
+        public string AreaType { get; private set; } = areaType;
         [Column("particle_type")]
-        public string ParticleType { get; private set; }
+        public string ParticleType { get; private set; } = particleType;
         [Column("area_outer_radius")]
-        public double AreaOuterRadius { get; private set; }
+        public double AreaOuterRadius { get; private set; } = areaOuterRadius;
         [Column("phi")]
-        public double? Phi { get; private set; }
+        public double? Phi { get; private set; } = phi;
         [Column("particle_number")]
-        public int ParticleNum { get; private set; }
+        public int ParticleNum { get; private set; } = particleNum;
         [Column("id_sp_data")]
-        public Guid IdSpData { get; private set; }
-        [ForeignKey(nameof(IdSpData))]
-        public SpData? SpData { get; private set; }
+        public Guid IdSpData { get; private set; } = idSpData;
 
-        public SpGeneration() : this (
-            Guid.Empty, Guid.Empty,
-            -1, -1,
-            string.Empty, string.Empty,
-            0, 0, 0, Guid.Empty
-        )
-        {
-
-        }
+        public SpGeneration() 
+            : this (
+                  Guid.Empty, Guid.Empty, 
+                  -1, -1, string.Empty, 
+                  string.Empty, 0, 0, 0, 
+                  Guid.Empty
+            )
+        { }
 
         public SpGeneration(
             Guid idUser,
@@ -53,29 +56,7 @@ namespace Fullstack.SAXS.Domain.Entities.Sp
             areaType.ToString(), particleType.ToString(), 
             areaOuterRadius, phi, particleNum, idSpData
         )
-        {
-
-        }
-
-        public SpGeneration(
-            Guid id, Guid idUser,
-            long genNum, int seriesNum,
-            string areaType, string particleType,
-            double areaOuterRadius, double? phi, int particleNum,
-            Guid idSpData
-        )
-        {
-            Id = id;
-            IdUser = idUser;
-            GenNum = genNum;
-            SeriesNum = seriesNum;
-            AreaType = areaType;
-            ParticleType = particleType;
-            AreaOuterRadius = areaOuterRadius;
-            Phi = phi;
-            ParticleNum = particleNum;
-            IdSpData = idSpData;
-        }
+        { }
 
         public void ChangePhi(double phi)
         {
