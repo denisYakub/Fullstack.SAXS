@@ -1,4 +1,4 @@
-const REDIRECT_PAGE = 'https://localhost:7135/Identity/Account/Login';
+const REDIRECT_PAGE = import.meta.env.VITE_REDIRECT_URL + ':' + import.meta.env.VITE_REDIRECT_PORT + '/Identity/Account/Login';
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
 function checkResponse(res) {

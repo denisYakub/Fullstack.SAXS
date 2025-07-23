@@ -30,7 +30,7 @@ export default function Header() {
                     Mine
                 </Link>
                 <Link
-                    to="https://localhost:7135/Identity/Account/Login"
+                    to={import.meta.env.VITE_REDIRECT_URL + ':' + import.meta.env.VITE_REDIRECT_PORT + '/Identity/Account/Login'}
                     className="text-lg font-medium hover:text-indigo-400 transition-colors"
                 >
                     Account
