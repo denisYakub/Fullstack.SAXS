@@ -3,7 +3,7 @@ using Fullstack.SAXS.Domain.Entities.Areas;
 
 namespace Fullstack.SAXS.Infrastructure.Factories
 {
-    public class SphereFactory : AreaFactory
+    public class SphereAreaFactory : AreaFactory
     {
         public override IEnumerable<Area> GetAreas(double areaSize, int number)
         {

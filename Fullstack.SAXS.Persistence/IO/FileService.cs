@@ -80,7 +80,7 @@ namespace Fullstack.SAXS.Persistence.IO
                 $"{nameof(obj.ParticlesType)}#{obj.ParticlesType}",
             }) + ".csv";
 
-            var folder = Path.Combine(connectionStrService.GetCsvFolder(), $"Generation_{GenerationNum}");
+            var folder = Path.Combine(connectionStrService.GetStoragePath(), $"Generation_{GenerationNum}");
             Directory.CreateDirectory(folder);
 
             var filePath = Path.Combine(folder, fileName);
@@ -105,7 +105,7 @@ namespace Fullstack.SAXS.Persistence.IO
             return filePath;
         }
 
-        public byte[] GetCSVAtoms(Area area)
+        public byte[] SaveAtoms(Area area)
         {
             if (area == null)
                 throw new ArgumentNullException(nameof(area), "Shouldn't be null.");

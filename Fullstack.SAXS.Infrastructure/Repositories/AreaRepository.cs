@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fullstack.SAXS.Infrastructure.Repositories
 {
-    public class AreaRepository(IFileService file, PosgresDbContext postgres) : IStorage
+    public class AreaRepository(IFileService fileService, PosgresDbContext postgres) : IStorage
     {
         public async Task AddRangeAsync(IEnumerable<Area> entities, Guid idUser)
         {
@@ -20,7 +20,7 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
 
             for (var i = 0; i < entityList.Count; i++)
             {
-                var path = await file
+                var path = await fileService
                     .WriteAsync(entityList.ElementAt(i), genNum)
                     .ConfigureAwait(false);
 
@@ -47,8 +47,6 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
                     .ConfigureAwait(false);
 
             }
-
-
             await postgres.SaveChangesAsync().ConfigureAwait(false);
         }
 
@@ -72,21 +70,21 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
             return JsonSerializer.Serialize(gens);
         }
 
-        public async Task<Area> GetAreaAsync(Guid id)
+        public async Task<Area> GetAreaAsync(Guid idArea)
         {
             var path = await postgres.Datas
-                .FirstOrDefaultAsync(d => d.Id == id)
+                .FirstOrDefaultAsync(d => d.Id == idArea)
                 .ConfigureAwait(false);
 
             if (path == null)
-                throw new KeyNotFoundException($"No data found with ID: {id}.");
+                throw new KeyNotFoundException($"No data found with ID: {idArea}.");
 
-            return await file
+            return await fileService
                 .ReadAsync(path.Path)
                 .ConfigureAwait(false);
         }
 
-        public async Task<string> GetGenerationsAsync(Guid idUser)
+        public async Task<string> GetAllGenerationsAsync(Guid idUser)
         {
             var gens = await postgres.Generations
                 .Where(g => g.IdUser == idUser)
@@ -107,14 +105,14 @@ namespace Fullstack.SAXS.Infrastructure.Repositories
             return JsonSerializer.Serialize(gens);
         }
 
-        public async Task SaveAvgPhiAsync(Guid idUser, Guid id, double phi)
+        public async Task UpdateAvgPhiAsync(Guid idUser, Guid idArea, double avgPhi)
         {
             var generation = await postgres
                 .Generations
-                .FirstAsync(g => g.IdSpData == id && g.IdUser == idUser)
+                .FirstAsync(g => g.IdSpData == idArea && g.IdUser == idUser)
                 .ConfigureAwait(false);
 
-            generation.ChangePhi(phi);
+            generation.ChangePhi(avgPhi);
 
             await postgres
                 .SaveChangesAsync()

@@ -2,8 +2,8 @@
 {
     public interface IConnectionStrService
     {
-        string GetCsvFolder();
-        Uri GetPythonServerUri();
-        string GetPythonServerExePath();
+        string GetStoragePath();
+        Uri GetGraphServerUri();
+        string GetGraphServerFilePath();
     }
 }

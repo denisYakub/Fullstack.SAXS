@@ -21,7 +21,7 @@ builder.Services.Configure<PathOptions>(
 );
 
 builder.Services
-    .AddSingleton<ParticleFactory, IcosahedronFactory>()
+    .AddSingleton<ParticleFactory, IcosahedronParticleFactory>()
     .AddSingleton<ParticleFactory, C60Factory>()
     .AddSingleton<ParticleFactory, C70Factory>()
     .AddSingleton<ParticleFactory, C240Factory>()
@@ -34,7 +34,7 @@ builder.Services
     .AddScoped<IStorage, AreaRepository>()
     .AddScoped<IFileService, FileService>()
     .AddScoped<SysService>()
-    .AddScoped<AreaFactory, SphereFactory>()
+    .AddScoped<AreaFactory, SphereAreaFactory>()
     .AddScoped<IGraphService, GraphService>();
 
 builder.Services.AddMediatR(

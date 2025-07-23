@@ -28,7 +28,7 @@ namespace Fullstack.SAXS.Application.Services
             if (userId.HasValue)
             {
                 return await storage
-                    .GetGenerationsAsync(userId.Value)
+                    .GetAllGenerationsAsync(userId.Value)
                     .ConfigureAwait(false);
             }
             else
@@ -45,7 +45,7 @@ namespace Fullstack.SAXS.Application.Services
                 .GetAreaAsync(id)
                 .ConfigureAwait(false);
 
-            return file.GetCSVAtoms(area);
+            return file.SaveAtoms(area);
         }
     }
 }

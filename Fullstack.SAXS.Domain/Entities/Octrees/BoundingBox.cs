@@ -3,7 +3,7 @@ using Fullstack.SAXS.Domain.ValueObjects;
 
 namespace Fullstack.SAXS.Domain.Entities.Octrees
 {
-    public class BoundingBox
+    internal class BoundingBox
     {
         public double Edge {  get; init; }
         public Vector3D Center { get; init; }

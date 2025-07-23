@@ -6,9 +6,9 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
 {
     public abstract class Area(int series, ICollection<Particle> particles)
     {
-        public int Series { get; init; } = series;
-
         private const int _retryToFillMax = 1_000;
+
+        public int Series { get; init; } = series;
 
         public IEnumerable<Particle> Particles 
         { 
@@ -16,8 +16,11 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
             {
                 if (particles.Count > 0)
                     return particles;
+                
+                if (Octree.GetAll().Any())
+                    return Octree.GetAll();
 
-                return Octree.GetAll();
+                return [];
             }
         }
         public ParticleTypes ParticlesType 
@@ -27,7 +30,10 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
                 if (particles.Count > 0)
                     return particles.First().ParticleType;
 
-                return Octree.GetAll().First().ParticleType;
+                if (Octree.GetAll().Any())
+                    return Octree.GetAll().First().ParticleType;
+
+                return default;
             }
         }
 
@@ -35,28 +41,26 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
         public abstract AreaTypes AreaType { get; }
         protected abstract IOctree Octree { get; }
 
-        public abstract bool Contains(Particle particle);
-
-        public void Fill(IEnumerable<Particle> infParticles, int particleNumber)
+        public void Fill(IEnumerable<Particle> incummingParticles, int maxParticleNumber)
         {
             if (particles.Count > 0)
                 return;
 
-            if (infParticles == null)
-                throw new ArgumentNullException(nameof(infParticles), "Should be init.");
+            if (incummingParticles == null)
+                throw new ArgumentNullException(nameof(incummingParticles), "Should be init.");
 
             var retryCount = 0;
             var particleCount = 0;
 
-            using var particleGenerator = infParticles.GetEnumerator();
+            using var particleGenerator = incummingParticles.GetEnumerator();
             while (particleGenerator.MoveNext())
             {
-                if (retryCount == _retryToFillMax || particleCount == particleNumber)
+                if (retryCount == _retryToFillMax || particleCount == maxParticleNumber)
                     break;
 
                 var particle = particleGenerator.Current;
 
-                if (Contains(particle) && Octree.Add(particle))
+                if (Contains(particle) && Octree.TryToAdd(particle))
                 {
                     particleCount++;
                     retryCount = 0;
@@ -67,5 +71,7 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
                 }
             }
         }
+
+        public abstract bool Contains(Particle particle);
     }
 }

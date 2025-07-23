@@ -4,8 +4,8 @@ namespace Fullstack.SAXS.Domain.Contracts
 {
     public interface IFileService
     {
-        Task<string> WriteAsync(Area obj, long GenerationNum);
+        byte[] SaveAtoms(Area obj);
         Task<Area> ReadAsync(string filePath);
-        byte[] GetCSVAtoms(Area area);
+        Task<string> WriteAsync(Area obj, long GenerationNum);
     }
 }

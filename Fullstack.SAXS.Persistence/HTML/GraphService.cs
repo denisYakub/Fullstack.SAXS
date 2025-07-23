@@ -10,7 +10,7 @@ namespace Fullstack.SAXS.Persistence.HTML
         {
             using var client = new HttpClient()
             {
-                BaseAddress = connectionStrService.GetPythonServerUri()
+                BaseAddress = connectionStrService.GetGraphServerUri()
             };
             using var jsonContent = new StringContent(
                 JsonSerializer.Serialize(

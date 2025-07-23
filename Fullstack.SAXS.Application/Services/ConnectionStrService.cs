@@ -6,10 +6,10 @@ namespace Fullstack.SAXS.Application.Services
 {
     public class ConnectionStrService(IOptions<PathOptions> options) : IConnectionStrService
     {
-        public string GetCsvFolder() => options.Value.CsvFolder;
+        public string GetStoragePath() => options.Value.CsvFolder;
 
-        public Uri GetPythonServerUri() => options.Value.GraphUriPath;
+        public Uri GetGraphServerUri() => options.Value.GraphUriPath;
 
-        public string GetPythonServerExePath() => options.Value.PythonServerFilePath;
+        public string GetGraphServerFilePath() => options.Value.PythonServerFilePath;
     }
 }

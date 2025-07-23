@@ -64,7 +64,7 @@ namespace Fullstack.SAXS.Application.Services
             var start = new ProcessStartInfo
             {
                 FileName = "python",
-                Arguments = $"\"{_scriptPath.GetPythonServerExePath()}\"",
+                Arguments = $"\"{_scriptPath.GetGraphServerFilePath()}\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

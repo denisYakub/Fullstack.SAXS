@@ -4,7 +4,7 @@ namespace Fullstack.SAXS.Domain.Contracts
 {
     public interface IOctree
     {
-        bool Add(Particle particle);
+        bool TryToAdd(Particle particle);
         IEnumerable<Particle> GetAll();
     }
 }

@@ -4,10 +4,10 @@ namespace Fullstack.SAXS.Domain.Contracts
 {
     public interface IStorage
     {
-        Task AddRangeAsync(IEnumerable<Area> entities, Guid idUser);
-        Task<Area> GetAreaAsync(Guid id);
-        Task SaveAvgPhiAsync(Guid idUser, Guid id, double phi);
+        Task<Area> GetAreaAsync(Guid idArea);
         Task<string> GetAllGenerationsAsync();
-        Task<string> GetGenerationsAsync(Guid idUser);
+        Task<string> GetAllGenerationsAsync(Guid idUser);
+        Task AddRangeAsync(IEnumerable<Area> entities, Guid idUser);
+        Task UpdateAvgPhiAsync(Guid idUser, Guid idArea, double avgPhi);
     }
 }

@@ -3,10 +3,10 @@ using Fullstack.SAXS.Domain.Entities.Particles;
 
 namespace Fullstack.SAXS.Domain.Entities.Octrees
 {
-    public class OctreeWithList : IOctree
+    internal class OctreeWithList : IOctree
     {
         private List<Particle> _particles = new (10000);
-        public bool Add(Particle particle)
+        public bool TryToAdd(Particle particle)
         {
             if (particle == null)
                 throw new ArgumentNullException(nameof(particle), "Shouldn't be null.");

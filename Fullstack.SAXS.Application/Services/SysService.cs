@@ -22,7 +22,7 @@ namespace Fullstack.SAXS.Application.Services
                 var infParticles = 
                     prtclFResolver
                     .Resolve(data.particleType)
-                    .GetInfParticles(
+                    .GetParticlesInf(
                         data.ParticleMinSize, data.ParticleMaxSize, 
                         data.ParticleSizeShape, data.ParticleSizeScale, 
                         data.ParticleAlphaRotation, data.ParticleBetaRotation, data.ParticleGammaRotation,
@@ -66,7 +66,7 @@ namespace Fullstack.SAXS.Application.Services
                 .ConfigureAwait(false);
 
             await storage
-                .SaveAvgPhiAsync(userId, id, y.Average())
+                .UpdateAvgPhiAsync(userId, id, y.Average())
                 .ConfigureAwait(false);
 
             return await graph

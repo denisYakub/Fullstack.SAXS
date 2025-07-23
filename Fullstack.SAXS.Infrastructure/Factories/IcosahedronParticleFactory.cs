@@ -7,9 +7,10 @@ using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Infrastructure.Factories
 {
-    public class C540Factory : ParticleFactory
+    public class IcosahedronParticleFactory : ParticleFactory
     {
-        public override ParticleTypes Type => ParticleTypes.C540;
+        public override ParticleTypes Type => 
+            ParticleTypes.Icosahedron;
 
         public override IEnumerable<Particle> GetParticlesInf(CreateParticelData data)
         {
@@ -31,7 +32,7 @@ namespace Fullstack.SAXS.Infrastructure.Factories
                 var y = random.GetEvenlyRandom(data.MinY, data.MaxY);
                 var z = random.GetEvenlyRandom(data.MinZ, data.MaxZ);
 
-                yield return new C540(size, new(x, y, z), new(a, b, g));
+                yield return new IcosahedronParticle(size, new(x, y, z), new(a, b, g));
             }
         }
     }
