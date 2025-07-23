@@ -3,7 +3,6 @@ using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
