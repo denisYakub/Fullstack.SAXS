@@ -18,17 +18,20 @@ namespace Fullstack.SAXS.Application.Services
 
             var areas = areaF.GetAreas(data.AreaSize, data.AreaNumber).ToArray();
 
+            var particlesData = new CreateParticelData(
+                data.ParticleMinSize, data.ParticleMaxSize,
+                data.ParticleSizeShape, data.ParticleSizeScale,
+                data.ParticleAlphaRotation, data.ParticleBetaRotation, data.ParticleGammaRotation,
+                -data.AreaSize, data.AreaSize,
+                -data.AreaSize, data.AreaSize,
+                -data.AreaSize, data.AreaSize
+            );
+
             Parallel.For(0, areas.Length, i => {
                 var infParticles = 
                     prtclFResolver
                     .Resolve(data.particleType)
-                    .GetParticlesInf(
-                        data.ParticleMinSize, data.ParticleMaxSize, 
-                        data.ParticleSizeShape, data.ParticleSizeScale, 
-                        data.ParticleAlphaRotation, data.ParticleBetaRotation, data.ParticleGammaRotation,
-                        -data.AreaSize, data.AreaSize,
-                        -data.AreaSize, data.AreaSize,
-                        -data.AreaSize, data.AreaSize);
+                    .GetParticlesInf(particlesData);
 
                 areas[i].Fill(infParticles, data.ParticleNumber);
             });
