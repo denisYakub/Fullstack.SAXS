@@ -3,6 +3,13 @@ from flask_cors import CORS
 import matplotlib.pyplot as plt
 import mpld3
 import json
+import sys
+import logging
+
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.INFO)
+log.handlers.clear()
+log.addHandler(logging.StreamHandler(sys.stdout))
 
 app = Flask(__name__)
 CORS(app, resources={

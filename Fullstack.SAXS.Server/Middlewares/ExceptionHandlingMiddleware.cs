@@ -23,7 +23,7 @@ namespace Fullstack.SAXS.Server.Middlewares
             }
             catch (Exception ex)
             {
-                _logErrorMessage(_logger, ex.Message, null);
+                _logErrorMessage(_logger, ex.Message, ex);
 
                 var (statusCode, message) = MapExceptionToResponse(ex);
 

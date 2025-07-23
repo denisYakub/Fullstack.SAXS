@@ -9,50 +9,8 @@ namespace Fullstack.SAXS.Application.Services
     {
         private readonly IConnectionStrService _scriptPath;
         private readonly ILogger<PythonProcessHostedService> _logger;
-        private Process _process;
+        private readonly Process _process;
         private bool _disposed;
-
-        private static readonly Action<ILogger, string, Exception?> _logInfoMessage =
-            LoggerMessage.Define<string>(
-            LogLevel.Information,
-            new EventId(1001, "InfoMessage"),
-            "{Message}");
-
-        private static readonly Action<ILogger, string, Exception?> _logWarningMessage =
-            LoggerMessage.Define<string>(
-                LogLevel.Warning,
-                new EventId(1002, "WarningMessage"),
-                "{Message}");
-
-        private static readonly Action<ILogger, string, Exception?> _logErrorMessage =
-            LoggerMessage.Define<string>(
-                LogLevel.Error,
-                new EventId(1003, "ErrorMessage"),
-                "{Message}");
-
-        private static readonly Action<ILogger, Exception?> _logFlaskStarted =
-            LoggerMessage.Define(
-                LogLevel.Information,
-                new EventId(1004, "FlaskStarted"),
-                "Flask server started.");
-
-        private static readonly Action<ILogger, Exception?> _logFlaskStopping =
-            LoggerMessage.Define(
-                LogLevel.Information,
-                new EventId(1005, "FlaskStopping"),
-                "Flask server stopping...");
-
-        private static readonly Action<ILogger, Exception?> _logFlaskExited =
-            LoggerMessage.Define(
-                LogLevel.Information,
-                new EventId(1006, "FlaskExited"),
-                "Flask server exited.");
-
-        private static readonly Action<ILogger, Exception?> _logFlaskDisposed =
-            LoggerMessage.Define(
-                LogLevel.Information,
-                new EventId(1007, "FlaskDisposed"),
-                "Flask server disposed.");
 
         public PythonProcessHostedService(
             IConnectionStrService scriptPath,
@@ -72,16 +30,18 @@ namespace Fullstack.SAXS.Application.Services
             };
 
             _process = new Process { StartInfo = start };
-            _process.OutputDataReceived += (s, e) => { if (e.Data != null) _logInfoMessage(_logger, e.Data, null); };
+            _process.OutputDataReceived += (s, e) => 
+            { 
+                if (e.Data != null)
+                    if (e.Data.ToLower().Contains("warning"))
+                        LogMessage(_logger, LogLevel.Warning, e.Data);
+                    else
+                        LogMessage(_logger, LogLevel.Information, e.Data); 
+            };
             _process.ErrorDataReceived += (s, e) =>
             {
-                if (string.IsNullOrWhiteSpace(e.Data)) return;
-
-                if (e.Data.Contains("DeprecationWarning", StringComparison.Ordinal) || 
-                    e.Data.Contains("UserWarning", StringComparison.Ordinal))
-                    _logWarningMessage(_logger, e.Data, null);
-                else
-                    _logErrorMessage(_logger, e.Data, null);
+                if (e.Data != null)
+                    LogMessage(_logger, LogLevel.Error, e.Data);
             };
         }
 
@@ -91,7 +51,7 @@ namespace Fullstack.SAXS.Application.Services
             _process.BeginOutputReadLine();
             _process.BeginErrorReadLine();
 
-            _logFlaskStarted(_logger, null);
+            LogMessage(_logger, LogLevel.Information, "Python server started.");
 
             using (stoppingToken.Register(() =>
             {
@@ -107,11 +67,11 @@ namespace Fullstack.SAXS.Application.Services
                 }
                 catch (OperationCanceledException)
                 {
-                    _logFlaskStopping(_logger, null);
+                    LogMessage(_logger, LogLevel.Information, "Python server stopping...");
                 }
             }
 
-            _logFlaskExited(_logger, null);
+            LogMessage(_logger, LogLevel.Information, "Python server exited.");
         }
 
         public override void Dispose()
@@ -126,8 +86,20 @@ namespace Fullstack.SAXS.Application.Services
 
             base.Dispose();
             GC.SuppressFinalize(this);
-            _logFlaskDisposed(_logger, null);
+            LogMessage(_logger, LogLevel.Information, "Python server disposed.");
+        }
+
+        private static void LogMessage(ILogger logger, LogLevel level, string message)
+        {
+            var eventId = level switch
+            {
+                LogLevel.Information => new EventId(1001, "InfoMessage"),
+                LogLevel.Warning => new EventId(1002, "WarningMessage"),
+                LogLevel.Error => new EventId(1003, "ErrorMessage"),
+                _ => new EventId(1000, "GenericMessage")
+            };
+
+            logger.Log(level, eventId, message);
         }
     }
-
 }
