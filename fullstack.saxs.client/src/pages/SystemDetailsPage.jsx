@@ -16,6 +16,7 @@ export default function SystemDetailsPage() {
         qMin: 0.02,
         qMax: 5,
         qNum: 150,
+        stepType: 0
     });
     const [formPhi, setFormPhi] = useState({
         phiNumber: 5,
@@ -52,24 +53,54 @@ export default function SystemDetailsPage() {
 
     async function onSubmitDistributionDensity(e) {
         e.preventDefault();
-        openPhiGraph(id, formPhi.phiNumber)
+        setLoading(true);
+
+        try {
+            await openPhiGraph(id, formPhi.phiNumber);
+        } catch (err) {
+            setShowToast(true);
+            setMessage(err.message || "Can not open graph.");
+            setToastType("error");
+        } finally {
+            setLoading(false);
+        }
     }
 
     async function onSubmitDownloadAtomsCoordinates(e) {
         e.preventDefault();
-        GetAtomsCoord(id);
+        setLoading(true);
+
+        try {
+            await GetAtomsCoord(id);
+        } catch (err) {
+            setShowToast(true);
+            setMessage(err.message || "Can not download atoms coordinates.");
+            setToastType("error");
+        } finally {
+            setLoading(false);
+        }
     }
 
     async function onSubmitDownloadQIVector(e) {
         e.preventDefault();
+        setLoading(true);
 
         const requestBody = {
             QMin: Number(formQ.qMin),
             QMax: Number(formQ.qMax),
-            QNum: Number(formQ.qNum)
+            QNum: Number(formQ.qNum),
+            StepType: Number(formQ.stepType)
         };
 
-        GetQI(requestBody);
+        try {
+            await GetQI(requestBody);
+        } catch (err) {
+            setShowToast(true);
+            setMessage(err.message || "Can not download QI.");
+            setToastType("error");
+        } finally {
+            setLoading(false);
+        }
     }
 
     if (loading) return <LoadingPage />;

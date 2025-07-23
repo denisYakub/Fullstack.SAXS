@@ -38,7 +38,7 @@ namespace Fullstack.SAXS.Server.Controllers
         }
 
         [HttpPost("q-values")]
-        public static IActionResult GetQI([FromBody] CreateIntensOptRequest request)
+        public IActionResult GetQI([FromBody] CreateIntensOptRequest request)
         {
             var qI = SysService.CreateQs(request.QMin, request.QMax, request.QNum);
 

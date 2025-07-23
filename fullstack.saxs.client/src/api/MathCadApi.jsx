@@ -34,9 +34,6 @@ export async function GetAtomsCoord(id) {
 }
 
 export async function GetQI(requestBody) {
-
-    console.log(requestBody);
-
     const res = await fetch(
         `${API_BASE}/api/mathcad/q-values`,
         {
