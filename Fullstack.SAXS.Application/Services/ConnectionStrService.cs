@@ -10,6 +10,6 @@ namespace Fullstack.SAXS.Application.Services
 
         public Uri GetGraphServerUri() => options.Value.GraphUriPath;
 
-        public string GetGraphServerFilePath() => options.Value.PythonServerFilePath;
+        public string GetGraphServerFilePath() => options.Value.GraphServerFilePath;
     }
 }
