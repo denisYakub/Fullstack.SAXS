@@ -52,11 +52,7 @@ builder.Services
 
 builder.Services
     .AddControllersWithViews()
-    .AddNewtonsoftJson(options => 
-        options
-        .SerializerSettings
-        .ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-    );
+    .AddNewtonsoftJson();
 
 builder.Services.AddRazorPages();
 
