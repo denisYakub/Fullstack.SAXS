@@ -84,17 +84,18 @@ namespace Fullstack.SAXS.Application.Services
             switch (StepType)
             {
                 case StepTypes.Linear:
+                    double step = (QMax - QMin) / (QNum - 1);
+
                     for (int i = 0; i < QNum; i++)
-                        result[i] = QMin + i * ((QMax - QMin) / QNum - 1);
+                        result[i] = QMin + i * step;
+
                     break;
                 case StepTypes.Logarithmic:
+                    double logStep = Math.Pow(QMax / QMin, 1.0 / (QNum - 1));
+
                     for (int i = 0; i < QNum; i++)
-                    {
-                        var logMin = Math.Log(QMin);
-                        var logMax = Math.Log(QMax);
-                        var t = (double)i / (QNum - 1);
-                        result[i] = Math.Exp(logMin + t * (logMax - logMin));
-                    }
+                        result[i] = QMin * Math.Pow(logStep, i);
+
                     break;
             }
 
