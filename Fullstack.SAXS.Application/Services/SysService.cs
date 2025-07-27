@@ -50,7 +50,7 @@ namespace Fullstack.SAXS.Application.Services
                 .GetAreaAsync(id)
                 .ConfigureAwait(false);
 
-            var qs = CreateQs(data.QMin, data.QMax, data.QNum, data.StepType);
+            var qs = CreateQVector(data.QMin, data.QMax, data.QNum, data.StepType);
 
             var (x, y) = CreateIntensOptCoord(area, in qs);
 
@@ -77,24 +77,25 @@ namespace Fullstack.SAXS.Application.Services
                 .ConfigureAwait(false);
         }
 
-        public static double[] CreateQs(double QMin, double QMax, int QNum, StepTypes StepType = StepTypes.Linear)
+        public static double[] CreateQVector(double QMin, double QMax, int QNum, StepTypes StepType = StepTypes.Linear)
         {
             double[] result = new double[QNum];
+            double step;
 
             switch (StepType)
             {
                 case StepTypes.Linear:
-                    double step = (QMax - QMin) / (QNum - 1);
+                    step = (QMax - QMin) / (QNum - 1);
 
                     for (int i = 0; i < QNum; i++)
                         result[i] = QMin + i * step;
 
                     break;
                 case StepTypes.Logarithmic:
-                    double logStep = Math.Pow(QMax / QMin, 1.0 / (QNum - 1));
+                    step = Math.Pow(QMax / QMin, 1.0 / (QNum - 1));
 
                     for (int i = 0; i < QNum; i++)
-                        result[i] = QMin * Math.Pow(logStep, i);
+                        result[i] = QMin * Math.Pow(step, i);
 
                     break;
             }
