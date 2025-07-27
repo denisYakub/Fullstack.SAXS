@@ -16,7 +16,7 @@ namespace Fullstack.SAXS.Domain.Entities.Areas
         public SphereArea(int series, double radius)
             : this(series, radius, new List<Particle>()) 
         {
-            _octree = new OctreeWithContainingBoxes(radius);
+            _octree = new OctreeWithBoundingBoxIndexes(radius);
         }
 
         public override bool Contains(Particle particle)

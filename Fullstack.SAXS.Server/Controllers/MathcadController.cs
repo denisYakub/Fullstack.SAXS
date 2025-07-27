@@ -40,7 +40,7 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpPost("q-values")]
         public IActionResult GetQI([FromBody] CreateIntensOptRequest request)
         {
-            var qI = SysService.CreateQs(request.QMin, request.QMax, request.QNum, request.StepType);
+            var qI = SysService.CreateQVector(request.QMin, request.QMax, request.QNum, request.StepType);
 
             return new OkObjectResult(qI);
         }
