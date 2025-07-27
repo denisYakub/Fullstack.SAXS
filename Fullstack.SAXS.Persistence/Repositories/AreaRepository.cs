@@ -1,11 +1,11 @@
 ﻿using System.Text.Json;
-using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Sp;
-using Fullstack.SAXS.Infrastructure.DbContexts;
+using Fullstack.SAXS.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fullstack.SAXS.Infrastructure.Repositories
+namespace Fullstack.SAXS.Persistence.Repositories
 {
     public class AreaRepository(IFileService fileService, PosgresDbContext postgres) : IStorage
     {

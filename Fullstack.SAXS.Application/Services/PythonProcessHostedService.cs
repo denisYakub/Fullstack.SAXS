@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Application.Contracts;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

@@ -1,5 +1,4 @@
 ﻿using Fullstack.SAXS.Application.Contracts;
-using Fullstack.SAXS.Domain.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;

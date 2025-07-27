@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fullstack.SAXS.Infrastructure.DbContexts
+namespace Fullstack.SAXS.Persistence.DbContexts
 {
     public class PosgresDbContext(DbContextOptions<PosgresDbContext> options) : IdentityDbContext(options)
     {

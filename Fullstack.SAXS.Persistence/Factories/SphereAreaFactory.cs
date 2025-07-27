@@ -1,7 +1,7 @@
-﻿using Fullstack.SAXS.Domain.Contracts;
+﻿using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Domain.Entities.Areas;
 
-namespace Fullstack.SAXS.Infrastructure.Factories
+namespace Fullstack.SAXS.Persistence.Factories
 {
     public class SphereAreaFactory : AreaFactory
     {

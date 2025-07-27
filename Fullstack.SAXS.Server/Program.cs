@@ -1,24 +1,25 @@
 using System.Security.Claims;
 using Fullstack.SAXS.Application;
 using Fullstack.SAXS.Application.Commands;
-using Fullstack.SAXS.Application.Config;
 using Fullstack.SAXS.Application.Contracts;
+using Fullstack.SAXS.Application.Options;
 using Fullstack.SAXS.Application.Services;
-using Fullstack.SAXS.Domain.Contracts;
-using Fullstack.SAXS.Infrastructure.DbContexts;
-using Fullstack.SAXS.Infrastructure.Factories;
-using Fullstack.SAXS.Infrastructure.Repositories;
-using Fullstack.SAXS.Persistence.HTML;
-using Fullstack.SAXS.Persistence.IO;
+using Fullstack.SAXS.Infrastructure.HTML;
+using Fullstack.SAXS.Infrastructure.IO;
+using Fullstack.SAXS.Persistence.DbContexts;
+using Fullstack.SAXS.Persistence.Factories;
+using Fullstack.SAXS.Persistence.Repositories;
 using Fullstack.SAXS.Server.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<PathOptions>(
-    builder.Configuration.GetSection("Paths")
-);
+builder.Services
+    .AddOptions<PathOptions>()
+    .Bind(builder.Configuration.GetSection("Paths"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
 
 builder.Services
     .AddSingleton<ParticleFactory, IcosahedronParticleFactory>()

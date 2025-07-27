@@ -1,4 +1,4 @@
-﻿using Fullstack.SAXS.Domain.Contracts;
+﻿using Fullstack.SAXS.Domain.Common;
 using Fullstack.SAXS.Domain.Entities.Octrees;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;

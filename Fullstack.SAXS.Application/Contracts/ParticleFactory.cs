@@ -2,7 +2,7 @@
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.Models;
 
-namespace Fullstack.SAXS.Domain.Contracts
+namespace Fullstack.SAXS.Application.Contracts
 {
     public abstract class ParticleFactory
     {

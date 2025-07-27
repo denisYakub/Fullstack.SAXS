@@ -1,11 +1,11 @@
-﻿using Fullstack.SAXS.Domain.Contracts;
+﻿using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.Extensions;
 using Fullstack.SAXS.Domain.Models;
 using MathNet.Numerics.Distributions;
 
-namespace Fullstack.SAXS.Infrastructure.Factories
+namespace Fullstack.SAXS.Persistence.Factories
 {
     public class C60Factory : ParticleFactory
     {

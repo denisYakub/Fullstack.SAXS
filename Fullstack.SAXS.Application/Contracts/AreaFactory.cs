@@ -1,6 +1,6 @@
 ﻿using Fullstack.SAXS.Domain.Entities.Areas;
 
-namespace Fullstack.SAXS.Domain.Contracts
+namespace Fullstack.SAXS.Application.Contracts
 {
     public abstract class AreaFactory
     {

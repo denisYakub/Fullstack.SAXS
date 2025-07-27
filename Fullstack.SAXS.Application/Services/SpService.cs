@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using Fullstack.SAXS.Application.Contracts;
-using Fullstack.SAXS.Domain.Contracts;
 
 namespace Fullstack.SAXS.Application.Services
 {

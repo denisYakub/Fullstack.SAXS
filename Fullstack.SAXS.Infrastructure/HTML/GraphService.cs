@@ -1,8 +1,8 @@
 ﻿using System.Text;
 using System.Text.Json;
-using Fullstack.SAXS.Domain.Contracts;
+using Fullstack.SAXS.Application.Contracts;
 
-namespace Fullstack.SAXS.Persistence.HTML
+namespace Fullstack.SAXS.Infrastructure.HTML
 {
     public class GraphService(IConnectionStrService connectionService) : IGraphService
     {
@@ -15,11 +15,11 @@ namespace Fullstack.SAXS.Persistence.HTML
             using var jsonContent = new StringContent(
                 JsonSerializer.Serialize(
                     new { 
-                        x = x, 
-                        y = y, 
+                        x, 
+                        y, 
                         x_label = xLable,
                         y_label = yLable,
-                        title = title
+                        title
                     }
                 ),
                 Encoding.UTF8,

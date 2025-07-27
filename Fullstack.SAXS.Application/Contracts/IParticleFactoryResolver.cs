@@ -1,5 +1,4 @@
-﻿using Fullstack.SAXS.Domain.Contracts;
-using Fullstack.SAXS.Domain.Enums;
+﻿using Fullstack.SAXS.Domain.Enums;
 
 namespace Fullstack.SAXS.Application.Contracts
 {
