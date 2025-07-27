@@ -6,15 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.6" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
+		<PackageReference Include="Confluent.Kafka" Version="2.11.0" />
 	</ItemGroup>
+
 	<ItemGroup>
-	  <ProjectReference Include="..\Fullstack.SAXS.Application\Fullstack.SAXS.Application.csproj" />
-	  <ProjectReference Include="..\Fullstack.SAXS.Domain\Fullstack.SAXS.Domain.csproj" />
+		<ProjectReference Include="..\Fullstack.SAXS.Application\Fullstack.SAXS.Application.csproj" />
 	</ItemGroup>
 </Project>
