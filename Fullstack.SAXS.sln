@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Persistence"
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Fullstack.SAXS.api", "Fullstack.SAXS.Api\Fullstack.SAXS.api.pyproj", "{7CA84180-B6E1-49D8-873A-CCB6E1363CC2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Domain.Tests", "Fullstack.SAXS.Domain.Tests\Fullstack.SAXS.Domain.Tests.csproj", "{F9B107C7-AAC9-4230-AA3D-15BE6AB7EBB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fullstack.SAXS.Application.Tests", "Fullstack.SAXS.Application.Tests\Fullstack.SAXS.Application.Tests.csproj", "{C2367A98-35C4-4CFA-BADA-A981F8A5CC85}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +55,14 @@ Global
 		{C8E96C3A-BB59-4B9B-BD84-A74DD8C997D5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7CA84180-B6E1-49D8-873A-CCB6E1363CC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7CA84180-B6E1-49D8-873A-CCB6E1363CC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9B107C7-AAC9-4230-AA3D-15BE6AB7EBB1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9B107C7-AAC9-4230-AA3D-15BE6AB7EBB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9B107C7-AAC9-4230-AA3D-15BE6AB7EBB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9B107C7-AAC9-4230-AA3D-15BE6AB7EBB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2367A98-35C4-4CFA-BADA-A981F8A5CC85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2367A98-35C4-4CFA-BADA-A981F8A5CC85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2367A98-35C4-4CFA-BADA-A981F8A5CC85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2367A98-35C4-4CFA-BADA-A981F8A5CC85}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

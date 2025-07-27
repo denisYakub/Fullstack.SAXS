@@ -3,7 +3,7 @@ using Fullstack.SAXS.Domain.Entities.Particles;
 
 namespace Fullstack.SAXS.Domain.Entities.Octrees
 {
-    internal class OctreeWithList : IOctree
+    public class OctreeWithList : IOctree
     {
         private List<Particle> _particles = new (10000);
         public bool TryToAdd(Particle particle)
