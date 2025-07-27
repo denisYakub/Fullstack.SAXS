@@ -36,22 +36,30 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
 
             if (id == -2)
                 return false;
-            
-            foreach (var prtcl in _particles)
+
+            bool hasIntersection = false;
+            object lockObj = new();
+
+            Parallel.ForEach(_particles, (prtcl, state) =>
             {
                 if (prtcl.index != -1 && id != -1 && prtcl.index != id)
                 {
-                    continue;
+                    return;
                 }
-                else if (prtcl.particle.Intersect(particle))
+
+                if (prtcl.particle.Intersect(particle))
                 {
-                    return false;
+                    lock (lockObj)
+                        hasIntersection = true;
+
+                    state.Stop();
                 }
-            }
+            });
 
-            _particles.Add((id, particle));
+            if (!hasIntersection)
+                _particles.Add((id, particle));
 
-            return true;
+            return hasIntersection;
         }
     }
 }

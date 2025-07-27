@@ -22,23 +22,37 @@ namespace Fullstack.SAXS.Domain.Tests
         public void GetAll_NoIntersection_Pass()
         {
             // Arrange
-            FillOctree(_octree, 1_000);
+            FillOctree(_octree, _outerAreaR, 1_000_000);
 
             // Act
             var insertedParticles = _octree.GetAll().ToArray();
 
             // Assert
-            for (int i = 0; i < insertedParticles.Length;  i++)
-                for (int j = i + 1; j < insertedParticles.Length - 1; j++)
+            bool hasIntersection = false;
+            object lockObj = new();
+
+            Parallel.For(0, insertedParticles.Length, (i, state) =>
+            {
+                for (int j = i + 1; j < insertedParticles.Length; j++)
                 {
                     if (insertedParticles[i].Intersect(insertedParticles[j]))
-                        Assert.Fail("Intersection detected");
+                    {
+                        lock (lockObj)
+                            hasIntersection = true;
+
+                        state.Stop();
+                        return;
+                    }
                 }
+            });
+
+            if (hasIntersection)
+                Assert.Fail("Intersection detected");
 
             Assert.Pass("No intersection");
         }
 
-        private static void FillOctree(IOctree octree, int particleNum)
+        public static void FillOctree(IOctree octree, double outerAreaR, int particleNum)
         {
             var count = 0;
             var attempt = 0;
@@ -46,7 +60,7 @@ namespace Fullstack.SAXS.Domain.Tests
             var random = new Random();
             var gamma = new Gamma(3, 2.5);
 
-            while (count != particleNum && attempt != 1_000)
+            while (count != particleNum && attempt != 10_000)
             {
                 var size = gamma.GetGammaRandom(1, 5);
 
@@ -54,9 +68,9 @@ namespace Fullstack.SAXS.Domain.Tests
                 var b = random.GetEvenlyRandom(-360, 360);
                 var g = random.GetEvenlyRandom(-360, 360);
 
-                var x = random.GetEvenlyRandom(-_outerAreaR, _outerAreaR);
-                var y = random.GetEvenlyRandom(-_outerAreaR, _outerAreaR);
-                var z = random.GetEvenlyRandom(-_outerAreaR, _outerAreaR);
+                var x = random.GetEvenlyRandom(-outerAreaR, outerAreaR);
+                var y = random.GetEvenlyRandom(-outerAreaR, outerAreaR);
+                var z = random.GetEvenlyRandom(-outerAreaR, outerAreaR);
 
                 var particle = new IcosahedronParticle(size, new(x, y, z), new(a, b, g));
 

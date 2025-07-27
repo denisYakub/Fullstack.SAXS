@@ -23,29 +23,37 @@ namespace Fullstack.SAXS.Domain.Entities.Octrees
         public bool TryToAdd(Particle particle)
         {
             var boxIds = new List<Guid>(9);
-
             foreach (var child in _children)
             {
                 if (child.Box.Contains(particle) || child.Box.Clashes(particle))
                     boxIds.Add(child.Id);
             }
 
-            var result = true;
+            var hasIntersection = false;
+            object lockObj = new();
 
-            Parallel.ForEach(_objects, (obj, stat) => {
+            Parallel.ForEach(_objects, (obj, state) =>
+            {
                 foreach (var boxId in boxIds)
+                {
                     if (obj.boxs.Contains(boxId))
+                    {
                         if (obj.particle.Intersect(particle))
                         {
-                            result = false;
-                            stat.Break();
+                            lock (lockObj)
+                                hasIntersection = true;
+
+                            state.Stop();
+                            return;
                         }
+                    }
+                }
             });
 
-            if (result)
+            if (!hasIntersection)
                 _objects.Add((particle, boxIds));
 
-            return result;
+            return !hasIntersection;
         }
 
         public IEnumerable<Particle> GetAll()
