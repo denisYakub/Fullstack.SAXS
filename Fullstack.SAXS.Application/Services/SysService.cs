@@ -29,7 +29,7 @@ namespace Fullstack.SAXS.Application.Services
             Parallel.For(0, areas.Length, i => {
                 var infParticles = 
                     prtclFResolver
-                    .Resolve(data.particleType)
+                    .Resolve(data.ParticleType)
                     .GetParticlesInf(particlesData);
 
                 areas[i].Fill(infParticles, data.ParticleNumber);

@@ -2,10 +2,10 @@ using System.Security.Claims;
 using Fullstack.SAXS.Application;
 using Fullstack.SAXS.Application.Commands;
 using Fullstack.SAXS.Application.Contracts;
-using Fullstack.SAXS.Application.Options;
 using Fullstack.SAXS.Application.Services;
-using Fullstack.SAXS.Infrastructure.HTML;
-using Fullstack.SAXS.Infrastructure.IO;
+using Fullstack.SAXS.Domain.Models;
+using Fullstack.SAXS.Infrastructure;
+using Fullstack.SAXS.Infrastructure.Options;
 using Fullstack.SAXS.Persistence.DbContexts;
 using Fullstack.SAXS.Persistence.Factories;
 using Fullstack.SAXS.Persistence.Repositories;
@@ -16,27 +16,26 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services
-    .AddOptions<PathOptions>()
-    .Bind(builder.Configuration.GetSection("Paths"))
-    .ValidateDataAnnotations()
-    .ValidateOnStart();
+    .AddFileService(builder.Configuration.GetSection("Csv"));
 
 builder.Services
-    .AddSingleton<ParticleFactory, IcosahedronParticleFactory>()
+    .AddGraphService(builder.Configuration.GetSection("Graph"));
+
+builder.Services
+    .AddProducer<SystemMessage>(builder.Configuration.GetSection("Kafka:SystemCreate"));
+
+builder.Services
     .AddSingleton<ParticleFactory, C60Factory>()
     .AddSingleton<ParticleFactory, C70Factory>()
     .AddSingleton<ParticleFactory, C240Factory>()
     .AddSingleton<ParticleFactory, C540Factory>()
-    .AddSingleton<IConnectionStrService, ConnectionStrService>()
+    .AddSingleton<ParticleFactory, IcosahedronParticleFactory>()
     .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
-    .AddSingleton<IHostedService, PythonProcessHostedService>()
+    .AddScoped<AreaFactory, SphereAreaFactory>()
+    .AddScoped<IStorage, AreaRepository>()
     .AddScoped<ISysService, SysService>()
     .AddScoped<ISpService, SpService>()
-    .AddScoped<IStorage, AreaRepository>()
-    .AddScoped<IFileService, FileService>()
-    .AddScoped<SysService>()
-    .AddScoped<AreaFactory, SphereAreaFactory>()
-    .AddScoped<IGraphService, GraphService>();
+    .AddScoped<SysService>();
 
 builder.Services.AddMediatR(
     cfg => cfg.RegisterServicesFromAssemblies(typeof(CreateSystemHandler).Assembly)

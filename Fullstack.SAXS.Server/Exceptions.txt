@@ -18,6 +18,7 @@ FormatException
 - Invalid size value: '{data[0]}'
 - Area contains no particles.
 - Invalid user ID format in claims.
+- Kafka does not contain '{topic}' topic
 
 OverflowException
 - One or more values are too large or too small.

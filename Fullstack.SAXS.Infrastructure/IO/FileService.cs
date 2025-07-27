@@ -3,12 +3,14 @@ using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
+using Fullstack.SAXS.Infrastructure.Options;
+using Microsoft.Extensions.Options;
 using System.Globalization;
 using System.Text;
 
 namespace Fullstack.SAXS.Infrastructure.IO
 {
-    public class FileService(IConnectionStrService connectionStrService) : IFileService
+    public class FileService(IOptions<CsvOptions> options) : IFileService
     {
         public async Task<Area> ReadAsync(string filePath)
         {
@@ -79,7 +81,7 @@ namespace Fullstack.SAXS.Infrastructure.IO
                 $"{nameof(obj.ParticlesType)}#{obj.ParticlesType}",
             }) + ".csv";
 
-            var folder = Path.Combine(connectionStrService.GetStoragePath(), $"Generation_{GenerationNum}");
+            var folder = Path.Combine(options.Value.FolderPath, $"Generation_{GenerationNum}");
             Directory.CreateDirectory(folder);
 
             var filePath = Path.Combine(folder, fileName);

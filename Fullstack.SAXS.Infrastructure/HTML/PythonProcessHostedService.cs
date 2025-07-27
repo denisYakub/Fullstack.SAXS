@@ -1,28 +1,27 @@
 ﻿using System.Diagnostics;
-using Fullstack.SAXS.Application.Contracts;
+using Fullstack.SAXS.Infrastructure.Options;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
-namespace Fullstack.SAXS.Application.Services
+namespace Fullstack.SAXS.Infrastructure.HTML
 {
     public class PythonProcessHostedService : BackgroundService
     {
-        private readonly IConnectionStrService _scriptPath;
         private readonly ILogger<PythonProcessHostedService> _logger;
         private readonly Process _process;
         private bool _disposed;
 
         public PythonProcessHostedService(
-            IConnectionStrService scriptPath,
+            IOptions<GraphOptions> options,
             ILogger<PythonProcessHostedService> logger)
         {
-            _scriptPath = scriptPath;
             _logger = logger;
 
             var start = new ProcessStartInfo
             {
                 FileName = "python",
-                Arguments = $"\"{_scriptPath.GetGraphServerFilePath()}\"",
+                Arguments = $"\"{options.Value.RunFilePath}\"",
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,

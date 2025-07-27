@@ -3,7 +3,7 @@
 namespace Fullstack.SAXS.Domain.Models
 {
     public record CreateSysData(
-        double AreaSize, int AreaNumber, int ParticleNumber, ParticleTypes particleType,
+        double AreaSize, int AreaNumber, int ParticleNumber, ParticleTypes ParticleType,
         double ParticleMinSize, double ParticleMaxSize,
         double ParticleSizeShape, double ParticleSizeScale,
         double ParticleAlphaRotation,
