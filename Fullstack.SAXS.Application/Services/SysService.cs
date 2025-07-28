@@ -79,22 +79,31 @@ namespace Fullstack.SAXS.Application.Services
         public static double[] CreateQVector(double QMin, double QMax, int QNum, StepTypes StepType = StepTypes.Linear)
         {
             double[] result = new double[QNum];
-            double step;
 
             switch (StepType)
             {
                 case StepTypes.Linear:
-                    step = (QMax - QMin) / (QNum - 1);
+                    var lineStep = (QMax - QMin) / (QNum - 1);
 
                     for (int i = 0; i < QNum; i++)
-                        result[i] = QMin + i * step;
+                        result[i] = QMin + i * lineStep;
 
                     break;
                 case StepTypes.Logarithmic:
-                    step = Math.Pow(QMax / QMin, 1.0 / (QNum - 1));
+                    double baseValue = 10.0d;
+
+                    var logMin = Math.Log10(QMin);
+                    var logMax = Math.Log10(QMax);
+
+                    var logStep = (logMax - logMin) / (QNum - 1);
 
                     for (int i = 0; i < QNum; i++)
-                        result[i] = QMin * Math.Pow(step, i);
+                        result[i] = logMin + i * logStep;
+
+                    result = [.. result.Select(v => Math.Pow(baseValue, v))];
+
+                    break;
+                case StepTypes.Geometric:
 
                     break;
             }
