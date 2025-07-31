@@ -1,6 +1,7 @@
-﻿using MediatR;
+﻿using Fullstack.SAXS.Domain.Models;
+using MediatR;
 
 namespace Fullstack.SAXS.Application.Queries
 {
-    public record GetAllGenerationsQuery(Guid? UserId = null) : IRequest<string>;
+    public record GetAllGenerationsQuery(GetGenerationsModel model) : IRequest<string>;
 }

@@ -31,7 +31,8 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpPost("systems")]
         public async Task<IActionResult> CreateSys([FromBody] CreateSysRequest request)
         {
-            var dto = new CreateSysData(
+            var model = new CreateSysModel(
+                UserId,
                 request.AreaSize, request.AreaNumber, request.ParticleNumber,
                 request.ParticleType,
                 request.ParticleMinSize, request.ParticleMaxSize,
@@ -42,7 +43,7 @@ namespace Fullstack.SAXS.Server.Controllers
             );
 
             await mediator
-                .Send(new CreateSystemCommand(UserId, dto))
+                .Send(new CreateSystemCommand(model))
                 .ConfigureAwait(false);  
 
             return new OkResult();
@@ -59,10 +60,14 @@ namespace Fullstack.SAXS.Server.Controllers
         }
 
         [HttpPost("systems/{id}/graphs/phi")]
-        public async Task<IActionResult> CreateSysPhiGraph([FromRoute] Guid id, [FromQuery] int layersNum = 5)
+        public async Task<IActionResult> CreateSysPhiGraph([FromRoute] Guid id, [FromQuery] int layersNum)
         {
+            var model = new CreateDensityGraphModel(
+                UserId, id, layersNum
+            );
+
             var html = await mediator
-                .Send(new CreatePhiGraphCommand(UserId, id, layersNum))
+                .Send(new CreatePhiGraphCommand(model))
                 .ConfigureAwait(false);
 
             return new ContentResult() { Content = html, ContentType = "text/html" };
@@ -71,33 +76,29 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpPost("systems/{id}/graphs/intensity-opt")]
         public async Task<IActionResult> CreateSysIntensOptGraph([FromRoute] Guid id, [FromBody] CreateIntensOptRequest request)
         {
-            var dto = new CreateQIData(
+            var model = new CreateIntensityGraphModel(
+                id,
                 request.QMin, request.QMax,
                 request.QNum,
                 request.StepType
             );
+
             var html = await mediator
-                .Send(new CreateIntenseOptGraphCommand(id, dto))
+                .Send(new CreateIntenseOptGraphCommand(model))
                 .ConfigureAwait(false);
 
             return new ContentResult() { Content = html, ContentType = "text/html" };
         }
 
         [HttpGet("generations")]
-        public async Task<IActionResult> GetGenerations()
+        public async Task<IActionResult> GetGenerations([FromQuery] bool users)
         {
-            var json = await mediator
-                .Send(new GetAllGenerationsQuery())
-                .ConfigureAwait(false);
+            var model = new GetGenerationsModel(
+                users ? UserId : null
+            );
 
-            return new OkObjectResult(json);
-        }
-
-        [HttpGet("users/me/generations")]
-        public async Task<IActionResult> GetMyGenerations()
-        {
             var json = await mediator
-                .Send(new GetAllGenerationsQuery(UserId))
+                .Send(new GetAllGenerationsQuery(model))
                 .ConfigureAwait(false);
 
             return new OkObjectResult(json);

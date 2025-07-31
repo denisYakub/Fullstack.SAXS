@@ -8,5 +8,7 @@ namespace Fullstack.SAXS.Infrastructure.Options
         public required string Uri { get; set; }
         [Required]
         public required string Topic { get; set; }
+        [Required]
+        public required string GroupId { get; set; }
     }
 }

@@ -2,22 +2,22 @@
 
 namespace Fullstack.SAXS.Domain.Tests;
 
-public class OctreeWithContainingBoxesTests
+public class OctreeWithEnumIdTests
 {
     private static double _outerAreaR = 100.0;
-    private OctreeWithContainingBoxes _octree;
+    private OctreeWithEnumId _octree;
 
     [SetUp]
     public void Setup()
     {
-        _octree = new OctreeWithContainingBoxes(_outerAreaR);
+        _octree = new OctreeWithEnumId(_outerAreaR);
     }
 
     [Test]
     public void GetAll_NoIntersection_Pass()
     {
         // Arrange
-        OctreeWithBoundingBoxIndexesTests.FillOctree(_octree, _outerAreaR, 100_000);
+        OctreeWithBoundingBoxIndexesTests.FillOctree(_octree, _outerAreaR, 300_000);
 
         // Act
         var insertedParticles = _octree.GetAll().ToArray();

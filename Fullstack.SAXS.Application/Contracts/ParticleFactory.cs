@@ -7,6 +7,6 @@ namespace Fullstack.SAXS.Application.Contracts
     public abstract class ParticleFactory
     {
         public abstract ParticleTypes Type { get; }
-        public abstract IEnumerable<Particle> GetParticlesInf(CreateParticelData data);
+        public abstract IEnumerable<Particle> GetParticlesInf(CreateParticelModel model);
     }
 }

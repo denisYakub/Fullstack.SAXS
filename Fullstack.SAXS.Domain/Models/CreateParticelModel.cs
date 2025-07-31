@@ -1,6 +1,6 @@
 ﻿namespace Fullstack.SAXS.Domain.Models
 {
-    public record CreateParticelData(
+    public record CreateParticelModel(
         double MinSize, double MaxSize,
         double SizeShape, double SizeScale,
         double AlphaRotation, double BetaRotation, double GammaRotation,

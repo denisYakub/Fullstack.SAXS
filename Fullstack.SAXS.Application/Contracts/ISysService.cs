@@ -4,8 +4,8 @@ namespace Fullstack.SAXS.Application.Contracts
 {
     public interface ISysService
     {
-        Task CreateAsync(Guid userId, CreateSysData data);
-        Task<string> CreateIntensOptGraphAsync(Guid id, CreateQIData data);
-        Task<string> CreatePhiGraphAsync(Guid userId, Guid id, int layersNum);
+        Task CreateAsync(CreateSysModel data);
+        Task<string> CreateIntensOptGraphAsync(CreateIntensityGraphModel model);
+        Task<string> CreatePhiGraphAsync(CreateDensityGraphModel model);
     }
 }

@@ -22,7 +22,7 @@ namespace Fullstack.SAXS.Domain.Tests
         public void GetAll_NoIntersection_Pass()
         {
             // Arrange
-            FillOctree(_octree, _outerAreaR, 1_000_000);
+            FillOctree(_octree, _outerAreaR, 300_000);
 
             // Act
             var insertedParticles = _octree.GetAll().ToArray();

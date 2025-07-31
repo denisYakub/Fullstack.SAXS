@@ -50,8 +50,15 @@ namespace Fullstack.SAXS.Persistence.Repositories
             await postgres.SaveChangesAsync().ConfigureAwait(false);
         }
 
-        public async Task<string> GetAllGenerationsAsync()
+        public async Task<string> GetGenerationsAsync(Guid? idUser)
         {
+            var query = postgres
+                .Generations
+                .AsQueryable();
+
+            if (idUser.HasValue)
+                query = query.Where(g => g.IdUser == idUser.Value);
+
             var gens = await postgres.Generations
                 .Select(g => new
                 {

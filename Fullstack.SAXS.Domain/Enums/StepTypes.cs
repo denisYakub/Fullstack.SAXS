@@ -2,6 +2,6 @@
 {
     public enum StepTypes
     {
-        Linear, Logarithmic
+        Linear, Logarithmic, Geometric
     }
 }

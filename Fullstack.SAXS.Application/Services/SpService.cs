@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Fullstack.SAXS.Application.Contracts;
+using Fullstack.SAXS.Domain.Models;
 
 namespace Fullstack.SAXS.Application.Services
 {
@@ -22,20 +23,11 @@ namespace Fullstack.SAXS.Application.Services
             return json;
         }
 
-        public async Task<string> GetAllAsync(Guid? userId = null)
+        public async Task<string> GetAllAsync(GetGenerationsModel model)
         {
-            if (userId.HasValue)
-            {
-                return await storage
-                    .GetAllGenerationsAsync(userId.Value)
-                    .ConfigureAwait(false);
-            }
-            else
-            {
-                return await storage
-                    .GetAllGenerationsAsync()
-                    .ConfigureAwait(false);
-            }
+            return await storage
+                .GetGenerationsAsync(model.UserId)
+                .ConfigureAwait(false);
         }
 
         public async Task<byte[]> GetAtomsAsync(Guid id)

@@ -2,8 +2,9 @@
 
 namespace Fullstack.SAXS.Domain.Models
 {
-    public record CreateQIData(
-        double QMin, double QMax, 
+    public record CreateIntensityGraphModel(
+        Guid AreaId,
+        double QMin, double QMax,
         int QNum, StepTypes StepType
     );
 }

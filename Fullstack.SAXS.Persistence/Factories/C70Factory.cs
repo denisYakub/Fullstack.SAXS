@@ -11,7 +11,7 @@ namespace Fullstack.SAXS.Persistence.Factories
     {
         public override ParticleTypes Type => ParticleTypes.C70;
 
-        public override IEnumerable<Particle> GetParticlesInf(CreateParticelData data)
+        public override IEnumerable<Particle> GetParticlesInf(CreateParticelModel data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data), "Shouldn't be null.");

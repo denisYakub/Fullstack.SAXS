@@ -25,7 +25,7 @@ namespace Fullstack.SAXS.Infrastructure
             services.Configure<GraphOptions>(config);
 
             services
-                .AddSingleton<IHostedService, PythonProcessHostedService>()
+                .AddHostedService<PythonProcessHostedService>()
                 .AddScoped<IGraphService, GraphService>();
         }
 
@@ -33,7 +33,18 @@ namespace Fullstack.SAXS.Infrastructure
         {
             services.Configure<KafkaOptions>(config);
 
-            services.AddSingleton<IProducer<TMessage>, KafkaProducer<TMessage>>();
+            services
+                .AddSingleton<IProducer<TMessage>, KafkaProducer<TMessage>>();
+        }
+
+        public static void AddConsumer<TMessage, THandler>(this IServiceCollection services, IConfigurationSection config)
+            where THandler : class, IMessageHandler<TMessage>
+        {
+            services.Configure<KafkaOptions>(config);
+
+            services
+                .AddSingleton<IMessageHandler<TMessage>, THandler>()
+                .AddHostedService<KafkaConsumer<TMessage>>();
         }
     }
 }

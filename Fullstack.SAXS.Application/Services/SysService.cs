@@ -10,14 +10,14 @@ namespace Fullstack.SAXS.Application.Services
 {
     public class SysService(AreaFactory areaF, IParticleFactoryResolver prtclFResolver, IStorage storage, IGraphService graph) : ISysService
     {
-        public async Task CreateAsync(Guid userId, CreateSysData data)
+        public async Task CreateAsync(CreateSysModel data)
         {
             if (data == null)
                 throw new ArgumentNullException(nameof(data), "Shouldn't be null.");
 
             var areas = areaF.GetAreas(data.AreaSize, data.AreaNumber).ToArray();
 
-            var particlesData = new CreateParticelData(
+            var particlesData = new CreateParticelModel(
                 data.ParticleMinSize, data.ParticleMaxSize,
                 data.ParticleSizeShape, data.ParticleSizeScale,
                 data.ParticleAlphaRotation, data.ParticleBetaRotation, data.ParticleGammaRotation,
@@ -36,20 +36,20 @@ namespace Fullstack.SAXS.Application.Services
             });
 
             await storage
-                .AddRangeAsync(areas, userId)
+                .AddRangeAsync(areas, data.UserId)
                 .ConfigureAwait(false);
         }
 
-        public async Task<string> CreateIntensOptGraphAsync(Guid id, CreateQIData data)
+        public async Task<string> CreateIntensOptGraphAsync(CreateIntensityGraphModel model)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data), "Shouldn't be null.");
+            if (model == null)
+                throw new ArgumentNullException(nameof(model), "Shouldn't be null.");
 
             var area = await storage
-                .GetAreaAsync(id)
+                .GetAreaAsync(model.AreaId)
                 .ConfigureAwait(false);
 
-            var qs = CreateQVector(data.QMin, data.QMax, data.QNum, data.StepType);
+            var qs = CreateQVector(model.QMin, model.QMax, model.QNum, model.StepType);
 
             var (x, y) = CreateIntensOptCoord(area, in qs);
 
@@ -58,17 +58,17 @@ namespace Fullstack.SAXS.Application.Services
                 .ConfigureAwait(false);
         }
 
-        public async Task<string> CreatePhiGraphAsync(Guid userId, Guid id, int layersNum)
+        public async Task<string> CreatePhiGraphAsync(CreateDensityGraphModel model)
         {
             var area = await storage
-                .GetAreaAsync(id)
+                .GetAreaAsync(model.AreaId)
                 .ConfigureAwait(false);
 
-            var (x, y) = await CreatePhiCoordAsync(area, layersNum)
+            var (x, y) = await CreatePhiCoordAsync(area, model.LayersNum)
                 .ConfigureAwait(false);
 
             await storage
-                .UpdateAvgPhiAsync(userId, id, y.Average())
+                .UpdateAvgPhiAsync(model.UserId, model.AreaId, y.Average())
                 .ConfigureAwait(false);
 
             return await graph

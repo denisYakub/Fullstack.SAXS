@@ -3,5 +3,5 @@ using MediatR;
 
 namespace Fullstack.SAXS.Application.Commands
 {
-    public record CreateIntenseOptGraphCommand(Guid AreaId, CreateQIData Data) : IRequest<string>;
+    public record CreateIntenseOptGraphCommand(CreateIntensityGraphModel model) : IRequest<string>;
 }
