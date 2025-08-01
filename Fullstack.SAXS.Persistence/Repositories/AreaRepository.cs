@@ -1,7 +1,9 @@
 ﻿using System.Text.Json;
 using Fullstack.SAXS.Application.Contracts;
+using Fullstack.SAXS.Domain.Dtos;
 using Fullstack.SAXS.Domain.Entities.Areas;
-using Fullstack.SAXS.Domain.Entities.Sp;
+using Fullstack.SAXS.Domain.Enums;
+using Fullstack.SAXS.Domain.Models;
 using Fullstack.SAXS.Persistence.DbContexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +18,8 @@ namespace Fullstack.SAXS.Persistence.Repositories
 
             var entityList = entities.ToList();
 
-            var genNum = GetGenNum();
+            var genNum = await GetGenNumAsync()
+                .ConfigureAwait(false);
 
             for (var i = 0; i < entityList.Count; i++)
             {
@@ -24,20 +27,28 @@ namespace Fullstack.SAXS.Persistence.Repositories
                     .WriteAsync(entityList.ElementAt(i), genNum)
                     .ConfigureAwait(false);
 
-                var data = new SpData(path);
-
                 var entity = entityList.ElementAt(i);
 
                 var gen =
-                    new SpGeneration(
-                        idUser,
-                        genNum, entity.Series,
-                        entity.AreaType,
-                        entity.ParticlesType,
-                        entity.OuterRadius, 
-                        null, entity.Particles.Count(),
-                        data.Id
-                    );
+                    new SpGeneration()
+                    {
+                        UserId = idUser,
+                        GenNum = genNum,
+                        SeriesNum = entity.Series,
+                        AreaType = entity.AreaType.ToString(),
+                        ParticleType = entity.ParticlesType.ToString(),
+                        AreaOuterRadius = entity.OuterRadius,
+                        ParticleNum = entity.Particles.Count(),
+                    };
+
+                var data = new SpData()
+                {
+                    Path = path,
+                    GenId = gen.Id,
+                    Gen = gen,
+                };
+
+                gen.Data = data;
 
                 await postgres.Datas
                     .AddAsync(data)
@@ -47,7 +58,9 @@ namespace Fullstack.SAXS.Persistence.Repositories
                     .ConfigureAwait(false);
 
             }
-            await postgres.SaveChangesAsync().ConfigureAwait(false);
+            await postgres
+                .SaveChangesAsync()
+                .ConfigureAwait(false);
         }
 
         public async Task<string> GetGenerationsAsync(Guid? idUser)
@@ -57,7 +70,7 @@ namespace Fullstack.SAXS.Persistence.Repositories
                 .AsQueryable();
 
             if (idUser.HasValue)
-                query = query.Where(g => g.IdUser == idUser.Value);
+                query = query.Where(g => g.UserId == idUser.Value);
 
             var gens = await postgres.Generations
                 .Select(g => new
@@ -69,7 +82,7 @@ namespace Fullstack.SAXS.Persistence.Repositories
                     g.AreaOuterRadius,
                     g.Phi,
                     g.ParticleNum,
-                    g.IdSpData
+                    g.Data!.Id
                 })
                 .ToListAsync()
                 .ConfigureAwait(false);
@@ -91,61 +104,74 @@ namespace Fullstack.SAXS.Persistence.Repositories
                 .ConfigureAwait(false);
         }
 
-        public async Task<string> GetAllGenerationsAsync(Guid idUser)
-        {
-            var gens = await postgres.Generations
-                .Where(g => g.IdUser == idUser)
-                .Select(g => new
-                {
-                    g.GenNum,
-                    g.SeriesNum,
-                    g.AreaType,
-                    g.ParticleType,
-                    g.AreaOuterRadius,
-                    g.Phi,
-                    g.ParticleNum,
-                    g.IdSpData
-                })
-                .ToListAsync()
-                .ConfigureAwait(false);
-
-            return JsonSerializer.Serialize(gens);
-        }
-
         public async Task UpdateAvgPhiAsync(Guid idUser, Guid idArea, double avgPhi)
         {
             var generation = await postgres
                 .Generations
-                .FirstAsync(g => g.IdSpData == idArea && g.IdUser == idUser)
+                .FirstAsync(g => g.Data!.Id == idArea && g.Data!.Id == idUser)
                 .ConfigureAwait(false);
 
-            generation.ChangePhi(avgPhi);
+            generation.Phi = avgPhi;
 
             await postgres
                 .SaveChangesAsync()
                 .ConfigureAwait(false);
         }
 
-        private long GetGenNum()
+        private async Task<long> GetGenNumAsync()
         {
-            var counter = 
-                postgres
+            var counter = await postgres
                 .GenerationCurrentNum
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if (counter == null)
             {
                 counter = new SpGenerationNumberCounter();
-                postgres.GenerationCurrentNum.Add(counter);
+
+                await postgres
+                    .GenerationCurrentNum
+                    .AddAsync(counter);
             }
             else
             {
                 counter.Increase();
             }
 
-            postgres.SaveChanges();
+            await postgres
+                .SaveChangesAsync()
+                .ConfigureAwait(false);
 
             return counter.CurrentNum;
+        }
+
+        public async Task SaveSystemTaskAsync(SystemCreateDto dto)
+        {
+            var sysTask = new SpSystemTask()
+            {
+                UserId = dto.UserId,
+                State = TaskState.InProgress,
+                AreaSize = dto.AreaSize,
+                AreaNumber = dto.AreaNumber,
+                AreaType = "Sphere",
+                ParticleNumber = dto.ParticleNumber,
+                ParticleType = dto.ParticleType.ToString(),
+                ParticleMinSize = dto.ParticleMinSize,
+                ParticleMaxSize = dto.ParticleMaxSize,
+                ParticleSizeShape = dto.ParticleSizeShape,
+                ParticleSizeScale = dto.ParticleSizeScale,
+                ParticleAlphaRotation = dto.ParticleAlphaRotation,
+                ParticleBetaRotation = dto.ParticleBetaRotation,
+                ParticleGammaRotation = dto.ParticleGammaRotation,
+            };
+
+            await postgres
+                .SystemTasks
+                .AddAsync(sysTask)
+                .ConfigureAwait(false);
+
+            await postgres
+                .SaveChangesAsync()
+                .ConfigureAwait(false);
         }
     }
 }

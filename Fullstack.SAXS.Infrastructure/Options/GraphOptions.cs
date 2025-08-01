@@ -2,7 +2,7 @@
 
 namespace Fullstack.SAXS.Infrastructure.Options
 {
-    public class GraphOptions
+    internal class GraphOptions
     {
         [Required]
         public required Uri Uri { get; set; }

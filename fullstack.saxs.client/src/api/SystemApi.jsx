@@ -9,7 +9,7 @@ function checkResponse(res) {
     }
     else if (!res.ok) {
         console.error(res)
-        window.location.href = '/service-unavailable';
+        //window.location.href = '/service-unavailable';
     }
 }
 

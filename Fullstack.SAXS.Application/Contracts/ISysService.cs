@@ -1,11 +1,11 @@
-﻿using Fullstack.SAXS.Domain.Models;
+﻿using Fullstack.SAXS.Domain.Dtos;
+using Fullstack.SAXS.Domain.Entities.Areas;
+using Fullstack.SAXS.Domain.Models;
 
 namespace Fullstack.SAXS.Application.Contracts
 {
     public interface ISysService
     {
-        Task CreateAsync(CreateSysModel data);
-        Task<string> CreateIntensOptGraphAsync(CreateIntensityGraphModel model);
-        Task<string> CreatePhiGraphAsync(CreateDensityGraphModel model);
+        IReadOnlyCollection<Area> Create(AreaCreateDTO areDTO, ParticleCreateDTO particleDTO);
     }
 }

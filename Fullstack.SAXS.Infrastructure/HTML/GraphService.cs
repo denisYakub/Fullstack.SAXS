@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fullstack.SAXS.Infrastructure.HTML
 {
-    public class GraphService(IOptions<GraphOptions> options) : IGraphService
+    internal class GraphService(IOptions<GraphOptions> options) : IGraphService
     {
         public async Task<string> GetHtmlPageAsync(double[] x, double[] y, string xLable, string yLable, string title)
         {

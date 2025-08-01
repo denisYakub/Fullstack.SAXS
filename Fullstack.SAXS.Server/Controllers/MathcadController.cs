@@ -31,7 +31,7 @@ namespace Fullstack.SAXS.Server.Controllers
         public async Task<IActionResult> GetCoordinatesOfAtoms([FromRoute] Guid id)
         {
             var csv = await mediator
-                .Send(new GetAllAtomsQuery(id))
+                .Send(new GetAtomsTableQuery(id))
                 .ConfigureAwait(false);
 
             return File(csv, "text/csv", "vertices.csv");
@@ -40,7 +40,7 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpPost("q-values")]
         public IActionResult GetQI([FromBody] CreateIntensOptRequest request)
         {
-            var qI = SysService.CreateQVector(request.QMin, request.QMax, request.QNum, request.StepType);
+            var qI = IntenceService.CreateQVector(request.QMin, request.QMax, request.QNum, request.StepType);
 
             return new OkObjectResult(qI);
         }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fullstack.SAXS.Infrastructure.Kafka
 {
-    public class KafkaProducer<TMessage> : IProducer<TMessage>
+    internal class KafkaProducer<TMessage> : IProducer<TMessage>
     {
         private readonly IProducer<string, TMessage> _producer;
         private readonly string _topic;

@@ -1,10 +1,12 @@
 ﻿using Fullstack.SAXS.Domain.Enums;
 
-namespace Fullstack.SAXS.Domain.Models
+namespace Fullstack.SAXS.Domain.Dtos
 {
-    public record CreateSysModel(
+    public record SystemCreateDto(
         Guid UserId,
-        double AreaSize, int AreaNumber, int ParticleNumber, ParticleTypes ParticleType,
+        double AreaSize, 
+        int AreaNumber, int ParticleNumber, 
+        AreaTypes AreaType, ParticleTypes ParticleType,
         double ParticleMinSize, double ParticleMaxSize,
         double ParticleSizeShape, double ParticleSizeScale,
         double ParticleAlphaRotation,
@@ -12,17 +14,28 @@ namespace Fullstack.SAXS.Domain.Models
         double ParticleGammaRotation
     )
     {
-        public CreateParticelModel CreateParticelModel
+        public ParticleCreateDTO ParticleCreateDTO
         {
             get
             {
-                return new CreateParticelModel(
+                return new ParticleCreateDTO(
+                    ParticleNumber, ParticleType,
                     ParticleMinSize, ParticleMaxSize,
                     ParticleSizeShape, ParticleSizeScale,
                     ParticleAlphaRotation, ParticleBetaRotation, ParticleGammaRotation,
                     -AreaSize, AreaSize,
                     -AreaSize, AreaSize,
                     -AreaSize, AreaSize
+                );
+            }
+        }
+
+        public AreaCreateDTO AreaCreateDTO
+        {
+            get
+            {
+                return new AreaCreateDTO(
+                    AreaSize, AreaNumber, AreaType
                 );
             }
         }

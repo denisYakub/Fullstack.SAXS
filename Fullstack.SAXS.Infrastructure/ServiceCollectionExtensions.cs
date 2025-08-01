@@ -1,12 +1,10 @@
-﻿using Confluent.Kafka;
-using Fullstack.SAXS.Application.Contracts;
+﻿using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Infrastructure.HTML;
 using Fullstack.SAXS.Infrastructure.IO;
 using Fullstack.SAXS.Infrastructure.Kafka;
 using Fullstack.SAXS.Infrastructure.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace Fullstack.SAXS.Infrastructure
 {
@@ -43,7 +41,7 @@ namespace Fullstack.SAXS.Infrastructure
             services.Configure<KafkaOptions>(config);
 
             services
-                .AddSingleton<IMessageHandler<TMessage>, THandler>()
+                .AddScoped<IMessageHandler<TMessage>, THandler>()
                 .AddHostedService<KafkaConsumer<TMessage>>();
         }
     }

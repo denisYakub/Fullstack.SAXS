@@ -2,7 +2,7 @@
 
 namespace Fullstack.SAXS.Infrastructure.Options
 {
-    public class CsvOptions
+    internal class CsvOptions
     {
         [Required]
         public required string FolderPath { get; set; }

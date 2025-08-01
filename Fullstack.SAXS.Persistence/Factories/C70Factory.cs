@@ -1,8 +1,8 @@
 ﻿using Fullstack.SAXS.Application.Contracts;
+using Fullstack.SAXS.Domain.Dtos;
 using Fullstack.SAXS.Domain.Entities.Particles;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.Extensions;
-using Fullstack.SAXS.Domain.Models;
 using MathNet.Numerics.Distributions;
 
 namespace Fullstack.SAXS.Persistence.Factories
@@ -11,25 +11,25 @@ namespace Fullstack.SAXS.Persistence.Factories
     {
         public override ParticleTypes Type => ParticleTypes.C70;
 
-        public override IEnumerable<Particle> GetParticlesInf(CreateParticelModel data)
+        public override IEnumerable<Particle> GetParticlesInf(ParticleCreateDTO dto)
         {
-            if (data == null)
-                throw new ArgumentNullException(nameof(data), "Shouldn't be null.");
+            if (dto == null)
+                throw new ArgumentNullException(nameof(dto), "Shouldn't be null.");
 
             var random = new Random();
-            var gamma = new Gamma(data.SizeShape, data.SizeScale);
+            var gamma = new Gamma(dto.SizeShape, dto.SizeScale);
 
             while (true)
             {
-                var size = gamma.GetGammaRandom(data.MinSize, data.MaxSize);
+                var size = gamma.GetGammaRandom(dto.MinSize, dto.MaxSize);
 
-                var a = random.GetEvenlyRandom(-data.AlphaRotation, data.AlphaRotation);
-                var b = random.GetEvenlyRandom(-data.BetaRotation, data.BetaRotation);
-                var g = random.GetEvenlyRandom(-data.GammaRotation, data.GammaRotation);
+                var a = random.GetEvenlyRandom(-dto.AlphaRotation, dto.AlphaRotation);
+                var b = random.GetEvenlyRandom(-dto.BetaRotation, dto.BetaRotation);
+                var g = random.GetEvenlyRandom(-dto.GammaRotation, dto.GammaRotation);
 
-                var x = random.GetEvenlyRandom(data.MinX, data.MaxX);
-                var y = random.GetEvenlyRandom(data.MinY, data.MaxY);
-                var z = random.GetEvenlyRandom(data.MinZ, data.MaxZ);
+                var x = random.GetEvenlyRandom(dto.MinX, dto.MaxX);
+                var y = random.GetEvenlyRandom(dto.MinY, dto.MaxY);
+                var z = random.GetEvenlyRandom(dto.MinZ, dto.MaxZ);
 
                 yield return new C70(size, new(x, y, z), new(a, b, g));
             }

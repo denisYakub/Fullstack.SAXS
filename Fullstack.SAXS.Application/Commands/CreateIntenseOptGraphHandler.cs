@@ -1,5 +1,4 @@
-﻿using Fullstack.SAXS.Application.Contracts;
-using MediatR;
+﻿using MediatR;
 
 namespace Fullstack.SAXS.Application.Commands
 {

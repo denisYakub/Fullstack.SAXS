@@ -7,11 +7,46 @@ using Fullstack.SAXS.Infrastructure;
 using Fullstack.SAXS.Persistence.DbContexts;
 using Fullstack.SAXS.Persistence.Factories;
 using Fullstack.SAXS.Persistence.Repositories;
+using Fullstack.SAXS.Persistence.SqlServerListner;
 using Fullstack.SAXS.Server.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddSingleton<AreaFactory, SphereAreaFactory>()
+    .AddSingleton<ParticleFactory, IcosahedronParticleFactory>()
+    .AddSingleton<ParticleFactory, C60Factory>()
+    .AddSingleton<ParticleFactory, C70Factory>()
+    .AddSingleton<ParticleFactory, C240Factory>()
+    .AddSingleton<ParticleFactory, C540Factory>()
+    .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
+    .AddScoped<IDensityService, DensityService>()
+    .AddScoped<IIntenceService, IntenceService>()
+    .AddScoped<ISysService, SysService>()
+    .AddScoped<IStorage, AreaRepository>();
+
+builder.Services
+    .AddFileService(builder.Configuration.GetSection("Csv"));
+
+builder.Services
+    .AddGraphService(builder.Configuration.GetSection("Graph"));
+
+builder.Services
+    .AddProducer<string>(builder.Configuration.GetSection("Kafka:SystemCreate"));
+
+builder.Services
+    .AddConsumer<string, CreateAreaHandler>(builder.Configuration.GetSection("Kafka:SystemCreate"));
+
+builder.Services
+    .AddMediatR(cfg =>
+    {
+        cfg.RegisterServicesFromAssembly(typeof(CreateTaskToCreateSystemHandler).Assembly);
+    });
+
+builder.Services
+    .AddHostedService<PostgresNotifyListener>();
 
 builder.Services
     .AddDbContext<PosgresDbContext>(

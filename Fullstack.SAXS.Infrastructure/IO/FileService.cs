@@ -10,7 +10,7 @@ using System.Text;
 
 namespace Fullstack.SAXS.Infrastructure.IO
 {
-    public class FileService(IOptions<CsvOptions> options) : IFileService
+    internal class FileService(IOptions<CsvOptions> options) : IFileService
     {
         public async Task<Area> ReadAsync(string filePath)
         {

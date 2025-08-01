@@ -1,6 +1,10 @@
-﻿namespace Fullstack.SAXS.Domain.Models
+﻿using Fullstack.SAXS.Domain.Enums;
+
+namespace Fullstack.SAXS.Domain.Dtos
 {
-    public record CreateParticelModel(
+    public record ParticleCreateDTO(
+        int Number,
+        ParticleTypes Type,
         double MinSize, double MaxSize,
         double SizeShape, double SizeScale,
         double AlphaRotation, double BetaRotation, double GammaRotation,

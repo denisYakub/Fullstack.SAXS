@@ -1,24 +1,24 @@
-﻿using System.Threading.Tasks;
-using Confluent.Kafka;
+﻿using Confluent.Kafka;
 using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Infrastructure.Options;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Fullstack.SAXS.Infrastructure.Kafka
 {
-    public class KafkaConsumer<TMessage> : BackgroundService
+    internal class KafkaConsumer<TMessage> : BackgroundService
     {
         private readonly string _topic;
         private readonly IConsumer<string, TMessage> _consumer;
-        private readonly IMessageHandler<TMessage> _handler;
         private readonly ILogger<KafkaConsumer<TMessage>> _logger;
+        private readonly IServiceScopeFactory _scopeFactory;
 
         public KafkaConsumer(
-            IOptions<KafkaOptions> options, 
-            IMessageHandler<TMessage> handler, 
-            ILogger<KafkaConsumer<TMessage>> logger
+            IOptions<KafkaOptions> options,
+            ILogger<KafkaConsumer<TMessage>> logger,
+            IServiceScopeFactory scopeFactory
         )
         {
             var confiq = new ConsumerConfig
@@ -33,8 +33,8 @@ namespace Fullstack.SAXS.Infrastructure.Kafka
                 .SetValueDeserializer(new KafkaJsonDeserializer<TMessage>())
                 .Build();
 
-            _handler = handler;
             _logger = logger;
+            _scopeFactory = scopeFactory;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -57,9 +57,13 @@ namespace Fullstack.SAXS.Infrastructure.Kafka
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
+                    using var scope = _scopeFactory.CreateScope();
+
+                    var handler = scope.ServiceProvider.GetRequiredService<IMessageHandler<TMessage>>();
+
                     var result = _consumer.Consume(stoppingToken);
 
-                    await _handler
+                    await handler
                         .HandleAsync(result.Message.Value, stoppingToken)
                         .ConfigureAwait(false);
                 }

@@ -1,7 +1,8 @@
 ﻿using System.Security.Claims;
 using Fullstack.SAXS.Application.Commands;
 using Fullstack.SAXS.Application.Queries;
-using Fullstack.SAXS.Domain.Models;
+using Fullstack.SAXS.Domain.Dtos;
+using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Server.Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -31,10 +32,11 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpPost("systems")]
         public async Task<IActionResult> CreateSys([FromBody] CreateSysRequest request)
         {
-            var model = new CreateSysModel(
+            var dto = new SystemCreateDto(
                 UserId,
-                request.AreaSize, request.AreaNumber, request.ParticleNumber,
-                request.ParticleType,
+                request.AreaSize, 
+                request.AreaNumber, request.ParticleNumber,
+                AreaTypes.Sphere, request.ParticleType,
                 request.ParticleMinSize, request.ParticleMaxSize,
                 request.ParticleSizeShape, request.ParticleSizeScale,
                 request.ParticleAlphaRotation,
@@ -43,7 +45,7 @@ namespace Fullstack.SAXS.Server.Controllers
             );
 
             await mediator
-                .Send(new CreateSystemCommand(model))
+                .Send(new CreateTaskToCreateSystemCommand(dto))
                 .ConfigureAwait(false);  
 
             return new OkResult();
@@ -62,12 +64,12 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpPost("systems/{id}/graphs/phi")]
         public async Task<IActionResult> CreateSysPhiGraph([FromRoute] Guid id, [FromQuery] int layersNum)
         {
-            var model = new CreateDensityGraphModel(
+            var dto = new DensityCreateDTO(
                 UserId, id, layersNum
             );
 
             var html = await mediator
-                .Send(new CreatePhiGraphCommand(model))
+                .Send(new CreateDensityGraphCommand(dto))
                 .ConfigureAwait(false);
 
             return new ContentResult() { Content = html, ContentType = "text/html" };
@@ -76,7 +78,7 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpPost("systems/{id}/graphs/intensity-opt")]
         public async Task<IActionResult> CreateSysIntensOptGraph([FromRoute] Guid id, [FromBody] CreateIntensOptRequest request)
         {
-            var model = new CreateIntensityGraphModel(
+            var model = new IntensityCreateDTO(
                 id,
                 request.QMin, request.QMax,
                 request.QNum,
@@ -93,7 +95,7 @@ namespace Fullstack.SAXS.Server.Controllers
         [HttpGet("generations")]
         public async Task<IActionResult> GetGenerations([FromQuery] bool users)
         {
-            var model = new GetGenerationsModel(
+            var model = new GenerationGetFilterDTO(
                 users ? UserId : null
             );
 

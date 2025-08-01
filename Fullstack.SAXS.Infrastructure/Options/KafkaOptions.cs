@@ -2,7 +2,7 @@
 
 namespace Fullstack.SAXS.Infrastructure.Options
 {
-    public class KafkaOptions
+    internal class KafkaOptions
     {
         [Required]
         public required string Uri { get; set; }

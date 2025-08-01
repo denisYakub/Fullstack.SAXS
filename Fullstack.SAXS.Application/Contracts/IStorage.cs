@@ -1,4 +1,5 @@
-﻿using Fullstack.SAXS.Domain.Entities.Areas;
+﻿using Fullstack.SAXS.Domain.Dtos;
+using Fullstack.SAXS.Domain.Entities.Areas;
 
 namespace Fullstack.SAXS.Application.Contracts
 {
@@ -8,5 +9,6 @@ namespace Fullstack.SAXS.Application.Contracts
         Task<string> GetGenerationsAsync(Guid? idUser);
         Task AddRangeAsync(IEnumerable<Area> entities, Guid idUser);
         Task UpdateAvgPhiAsync(Guid idUser, Guid idArea, double avgPhi);
+        Task SaveSystemTaskAsync(SystemCreateDto dto);
     }
 }

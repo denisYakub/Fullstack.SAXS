@@ -1,13 +1,25 @@
-﻿using Fullstack.SAXS.Application.Contracts;
+﻿using System.Text.Json;
+using Fullstack.SAXS.Application.Contracts;
 using MediatR;
 
 namespace Fullstack.SAXS.Application.Queries
 {
-    public class GetSystemHandler : IRequestHandler<GetSystemQuery, string>
+    public class GetSystemHandler(IStorage storage) : IRequestHandler<GetSystemQuery, string>
     {
-        public Task<string> Handle(GetSystemQuery request, CancellationToken cancellationToken)
+        private static readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
         {
-            throw new NotImplementedException();
+            WriteIndented = true,
+            IncludeFields = true,
+        };
+
+        public async Task<string> Handle(GetSystemQuery request, CancellationToken cancellationToken)
+        {
+            var area = await storage
+                .GetAreaAsync(request.AreaId)
+                .ConfigureAwait(false);
+
+            return JsonSerializer
+                .Serialize(area, _jsonOptions);
         }
     }
 }

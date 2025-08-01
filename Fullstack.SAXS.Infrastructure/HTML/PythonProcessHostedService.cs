@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fullstack.SAXS.Infrastructure.HTML
 {
-    public class PythonProcessHostedService : BackgroundService
+    internal class PythonProcessHostedService : BackgroundService
     {
         private readonly ILogger<PythonProcessHostedService> _logger;
         private readonly Process _process;

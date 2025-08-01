@@ -19,7 +19,7 @@ namespace Fullstack.SAXS.Application.Tests
             var qNum = 150;
 
             // Act
-            var qVector = SysService.CreateQVector(qMin, qMax, qNum);
+            var qVector = IntenceService.CreateQVector(qMin, qMax, qNum);
 
             // Assert
             Assert.Multiple(() =>
@@ -39,7 +39,7 @@ namespace Fullstack.SAXS.Application.Tests
             var qNum = 150;
 
             // Act
-            var qVector = SysService.CreateQVector(qMin, qMax, qNum, StepTypes.Logarithmic);
+            var qVector = IntenceService.CreateQVector(qMin, qMax, qNum, StepTypes.Logarithmic);
 
             // Assert
             Assert.Multiple(() =>

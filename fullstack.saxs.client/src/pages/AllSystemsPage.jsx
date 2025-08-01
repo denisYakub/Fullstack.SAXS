@@ -61,8 +61,8 @@ export default function AllSystemsPage() {
                             <tbody>
                                 {gens.map(g => (
                                     <tr
-                                        key={g.IdSpData}
-                                        onClick={() => navigate(`/system/${g.IdSpData}`)}
+                                        key={g.Id}
+                                        onClick={() => navigate(`/system/${g.Id}`)}
                                         className="cursor-pointer bg-gray-600 hover:bg-gray-500 transition-colors duration-200"
                                     >
                                         <td className="px-5 py-2">{g.GenNum}</td>
