@@ -4,10 +4,11 @@ using Fullstack.SAXS.Application.Commands;
 using Fullstack.SAXS.Application.Contracts;
 using Fullstack.SAXS.Application.Services;
 using Fullstack.SAXS.Infrastructure;
+using Fullstack.SAXS.Persistence;
 using Fullstack.SAXS.Persistence.DbContexts;
+using Fullstack.SAXS.Persistence.DbListnres;
 using Fullstack.SAXS.Persistence.Factories;
 using Fullstack.SAXS.Persistence.Repositories;
-using Fullstack.SAXS.Persistence.SqlServerListner;
 using Fullstack.SAXS.Server.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,13 +41,13 @@ builder.Services
     .AddConsumer<string, CreateAreaHandler>(builder.Configuration.GetSection("Kafka:SystemCreate"));
 
 builder.Services
+    .AddHostedService<PostgresNotifyListener>();
+
+builder.Services
     .AddMediatR(cfg =>
     {
         cfg.RegisterServicesFromAssembly(typeof(CreateTaskToCreateSystemHandler).Assembly);
     });
-
-builder.Services
-    .AddHostedService<PostgresNotifyListener>();
 
 builder.Services
     .AddDbContext<PosgresDbContext>(

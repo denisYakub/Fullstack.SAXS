@@ -1,37 +1,28 @@
 ﻿using Fullstack.SAXS.Application.Contracts;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace Fullstack.SAXS.Persistence.SqlServerListner
+namespace Fullstack.SAXS.Persistence.DbListnres
 {
-    public class PostgresNotifyListener : BackgroundService
+    public class PostgresNotifyListener(
+        ILogger<PostgresNotifyListener> logger,
+        IProducer<string> producer,
+        IConfiguration config
+    ) : BackgroundService
     {
-        private readonly ILogger<PostgresNotifyListener> _logger;
-        private readonly IProducer<string> _producer;
-        private readonly string _connString;
-
-        public PostgresNotifyListener(
-            ILogger<PostgresNotifyListener> logger,
-            IProducer<string> producer,
-            IConfiguration config)
-        {
-            _logger = logger;
-            _producer = producer;
-            _connString = config.GetConnectionString("PostgresConnection");
-        }
-
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            await using var conn = new NpgsqlConnection(_connString);
+            await using var conn = new NpgsqlConnection(config.GetConnectionString("PostgresConnection"));
             await conn.OpenAsync(cancellationToken);
 
             conn.Notification += async (o, e) =>
             {
-                _logger.LogInformation("NOTIFY: " + e.Payload);
+                logger.LogInformation("NOTIFY: {txt}", e.Payload);
 
-                await _producer
+                await producer
                 .ProduceAsync(e.Payload, cancellationToken)
                 .ConfigureAwait(false);
             };
