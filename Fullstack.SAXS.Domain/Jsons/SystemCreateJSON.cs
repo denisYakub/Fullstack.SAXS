@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
 
-namespace Fullstack.SAXS.Application
+namespace Fullstack.SAXS.Domain.Jsons
 {
-    internal class SystemTaskTriggerDto
+    public class SystemCreateJSON
     {
         [JsonPropertyName("id_system_task")]
         public Guid Id { get; set; }
-
+        [JsonPropertyName("state")]
+        public string State { get; set; } = string.Empty;
         [JsonPropertyName("user_id")]
         public Guid UserId { get; set; }
 
@@ -21,6 +17,9 @@ namespace Fullstack.SAXS.Application
         [JsonPropertyName("area_copies_number")]
         public int AreaNumber { get; set; }
 
+        [JsonPropertyName("area_type")]
+        public string AreaType { get; set; } = string.Empty;
+
         [JsonPropertyName("particle_number")]
         public int ParticleNumber { get; set; }
 
@@ -28,24 +27,24 @@ namespace Fullstack.SAXS.Application
         public string ParticleType { get; set; } = string.Empty;
 
         [JsonPropertyName("particle_min_size")]
-        public double ParticleMinSize { get; set; }
+        public double MinSize { get; set; }
 
         [JsonPropertyName("particle_max_size")]
-        public double ParticleMaxSize { get; set; }
+        public double MaxSize { get; set; }
 
         [JsonPropertyName("particle_size_shape")]
-        public double ParticleSizeShape { get; set; }
+        public double SizeShape { get; set; }
 
         [JsonPropertyName("particle_size_scale")]
-        public double ParticleSizeScale { get; set; }
+        public double SizeScale { get; set; }
 
         [JsonPropertyName("particle_alpha_rotation")]
-        public double ParticleAlphaRotation { get; set; }
+        public double AlphaRotation { get; set; }
 
         [JsonPropertyName("particle_beta_rotation")]
-        public double ParticleBetaRotation { get; set; }
+        public double BetaRotation { get; set; }
 
         [JsonPropertyName("particles_gamma_rotation")]
-        public double ParticleGammaRotation { get; set; }
+        public double GammaRotation { get; set; }
     }
 }

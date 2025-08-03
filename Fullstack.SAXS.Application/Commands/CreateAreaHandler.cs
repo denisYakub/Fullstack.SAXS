@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using Fullstack.SAXS.Application.Contracts;
-using Fullstack.SAXS.Application.Jsons;
 using Fullstack.SAXS.Domain.Dtos;
 using Fullstack.SAXS.Domain.Enums;
+using Fullstack.SAXS.Domain.Jsons;
 using MediatR;
 
 namespace Fullstack.SAXS.Application.Commands
@@ -24,6 +24,7 @@ namespace Fullstack.SAXS.Application.Commands
         {
             var dto = JsonSerializer.Deserialize<SystemCreateJSON>(message, _options)!;
 
+            Enum.TryParse<TaskState>(dto.State, true, out var taskState);
             Enum.TryParse<AreaTypes>(dto.AreaType, true, out var areaType);
             Enum.TryParse<ParticleTypes>(dto.ParticleType, true, out var particleType);
 
@@ -50,6 +51,10 @@ namespace Fullstack.SAXS.Application.Commands
 
             await storage
                 .AddRangeAsync(areas, userId)
+                .ConfigureAwait(false);
+
+            await storage
+                .UpdateSystemTaskStateAsync(dto.Id, TaskState.Ready)
                 .ConfigureAwait(false);
         }
     }
