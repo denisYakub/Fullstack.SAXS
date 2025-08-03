@@ -173,5 +173,22 @@ namespace Fullstack.SAXS.Persistence.Repositories
                 .SaveChangesAsync()
                 .ConfigureAwait(false);
         }
+
+        public async Task UpdateSystemTaskStateAsync(Guid idTask, TaskState state)
+        {
+            var task = await postgres
+                .SystemTasks
+                .FindAsync(idTask)
+                .ConfigureAwait(false);
+
+            if (task == null)
+                throw new KeyNotFoundException($"No task found with ID: {idTask}.");
+
+            task.State = state;
+
+            await postgres
+                .SaveChangesAsync()
+                .ConfigureAwait(false);
+        }
     }
 }
