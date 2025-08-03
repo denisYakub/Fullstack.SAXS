@@ -3,6 +3,7 @@ using Fullstack.SAXS.Domain.Dtos;
 using Fullstack.SAXS.Domain.Entities.Areas;
 using Fullstack.SAXS.Domain.Enums;
 using Fullstack.SAXS.Domain.ValueObjects;
+using System;
 
 namespace Fullstack.SAXS.Application.Services
 {
@@ -28,37 +29,53 @@ namespace Fullstack.SAXS.Application.Services
 
         public static double[] CreateQVector(double QMin, double QMax, int QNum, StepTypes StepType = StepTypes.Linear)
         {
-            double[] result = new double[QNum];
-
             switch (StepType)
             {
                 case StepTypes.Linear:
-                    var lineStep = (QMax - QMin) / (QNum - 1);
-
-                    for (int i = 0; i < QNum; i++)
-                        result[i] = QMin + i * lineStep;
-
-                    break;
+                    return LineSpace(QMin, QMax, QNum);
                 case StepTypes.Logarithmic:
-                    double baseValue = 10.0d;
-
-                    var logMin = Math.Log10(QMin);
-                    var logMax = Math.Log10(QMax);
-
-                    var logStep = (logMax - logMin) / (QNum - 1);
-
-                    for (int i = 0; i < QNum; i++)
-                        result[i] = logMin + i * logStep;
-
-                    result = [.. result.Select(v => Math.Pow(baseValue, v))];
-
-                    break;
+                    return LogSpace(QMin, QMax, QNum);
                 case StepTypes.Geometric:
-
-                    break;
+                    return GeomSpace(QMin, QMax, QNum);
+                default:
+                    throw new NotSupportedException($"Step type {StepType} is not supported.");
             }
+        }
+
+        private static double[] LineSpace(double start, double end, int number = 50)
+        {
+            var result = new double[number];
+
+            var step = (end - start) / ((double)number - 1.0);
+
+            for (int i = 0; i < number; i++)
+                result[i] = start + i * step;
 
             return result;
+        }
+
+        private static double[] LogSpace(double start, double end, int number = 50)
+        {
+            var baseValue = 10.0;
+
+            start = Math.Log10(start);
+            end = Math.Log10(end);
+
+            return LineSpace(start, end, number)
+                .Select(v => Math.Pow(baseValue, v))
+                .ToArray();
+        }
+
+        private static double[] GeomSpace(double start, double end, int number = 50)
+        {
+            var outSign = Math.Sign(start);
+
+            start /= outSign;
+            end /= outSign;
+
+            return LogSpace(start, end, number)
+                .Select(v => v *= outSign)
+                .ToArray();
         }
 
         private static (double[] x, double[] y) CreateIntensOptCoord(

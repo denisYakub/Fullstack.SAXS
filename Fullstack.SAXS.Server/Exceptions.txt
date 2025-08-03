@@ -1,6 +1,7 @@
 ﻿
 NotSupportedException:
 - Particle type '{type}' is not supported.
+- Step type '{StepType}' is not supported.
 ArgumentNullException
 - Input string cannot be null.
 - Particle factory resolver does not contains factories.

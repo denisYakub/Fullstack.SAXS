@@ -3,7 +3,7 @@ using Fullstack.SAXS.Domain.Enums;
 
 namespace Fullstack.SAXS.Application.Tests
 {
-    public class SysServiceTests
+    public class IntenceServiceTests
     {
         [SetUp]
         public void Setup()
@@ -40,6 +40,26 @@ namespace Fullstack.SAXS.Application.Tests
 
             // Act
             var qVector = IntenceService.CreateQVector(qMin, qMax, qNum, StepTypes.Logarithmic);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(qVector, Has.Length.EqualTo(qNum));
+                Assert.That(qVector.First(), Is.AtLeast(qMin));
+                Assert.That(qVector.Last(), Is.AtMost(qMax));
+            });
+        }
+
+        [Test]
+        public void CreateQs_Geometric_Pass()
+        {
+            // Arrange
+            var qMin = 0.02;
+            var qMax = 5.0;
+            var qNum = 150;
+
+            // Act
+            var qVector = IntenceService.CreateQVector(qMin, qMax, qNum, StepTypes.Geometric);
 
             // Assert
             Assert.Multiple(() =>
