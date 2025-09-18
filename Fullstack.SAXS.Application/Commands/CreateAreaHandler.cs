@@ -24,7 +24,7 @@ namespace Fullstack.SAXS.Application.Commands
         {
             var dto = JsonSerializer.Deserialize<SystemCreateJSON>(message, _options)!;
 
-            Enum.TryParse<TaskState>(dto.State, true, out var taskState);
+            Enum.TryParse<TaskState>(dto.State.ToString(), true, out var taskState);
             Enum.TryParse<AreaTypes>(dto.AreaType, true, out var areaType);
             Enum.TryParse<ParticleTypes>(dto.ParticleType, true, out var particleType);
 

@@ -7,7 +7,7 @@ namespace Fullstack.SAXS.Domain.Jsons
         [JsonPropertyName("id_system_task")]
         public Guid Id { get; set; }
         [JsonPropertyName("state")]
-        public string State { get; set; } = string.Empty;
+        public int State { get; set; }
         [JsonPropertyName("user_id")]
         public Guid UserId { get; set; }
 
@@ -44,7 +44,7 @@ namespace Fullstack.SAXS.Domain.Jsons
         [JsonPropertyName("particle_beta_rotation")]
         public double BetaRotation { get; set; }
 
-        [JsonPropertyName("particles_gamma_rotation")]
+        [JsonPropertyName("particle_gamma_rotation")]
         public double GammaRotation { get; set; }
     }
 }
