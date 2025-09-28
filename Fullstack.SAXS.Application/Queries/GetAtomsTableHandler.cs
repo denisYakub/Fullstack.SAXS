@@ -1,4 +1,5 @@
-﻿using Fullstack.SAXS.Application.Contracts;
+﻿using Fullstack.SAXS.Domain.Abstractions.Services;
+using Fullstack.SAXS.Domain.Abstractions.Storages;
 using MediatR;
 
 namespace Fullstack.SAXS.Application.Queries

@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
-using Fullstack.SAXS.Application.Queries;
-using Fullstack.SAXS.Application.Services;
-using Fullstack.SAXS.Server.Contracts;
+using Fullstack.SAXS.Application.Queries; 
+using Fullstack.SAXS.Domain.Dtos;
+using Fullstack.SAXS.Services;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

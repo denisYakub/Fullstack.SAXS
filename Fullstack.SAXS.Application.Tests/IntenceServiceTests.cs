@@ -1,5 +1,5 @@
-﻿using Fullstack.SAXS.Application.Services;
-using Fullstack.SAXS.Domain.Enums;
+﻿using Fullstack.SAXS.Domain.Enums;
+using Fullstack.SAXS.Services;
 
 namespace Fullstack.SAXS.Application.Tests
 {

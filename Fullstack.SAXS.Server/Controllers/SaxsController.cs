@@ -3,7 +3,6 @@ using Fullstack.SAXS.Application.Commands;
 using Fullstack.SAXS.Application.Queries;
 using Fullstack.SAXS.Domain.Dtos;
 using Fullstack.SAXS.Domain.Enums;
-using Fullstack.SAXS.Server.Contracts;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

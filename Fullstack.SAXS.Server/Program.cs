@@ -1,15 +1,17 @@
 using System.Security.Claims;
-using Fullstack.SAXS.Application;
 using Fullstack.SAXS.Application.Commands;
-using Fullstack.SAXS.Application.Contracts;
-using Fullstack.SAXS.Application.Services;
-using Fullstack.SAXS.Infrastructure;
+using Fullstack.SAXS.Application.Resolvers;
+using Fullstack.SAXS.Domain.Abstractions.Factories;
+using Fullstack.SAXS.Domain.Abstractions.Resolvers;
+using Fullstack.SAXS.Domain.Abstractions.Services;
+using Fullstack.SAXS.Domain.Abstractions.Storages;
+using Fullstack.SAXS.Infrastructure.DbContexts;
+using Fullstack.SAXS.Infrastructure.DbListnres;
+using Fullstack.SAXS.Infrastructure.Factories;
+using Fullstack.SAXS.Infrastructure.Repositories;
 using Fullstack.SAXS.Persistence;
-using Fullstack.SAXS.Persistence.DbContexts;
-using Fullstack.SAXS.Persistence.DbListnres;
-using Fullstack.SAXS.Persistence.Factories;
-using Fullstack.SAXS.Persistence.Repositories;
 using Fullstack.SAXS.Server.Middlewares;
+using Fullstack.SAXS.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +27,7 @@ builder.Services
     .AddSingleton<IParticleFactoryResolver, ParticleFactoryResolver>()
     .AddScoped<IDensityService, DensityService>()
     .AddScoped<IIntenceService, IntenceService>()
-    .AddScoped<ISysService, SysService>()
+    .AddScoped<ISysService, SystemService>()
     .AddScoped<IStorage, AreaRepository>();
 
 builder.Services
